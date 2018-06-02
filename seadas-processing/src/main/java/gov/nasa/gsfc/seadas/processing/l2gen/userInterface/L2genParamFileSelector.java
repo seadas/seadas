@@ -3,11 +3,11 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileSelector;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +43,7 @@ public class L2genParamFileSelector {
 //        }
 
         if (paramInfo.getType() != null) {
-            fileSelectorPanel = new FileSelector(VisatApp.getApp(), paramInfo.getType());
+            fileSelectorPanel = new FileSelector(SnapApp.getDefault().getAppContext(), paramInfo.getType());
             jPanel = fileSelectorPanel.getjPanel();
         }
 

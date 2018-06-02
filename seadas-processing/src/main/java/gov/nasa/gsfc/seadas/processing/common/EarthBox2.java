@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 
-import org.esa.beam.framework.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.GeoPos;
 import ucar.ma2.Array;
 
 /**
@@ -137,8 +137,8 @@ public class EarthBox2 {
     }
 
     public void add(GeoPos geoPos) {
-        float lat = geoPos.lat;
-        float lon = geoPos.lon;
+        float lat = (float) geoPos.lat;
+        float lon = (float) geoPos.lon;
 
         add(lat, lon);
     }
@@ -162,7 +162,7 @@ public class EarthBox2 {
     }
 
     public short getValue(GeoPos geoPos) {
-        return getValue(geoPos.lat, geoPos.lon);
+        return getValue((float)geoPos.lat, (float) geoPos.lon);
     }
 
     public short getValue(float lat, float lon) {

@@ -15,19 +15,22 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.dataop.maptransf.Datum;
-
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
+import org.esa.snap.core.datamodel.AbstractGeoCoding;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.ProductNode;
+import org.esa.snap.core.dataop.maptransf.Datum;
 
 /**
  * The <code>AbstractBowtieGeoCoding</code> class is a special geo-coding for
  * MODIS Level-1B and Level-2 swath products.
  * <p/>
- * <p>It enables BEAM to transform the MODIS swaths to uniformly gridded
+ * <p>It enables BEAM to transform the MODIS swathes to uniformly gridded
  * image that is geographically referenced according to user-specified
  * projection and resampling parameters.
  * Correction for oversampling between scans as a function of increasing
@@ -120,10 +123,10 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
     /**
      * Returns the latitude and longitude value for a given pixel co-ordinate.
      *
-     * @param pixelPos the pixel's co-ordinates given as x,y
-     * @param geoPos   an instance of <code>GeoPos</code> to be used as retun value. If this parameter is
+     * @param pixelPos the pixel's coordinates given as x,y
+     * @param geoPos   an instance of <code>GeoPos</code> to be used as return value. If this parameter is
      *                 <code>null</code>, the method creates a new instance which it then returns.
-     * @return the geographical position as lat/lon in the coodinate system determined by {@link #getDatum()}
+     * @return the geographical position as lat/lon in the coordinate system determined by {@link #getDatum()}
      */
     public GeoPos getGeoPos(PixelPos pixelPos, GeoPos geoPos) {
         final int index = computeIndex(pixelPos);

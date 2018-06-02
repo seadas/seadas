@@ -7,7 +7,6 @@ import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.visat.VisatApp;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -16,6 +15,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.net.URL;
+import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -256,7 +256,7 @@ public abstract class OCSSW {
     public String getServerSharedDirName() { return serverSharedDirName; }
 
     private static void handleException(String errorMessage) {
-        VisatApp.getApp().showErrorDialog(errorMessage);
+        Dialogs.showError(errorMessage);
     }
 
     public boolean isOcsswInstalScriptDownloadSuccessful() {

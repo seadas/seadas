@@ -19,17 +19,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
-import org.esa.beam.framework.dataio.ProductIO;
-import org.esa.beam.framework.dataio.ProductIOPlugInManager;
-import org.esa.beam.framework.dataio.ProductReaderPlugIn;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductFilter;
-import org.esa.beam.framework.datamodel.ProductManager;
-import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.framework.ui.BasicApp;
-import org.esa.beam.util.SystemUtils;
-import org.esa.beam.util.io.BeamFileChooser;
-import org.esa.beam.visat.VisatApp;
+import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -47,6 +37,17 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Logger;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.dataio.ProductIOPlugInManager;
+import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductFilter;
+import org.esa.snap.core.datamodel.ProductManager;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.SnapFileChooser;
 
 /**
  * WARNING: This class belongs to a preliminary API and may change in future releases.
@@ -370,7 +371,7 @@ public class SourceProductFileSelector {
 
         private ProductFileChooserAction() {
             super("...");
-            fileChooser = new BeamFileChooser();
+            fileChooser = new SnapFileChooser();
             JPanel filterPanel = createFilterPane();
             JPanel filePanel = (JPanel) fileChooser.getComponent(1);
             filePanel.add(filterPanel, BorderLayout.CENTER, 0);
@@ -418,7 +419,7 @@ public class SourceProductFileSelector {
             fileChooser.getUI().rescanCurrentDirectory(fileChooser);
 
             //regexFilters.add(regexFileFilter);
-            SeadasLogger.getLogger().warning(regexFileFilter.getDescription());
+            Logger.getLogger(appContext.getApplicationWindow().getName()).warning(regexFileFilter.getDescription());
         }
 
         @Override
@@ -426,7 +427,7 @@ public class SourceProductFileSelector {
             final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
 
             String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-            String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+            String openDir = appContext.getPreferences().getPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                     homeDirPath);
             currentDirectory = new File(openDir);
             fileChooser.setCurrentDirectory(currentDirectory);
@@ -434,7 +435,7 @@ public class SourceProductFileSelector {
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
 
                 currentDirectory = fileChooser.getCurrentDirectory();
-                appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                appContext.getPreferences().setPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
 
                 if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
@@ -449,8 +450,8 @@ public class SourceProductFileSelector {
 
                 //final Product[] productTmp = {null};
 
-                VisatApp visatApp = VisatApp.getApp();
-                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                SnapApp snapApp = SnapApp.getDefault();
+                ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                         "SeaDAS Product/File Loader") {
 
                     @Override
@@ -474,7 +475,7 @@ public class SourceProductFileSelector {
                                     final String message = String.format("Product [%s] is not a valid source.",
                                             product.getFileLocation().getCanonicalPath());
                                     handleError(window, message);
-                                    SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
+                                    Logger.getLogger(appContext.getApplicationWindow().getName()).warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
                                     product.dispose();
                                 }
                             } catch (Exception e) {
@@ -525,7 +526,7 @@ public class SourceProductFileSelector {
                         final String message = String.format("Product [%s] is not a valid source.",
                                 product.getFileLocation().getCanonicalPath());
                         handleError(window, message);
-                        SeadasLogger.getLogger().warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
+                        Logger.getLogger(appContext.getApplicationWindow().getName()).warning(" product is hidden: " + new Boolean(product.getFileLocation().isHidden()).toString());
                         product.dispose();
                     }
                 } catch (IOException e) {
@@ -565,7 +566,7 @@ public class SourceProductFileSelector {
             product.setDescription(fileNames.toString());
             setSelectedProduct(product);
             currentDirectory = fileChooser.getCurrentDirectory();
-            appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+            appContext.getPreferences().setPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                     currentDirectory.getAbsolutePath());
         }
 
@@ -658,7 +659,7 @@ public class SourceProductFileSelector {
         }
 
         public RegexFileFilter(String regex) throws IllegalStateException {
-            SeadasLogger.getLogger().info("regular expression: " + regex);
+            Logger.getLogger(appContext.getApplicationWindow().getName()).info("regular expression: " + regex);
 
             if (regex == null) {
                 return;
@@ -686,7 +687,7 @@ public class SourceProductFileSelector {
             if (regex == null) {
                 return true;
             }
-            SeadasLogger.getLogger().info("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)));
+            Logger.getLogger(appContext.getApplicationWindow().getName()).info("regex: " + (pathname.isFile() && pathname.getName().matches(this.regex)));
             return (pathname.isFile() && pathname.getName().matches(this.regex));
         }
 

@@ -4,8 +4,6 @@ import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.SheetCell;
 import gov.nasa.gsfc.seadas.processing.utilities.SpreadSheet;
-import org.esa.beam.framework.ui.ModalDialog;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +14,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
+import org.esa.snap.rcp.SnapApp;
+
+import org.esa.snap.ui.ModalDialog;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,7 +99,7 @@ public class CallL3BinDumpAction extends CallCloProgramAction {
                 String message = "l3bindump output is saved in file \n"
                                   + outputFileName +"\n"
                                   + " in spreadsheet format.";
-                final ModalDialog modalDialog = new ModalDialog(VisatApp.getApp().getApplicationWindow(), "", message, ModalDialog.ID_OK, "test");
+                final ModalDialog modalDialog = new ModalDialog(SnapApp.getDefault().getMainFrame(), "", message, ModalDialog.ID_OK, "test");
                             final int dialogResult = modalDialog.show();
                             if (dialogResult != ModalDialog.ID_OK) {
 
@@ -144,7 +146,7 @@ public class CallL3BinDumpAction extends CallCloProgramAction {
                 }
             }
         } catch (IOException e) {
-            SeadasLogger.getLogger().warning(outputFileName + " is not created. " + e.getMessage());
+            Logger.getGlobal().warning(outputFileName + " is not created. " + e.getMessage());
         }
 
     }

@@ -13,10 +13,7 @@ import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.framework.ui.BasicApp;
-import org.esa.beam.util.SystemUtils;
-import org.esa.beam.visat.VisatApp;
+import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -31,6 +28,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
 
 
 public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
@@ -139,7 +139,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         jFileChooser = new JFileChooser();
 
         // create main panel
-        sourceProductFileSelector = new SeadasFileSelector(VisatApp.getApp(), IFILE, true);
+        sourceProductFileSelector = new SeadasFileSelector(SnapApp.getDefault().getAppContext(), IFILE, true);
         sourceProductFileSelector.initProducts();
         //sourceProductFileSelector.setProductNameLabel(new JLabel(IFILE));
         sourceProductFileSelector.getFileNameComboBox().setPrototypeDisplayValue(
@@ -547,7 +547,7 @@ public class MultlevelProcessorForm extends JPanel implements CloProgramUI {
         tmpArrayList.toArray(files);
 
         String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-        String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+        String openDir = appContext.getPreferences().getPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                 homeDirPath);
         File currentDirectory = new File(openDir);
         File fileListFile = new File(currentDirectory, "_inputFiles.lst");

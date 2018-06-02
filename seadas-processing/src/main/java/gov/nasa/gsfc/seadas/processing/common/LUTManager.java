@@ -7,6 +7,7 @@ import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +49,7 @@ public class LUTManager {
         try {
             int exitValue = process.waitFor();
         } catch (Exception e) {
-            SeadasLogger.getLogger().severe("Execution exception 0 : " + e.getMessage());
+            Logger.getGlobal().severe("Execution exception 0 : " + e.getMessage());
         }
         //System.out.println("update_luts exit value = " + process.exitValue());
     }

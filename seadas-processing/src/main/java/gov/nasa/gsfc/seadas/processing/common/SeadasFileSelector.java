@@ -2,15 +2,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.selection.SelectionChangeListener;
 import com.bc.ceres.swing.selection.support.ComboBoxSelectionContext;
-import org.esa.beam.framework.dataio.ProductIOPlugInManager;
-import org.esa.beam.framework.dataio.ProductReaderPlugIn;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.ProductFilter;
-import org.esa.beam.framework.datamodel.ProductManager;
-import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.framework.ui.BasicApp;
-import org.esa.beam.util.SystemUtils;
-import org.esa.beam.util.io.BeamFileChooser;
+import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -26,6 +18,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
+import org.esa.snap.core.dataio.ProductIOPlugInManager;
+import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductFilter;
+import org.esa.snap.core.datamodel.ProductManager;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.SnapFileChooser;
 
 /**
  * Created by IntelliJ IDEA.
@@ -263,7 +263,7 @@ public class SeadasFileSelector {
 
         private FileChooserAction() {
             super("...");
-            fileChooser = new BeamFileChooser();
+            fileChooser = new SnapFileChooser();
             //REmoved filter panel as it causes problem in the windows machine
 //            JPanel filterPanel = createFilterPanel();
 //            JPanel filePanel = (JPanel) fileChooser.getComponent(1);
@@ -317,7 +317,7 @@ public class SeadasFileSelector {
             final Window window = SwingUtilities.getWindowAncestor((JComponent) event.getSource());
 
             String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-            String openDir = appContext.getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+            String openDir = appContext.getPreferences().getPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                     homeDirPath);
             currentDirectory = new File(openDir);
             fileChooser.setCurrentDirectory(currentDirectory);
@@ -325,7 +325,7 @@ public class SeadasFileSelector {
             if (fileChooser.showDialog(window, APPROVE_BUTTON_TEXT) == JFileChooser.APPROVE_OPTION) {
 
                 currentDirectory = fileChooser.getCurrentDirectory();
-                appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                appContext.getPreferences().setPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                         currentDirectory.getAbsolutePath());
 
                 if (selectMultipleIFiles && fileChooser.getSelectedFiles().length > 1) {
@@ -382,7 +382,7 @@ public class SeadasFileSelector {
             }
             setSelectedFile(fileListFile);
             currentDirectory = fileChooser.getCurrentDirectory();
-            appContext.getPreferences().setPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
+            appContext.getPreferences().setPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
                     currentDirectory.getAbsolutePath());
         }
 

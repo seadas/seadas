@@ -2,17 +2,17 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.binding.*;
 import com.bc.ceres.binding.validators.NotNullValidator;
-import org.esa.beam.framework.dataio.ProductIO;
-import org.esa.beam.framework.dataio.ProductIOPlugInManager;
-import org.esa.beam.framework.datamodel.ProductNode;
-import org.esa.beam.util.StringUtils;
-import org.esa.beam.util.io.FileUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.dataio.ProductIOPlugInManager;
+import org.esa.snap.core.datamodel.ProductNode;
+import org.esa.snap.core.util.StringUtils;
+import org.esa.snap.core.util.io.FileUtils;
 
 /**
  * Created by IntelliJ IDEA.

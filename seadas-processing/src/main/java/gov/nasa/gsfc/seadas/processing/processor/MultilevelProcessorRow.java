@@ -6,8 +6,6 @@ import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.L2genForm;
-import org.esa.beam.framework.ui.ModalDialog;
-import org.esa.beam.framework.ui.UIUtils;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -15,6 +13,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import org.esa.snap.ui.ModalDialog;
+import org.esa.snap.ui.UIUtils;
 
 /**
  * Created with IntelliJ IDEA.

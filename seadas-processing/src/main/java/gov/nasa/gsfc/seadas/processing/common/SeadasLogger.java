@@ -1,26 +1,32 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package gov.nasa.gsfc.seadas.processing.common;
-
-import org.esa.beam.util.Debug;
-import org.esa.beam.util.Guardian;
-import org.esa.beam.util.logging.BeamLogManager;
-import org.hsqldb.lib.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import org.esa.snap.core.util.Debug;
+import org.esa.snap.core.util.Guardian;
+import org.hsqldb.lib.FileUtil;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Aynur Abdurazik (aabduraz)
- * Date: 5/10/12
- * Time: 2:14 PM
- * To change this template use File | Settings | File Templates.
+ *
+ * @author aabduraz
  */
 public class SeadasLogger {
-
+    
     private static boolean log = true;
 
     private static Logger logger; // Logger.getLogger(ProcessorModel.class.getName());
@@ -72,10 +78,10 @@ public class SeadasLogger {
     }
 
     public static void initLogger(boolean printToConsole) {
-        BeamLogManager.setSystemLoggerName("seadas");
-        BeamLogManager.configureSystemLogger((new SimpleFormatter()), printToConsole);
-        logger = BeamLogManager.getSystemLogger();
-        FileHandler fileTxt;
+
+        logger = Logger.getLogger("seadas");
+        
+                FileHandler fileTxt;
         SimpleFormatter formatterTxt = new SimpleFormatter();
 
         FileHandler fileHTML;
@@ -84,12 +90,13 @@ public class SeadasLogger {
         logger.setLevel(Level.INFO);
         String txtLogFileName = _loggerFileName + ".txt";
         String htmlLogFileName = _loggerFileName + ".html";
+        
         try {
-            if (FileUtil.exists(txtLogFileName)) {
-                FileUtil.delete(txtLogFileName);
+            if (new File(txtLogFileName).exists()) {
+                new File(txtLogFileName).delete();
             }
-            if (FileUtil.exists(htmlLogFileName)) {
-                FileUtil.delete(htmlLogFileName);
+            if (new File(htmlLogFileName).exists()) {
+                new File(htmlLogFileName).delete();
             }
             fileTxt = new FileHandler(txtLogFileName);
             fileHTML = new FileHandler(htmlLogFileName);
@@ -115,9 +122,7 @@ public class SeadasLogger {
     }
 
     public static void initSevereLogger() {
-        BeamLogManager.setSystemLoggerName("seadas");
-        BeamLogManager.configureSystemLogger((new SimpleFormatter()), true);
-        logger = BeamLogManager.getSystemLogger();
+        logger = Logger.getLogger("seadas");
         logger.setLevel(Level.SEVERE);
     }
 
@@ -141,8 +146,8 @@ public class SeadasLogger {
         }
         return log;
     }
-
-    //This custom formatter formats parts of a log record to a single line
+    
+       //This custom formatter formats parts of a log record to a single line
     private static class MyHtmlFormatter extends Formatter {
         // This method is called for every log records
         public String format(LogRecord rec) {
@@ -199,5 +204,6 @@ public class SeadasLogger {
         }
 
     }
+
 
 }

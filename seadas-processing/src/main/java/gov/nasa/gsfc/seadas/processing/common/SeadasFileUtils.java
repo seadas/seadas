@@ -4,7 +4,6 @@ package gov.nasa.gsfc.seadas.processing.common;
 import gov.nasa.gsfc.seadas.OsUtils;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
-import org.esa.beam.visat.VisatApp;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
@@ -17,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.out;
+import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by IntelliJ IDEA.
@@ -339,7 +339,7 @@ public class SeadasFileUtils {
         if (new File(geoFileName).exists()) {
             return geoFileName;
         } else {
-            VisatApp.getApp().showErrorDialog(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
+            Dialogs.showError(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
             return null;
         }
     }

@@ -4,10 +4,10 @@ import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genAlgorithmInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductCategoryInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genBaseInfo;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.L2genProductInfo;
-import org.esa.beam.util.StringUtils;
 
 import java.util.*;
 import java.util.HashSet;
+import org.esa.snap.core.util.StringUtils;
 
 /**
  * Created by IntelliJ IDEA.

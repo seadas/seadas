@@ -4,12 +4,13 @@ import com.bc.ceres.swing.selection.AbstractSelectionChangeListener;
 import com.bc.ceres.swing.selection.SelectionChangeEvent;
 import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileSelector;
-import org.esa.beam.visat.VisatApp;
+
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +30,7 @@ public class L2genIfileSelector {
     public L2genIfileSelector(SeaDASProcessorModel seaDASProcessorModel) {
         this.seaDASProcessorModel = seaDASProcessorModel;
 
-        fileSelector = new SeadasFileSelector(VisatApp.getApp(), seaDASProcessorModel.getPrimaryInputFileOptionName(), seaDASProcessorModel.isMultipleInputFiles());
+        fileSelector = new SeadasFileSelector(SnapApp.getDefault().getAppContext(), seaDASProcessorModel.getPrimaryInputFileOptionName(), seaDASProcessorModel.isMultipleInputFiles());
         fileSelector.initProducts();
         fileSelector.setFileNameLabel(new JLabel(seaDASProcessorModel.getPrimaryInputFileOptionName()));
         fileSelector.getFileNameComboBox().setPrototypeDisplayValue(

@@ -10,8 +10,7 @@ import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.esa.beam.util.Debug;
-import org.esa.beam.visat.VisatApp;
+
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -19,6 +18,8 @@ import java.util.*;
 
 import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 import static java.lang.System.getProperty;
+import org.esa.snap.core.util.Debug;
+import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -239,7 +240,7 @@ public class OCSSWLocal extends OCSSW {
             } // while lines
         } catch (IOException ioe) {
 
-            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+            Dialogs.showError(ioe.getMessage());
         }
     }
 
@@ -409,7 +410,7 @@ public class OCSSWLocal extends OCSSW {
                 Debug.trace("Failed exit code on program '" + NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME + "'");
             }
         } catch (IOException ioe) {
-            VisatApp.getApp().showErrorDialog(ioe.getMessage());
+            Dialogs.showError(ioe.getMessage());
         }
         return null;
     }

@@ -18,7 +18,7 @@ package gov.nasa.gsfc.seadas.processing.processor;
 
 import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
 import gov.nasa.gsfc.seadas.processing.common.CloProgramUI;
-import org.esa.beam.framework.ui.AppContext;
+import org.esa.snap.ui.AppContext;
 
 /**
  * Geographic collocation action.

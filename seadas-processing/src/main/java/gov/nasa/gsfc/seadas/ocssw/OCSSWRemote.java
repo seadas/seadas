@@ -5,7 +5,6 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.core.*;
-import org.esa.beam.visat.VisatApp;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -23,6 +22,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static gov.nasa.gsfc.seadas.OCSSWInfo.SEADAS_CLIENT_ID_PROPERTY;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -119,9 +119,9 @@ public class OCSSWRemote extends OCSSW {
         }
         ifileUploadSuccess = false;
 
-        VisatApp visatApp = VisatApp.getApp();
+        SnapApp snapApp = SnapApp.getDefault();
 
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                 "OCSSW Remote Server File Upload") {
 
             @Override
@@ -161,9 +161,9 @@ public class OCSSWRemote extends OCSSW {
 
     public boolean isTextFile(String fileName) {
         if (!fileExistsOnServer(fileName)) {
-            VisatApp visatApp = VisatApp.getApp();
+            SnapApp snapApp = SnapApp.getDefault();
 
-            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                     "OCSSW Remote Server File Upload") {
 
                 @Override
@@ -623,9 +623,9 @@ public class OCSSWRemote extends OCSSW {
     //todo: implement download files using output file names from processModel object
     public void getOutputFiles(String outputFileNames) {
 
-        VisatApp visatApp = VisatApp.getApp();
+        SnapApp snapApp = SnapApp.getDefault();
 
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                 "OCSSW Remote Server File Download") {
 
             @Override
@@ -758,9 +758,9 @@ public class OCSSWRemote extends OCSSW {
         final String ofileDir = isMLPOdirValid(mlpOdir) ?  mlpOdir : ifileDir;
 
 
-        VisatApp visatApp = VisatApp.getApp();
+        SnapApp snapApp = SnapApp.getDefault();
 
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                 "OCSSW Remote Server File Download") {
 
             @Override

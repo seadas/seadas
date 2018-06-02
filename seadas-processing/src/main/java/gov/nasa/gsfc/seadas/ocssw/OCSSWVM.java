@@ -6,7 +6,6 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.FileCompare;
-import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
 import javax.ws.rs.core.MediaType;
@@ -16,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -193,9 +193,9 @@ public class OCSSWVM extends OCSSWRemote {
     @Override
     public void getOutputFiles(String outputFileNames) {
 
-        VisatApp visatApp = VisatApp.getApp();
+        SnapApp snapApp = SnapApp.getDefault();
 
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                 "OCSSW Remote Server File Download") {
 
             @Override
@@ -263,9 +263,9 @@ public class OCSSWVM extends OCSSWRemote {
 
         if (!mlpWorkingDir.equals(ofileDir)) {
 
-            VisatApp visatApp = VisatApp.getApp();
+            SnapApp snapApp = SnapApp.getDefault();
 
-            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+            ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                     "OCSSW Remote Server File Upload") {
 
                 @Override

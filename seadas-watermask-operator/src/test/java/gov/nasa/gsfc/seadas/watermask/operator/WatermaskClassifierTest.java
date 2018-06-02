@@ -21,6 +21,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
+import org.esa.snap.watermask.operator.WatermaskClassifier;
 
 import static org.junit.Assert.*;
 

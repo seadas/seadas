@@ -28,9 +28,11 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.gpf.ui.*;
-import org.esa.beam.framework.ui.AppContext;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.gpf.ui.SingleTargetProductDialog;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.DefaultAppContext;
+
 
 class L2genAquariusDialog extends SingleTargetProductDialog {
 

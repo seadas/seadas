@@ -7,11 +7,11 @@ import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +71,7 @@ public class ExtractorParamUI extends ParamUIFactory {
                     if (NON_INTERGER_VARS.contains(pi.getName()) || new Double(field.getText()).doubleValue() > 0 ) {
                         processorModel.updateParamInfo(pi, field.getText());
                     } else {
-                        VisatApp.getApp().showErrorDialog("Please enter a value greater than zero!");
+                        Dialogs.showError("Please enter a value greater than zero!");
                         field.setText(" ");
                     }
                 }

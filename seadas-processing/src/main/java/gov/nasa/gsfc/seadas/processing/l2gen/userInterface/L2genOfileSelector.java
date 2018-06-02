@@ -3,11 +3,11 @@ package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileSelector;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +32,7 @@ public class L2genOfileSelector {
         } else {
             outputFileOptionName = outputFileOptionName.replaceAll("--", "");
         }
-        fileSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.OFILE, outputFileOptionName);
+        fileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), ParamInfo.Type.OFILE, outputFileOptionName);
 
         addControlListeners();
         addEventListeners();

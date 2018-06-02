@@ -6,8 +6,6 @@ import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
 import gov.nasa.gsfc.seadas.processing.core.*;
-import org.esa.beam.framework.ui.ModalDialog;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -20,6 +18,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.ModalDialog;
 
 /**
  * Created by IntelliJ IDEA.
@@ -410,7 +411,7 @@ public class ParamUIFactory {
         validValuesPanel.repaint();
         validValuesPanel.validate();
 
-        final Window parent = VisatApp.getApp().getApplicationWindow();
+        final Window parent = SnapApp.getDefault().getMainFrame();
         String dialogTitle = null;
         final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, validValuesPanel, ModalDialog.ID_OK, "test");
         final int dialogResult = modalDialog.show();
@@ -537,7 +538,7 @@ public class ParamUIFactory {
     private JPanel createIOFileOptionField(final ParamInfo pi) {
 
 
-        final FileSelector ioFileSelector = new FileSelector(VisatApp.getApp(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
+        final FileSelector ioFileSelector = new FileSelector((AppContext) SnapApp.getDefault(), pi.getType(), ParamUtils.removePreceedingDashes(pi.getName()));
         ioFileSelector.getFileTextField().setColumns(40);
 
         processorModel.addPropertyChangeListener(pi.getName(), new PropertyChangeListener() {
@@ -616,7 +617,7 @@ public class ParamUIFactory {
         }
 
         public void actionPerformed(ActionEvent actionEvent) {
-            final Window parent = VisatApp.getApp().getApplicationWindow();
+            final Window parent = SnapApp.getDefault().getMainFrame();
             String dialogTitle = null;
             final ModalDialog modalDialog = new ModalDialog(parent, dialogTitle, valuesPanel, ModalDialog.ID_OK, "test");
             final int dialogResult = modalDialog.show();

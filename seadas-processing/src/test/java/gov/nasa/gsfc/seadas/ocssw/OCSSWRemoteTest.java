@@ -1,8 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by aabduraz on 5/11/17.

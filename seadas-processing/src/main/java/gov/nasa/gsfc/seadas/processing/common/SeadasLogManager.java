@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import org.esa.beam.util.logging.BeamLogManager;
+import org.esa.snap.core.util.logging.BeamLogManager;
+
 
 /**
  * Created by IntelliJ IDEA.

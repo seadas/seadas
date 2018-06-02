@@ -6,7 +6,6 @@ import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.framework.ui.AppContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
+import org.esa.snap.ui.AppContext;
 
 /**
  * Created by IntelliJ IDEA.

@@ -17,9 +17,12 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.userInterface;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.gpf.ui.*;
-import org.esa.beam.framework.ui.AppContext;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.gpf.ui.SingleTargetProductDialog;
+import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.DefaultAppContext;
+
 
 class L2genDialog extends SingleTargetProductDialog {
 
@@ -43,7 +46,7 @@ class L2genDialog extends SingleTargetProductDialog {
     @Override
     protected boolean verifyUserInput() {
         if (form.getSelectedSourceProduct() == null) {
-            showErrorDialog("No product to reproject selected.");
+            Dialogs.showError("No product to reproject selected.");
             return false;
         }
 

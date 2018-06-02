@@ -4,11 +4,11 @@ import gov.nasa.gsfc.seadas.processing.core.L2genData;
 import gov.nasa.gsfc.seadas.processing.core.SeaDASProcessorModel;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileSelector;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +27,7 @@ public class L2genGeofileSelector {
     public L2genGeofileSelector(SeaDASProcessorModel seaDASProcessorModel) {
         this.seaDASProcessorModel = seaDASProcessorModel;
 
-        fileSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.IFILE, L2genData.GEOFILE);
+        fileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), ParamInfo.Type.IFILE, L2genData.GEOFILE);
         addControlListeners();
         addEventListeners();
     }

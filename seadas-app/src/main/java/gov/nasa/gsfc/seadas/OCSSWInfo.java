@@ -1,8 +1,6 @@
 package gov.nasa.gsfc.seadas;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
-import org.esa.beam.util.SystemUtils;
-import org.esa.beam.visat.VisatApp;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -27,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.regex.Pattern;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by aabduraz on 5/25/17.
@@ -193,7 +193,7 @@ public class OCSSWInfo {
         }
 
         if (ocsswLocationPropertyValue == null) {
-            VisatApp.getApp().showInfoDialog(null, "Please provide OCSSW server location in $SEADAS_HOME/config/seadas.config");
+            Dialogs.showWarning("OCSSW Connection Status", "Please provide OCSSW server location in $SEADAS_HOME/config/seadas.config", null);
             return;
         }
     }

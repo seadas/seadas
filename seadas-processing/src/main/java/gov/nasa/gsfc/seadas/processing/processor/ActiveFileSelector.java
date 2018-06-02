@@ -2,12 +2,12 @@ package gov.nasa.gsfc.seadas.processing.processor;
 
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileSelector;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,7 +38,7 @@ public class ActiveFileSelector {
 
         thisPropertyChangeSupport = new SwingPropertyChangeSupport(this);
 
-        fileSelector = new FileSelector(VisatApp.getApp(), type, label);
+        fileSelector = new FileSelector(SnapApp.getDefault().getAppContext(), type, label);
 
         addControlListeners();
         addEventListeners();

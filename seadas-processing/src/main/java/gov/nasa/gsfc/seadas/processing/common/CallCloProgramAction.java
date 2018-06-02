@@ -9,37 +9,39 @@ import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ProcessorTypeInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.core.*;
-import org.esa.beam.framework.dataio.ProductIO;
-import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.framework.ui.ModalDialog;
-import org.esa.beam.framework.ui.UIUtils;
-import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.framework.ui.command.CommandManager;
-import org.esa.beam.visat.VisatApp;
-import org.esa.beam.visat.actions.AbstractVisatAction;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.esa.beam.util.SystemUtils.getApplicationContextId;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.actions.AbstractSnapAction;
+import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.ModalDialog;
+import org.esa.snap.ui.UIUtils;
 
 /**
- * @author Norman Fomferra
  * @author Aynur Abdurazik
  * @since SeaDAS 7.0
  */
-public class CallCloProgramAction extends AbstractVisatAction {
+public class CallCloProgramAction extends AbstractSnapAction {
 
-    public static final String CONTEXT_LOG_LEVEL_PROPERTY = getApplicationContextId() + ".logLevel";
+    public static final String CONTEXT_LOG_LEVEL_PROPERTY = SystemUtils.getApplicationContextId() + ".logLevel";
     public static final String LOG_LEVEL_PROPERTY = "logLevel";
 
     private static final Pattern PATTERN = Pattern.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
@@ -52,20 +54,31 @@ public class CallCloProgramAction extends AbstractVisatAction {
     private boolean openOutputInApp = true;
     protected OCSSW ocssw;
 
+    private static final Set<String> KNOWN_KEYS = new HashSet<>(Arrays.asList("displayName", "programName", "dialogTitle", "helpId", "targetProductNameSuffix"));
+
     protected OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
 
-    @Override
-    public void configure(ConfigurationElement config) throws CoreException {
-        programName = getConfigString(config, "programName");
-        if (programName == null) {
-            throw new CoreException("Missing DefaultOperatorAction property 'programName'.");
+    public static CallCloProgramAction create(Map<String, Object> properties) {
+        CallCloProgramAction action = new CallCloProgramAction();
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            if (KNOWN_KEYS.contains(entry.getKey())) {
+                action.putValue(entry.getKey(), entry.getValue());
+            }
         }
-        dialogTitle = getValue(config, "dialogTitle", programName);
-        xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
-        super.configure(config);
-        //super.setEnabled(programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME) || ocsswInfo.isOCSSWExist());
+        return action;
     }
 
+//    @Override
+//    public void configure(ConfigurationElement config) throws CoreException {
+//        programName = getConfigString(config, "programName");
+//        if (programName == null) {
+//            throw new CoreException("Missing DefaultOperatorAction property 'programName'.");
+//        }
+//        dialogTitle = getValue(config, "dialogTitle", programName);
+//        xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
+//        super.configure(config);
+//        //super.setEnabled(programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME) || ocsswInfo.isOCSSWExist());
+//    }
     public String getXmlFileName() {
         return xmlFileName;
     }
@@ -101,10 +114,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
     }
 
     @Override
-    public void actionPerformed(CommandEvent event) {
+    public void actionPerformed(ActionEvent event) {
 
-        SeadasLogger.initLogger("ProcessingGUI_log_" + System.getProperty("user.name"), printLogToConsole);
-        SeadasLogger.getLogger().setLevel(SeadasLogger.convertStringToLogger(RuntimeContext.getConfig().getContextProperty(LOG_LEVEL_PROPERTY, "OFF")));
 
         initializeOcsswClient();
 
@@ -161,7 +172,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         final int dialogResult = modalDialog.show();
 
-        SeadasLogger.getLogger().info("dialog result: " + dialogResult);
+        Logger.getLogger(programName).info("dialog result: " + dialogResult);
 
         if (dialogResult != ModalDialog.ID_OK) {
             cloProgramUI.getProcessorModel().getParamList().clearPropertyChangeSupport();
@@ -185,13 +196,12 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
 
         executeProgram(processorModel);
-        SeadasLogger.deleteLoggerOnExit(true);
         cloProgramUI.getProcessorModel().fireEvent(L2genData.CANCEL);
 
     }
 
     /**
-     * @param pm is the model of the ocssw program to be exeuted
+     * @param pm is the model of the ocssw program to be executed
      * @output this is executed as a native process
      */
     public void executeProgram(ProcessorModel pm) {
@@ -225,11 +235,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     String logDir = ocsswInfo.getLogDirPath();
                     SeadasFileUtils.writeToDisk(logDir + File.separator + "OCSSW_LOG_" + programName + ".txt",
                             "Execution log for " + "\n" + Arrays.toString(ocssw.getCommandArray()) + "\n" + processorModel.getExecutionLogMessage());
-                } else
-                {
-                   throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
+                } else {
+                    throw new IOException(programName + " failed with exit code " + exitCode + ".\nCheck log for more details.");
                 }
-
 
                 ocssw.setMonitorProgress(false);
                 return processorModel.getOfileName();
@@ -241,8 +249,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     final String outputFileName = get();
                     ocssw.getOutputFiles(processorModel);
                     displayOutput(processorModel);
-                    VisatApp.getApp().showInfoDialog(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? "" :
-                            (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) ? "" : ("Output written to:\n" + outputFileName))), null);
+                    Dialogs.showInformation(dialogTitle, "Program execution completed!\n" + ((outputFileName == null) ? ""
+                            : (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) ? "" : ("Output written to:\n" + outputFileName))), null);
                     if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME) && ocsswInfo.getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
                         ocssw.updateOCSSWRoot(processorModel.getParamValue("--install-dir"));
                         if (!ocssw.isOCSSWExist()) {
@@ -254,7 +262,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                         ocssw.setIfileName(secondaryProcessor.getParamValue(secondaryProcessor.getPrimaryInputFileOptionName()));
                         int exitCode = ocssw.execute(secondaryProcessor.getParamList()).exitValue();
                         if (exitCode == 0) {
-                            VisatApp.getApp().showInfoDialog(secondaryProcessor.getProgramName(),
+                            Dialogs.showInformation(secondaryProcessor.getProgramName(),
                                     secondaryProcessor.getProgramName() + " done!\n", null);
                         }
                     }
@@ -287,16 +295,16 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
     private void enableProcessors() {
 
-        CommandManager commandManager = getAppContext().getApplicationPage().getCommandManager();
-        String namesToExclude = ProcessorTypeInfo.getExcludedProcessorNames();
-        for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
-            if (!namesToExclude.contains(processorName)) {
-                if (commandManager.getCommand(processorName) != null) {
-                    commandManager.getCommand(processorName).setEnabled(true);
-                }
-            }
-        }
-        commandManager.getCommand("install_ocssw.py").setText("Update Data Processors");
+//        CommandManager commandManager = getAppContext().getApplicationPage().getCommandManager();
+//        String namesToExclude = ProcessorTypeInfo.getExcludedProcessorNames();
+//        for (String processorName : ProcessorTypeInfo.getProcessorNames()) {
+//            if (!namesToExclude.contains(processorName)) {
+//                if (commandManager.getCommand(processorName) != null) {
+//                    commandManager.getCommand(processorName).setEnabled(true);
+//                }
+//            }
+//        }
+//        commandManager.getCommand("install_ocssw.py").setText("Update Data Processors");
     }
 
     private void displayMessage(String programName, String message) {
@@ -308,6 +316,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
      * Handler that tries to extract progress from stdout of ocssw processor
      */
     public static class ProgressHandler implements ProcessObserver.Handler {
+
         private boolean progressSeen;
         private boolean stdoutOn;
         private int lastScan = 0;
@@ -344,7 +353,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
-            if( !stdoutOn ) {
+            if (!stdoutOn) {
                 if (!progressSeen) {
                     progressSeen = true;
                     progressMonitor.beginTask(programName, 1000);
@@ -378,13 +387,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
 
         @Override
         public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
-            SeadasLogger.getLogger().info(programName + ": " + line);
+            Logger.getLogger(programName).info(programName + ": " + line);
             executionErrorLog = executionErrorLog + line + "\n";
         }
 
         @Override
         public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
-            SeadasLogger.getLogger().info(programName + " stderr: " + line);
+            Logger.getLogger(programName).info(programName + " stderr: " + line);
             executionErrorLog = executionErrorLog + line + "\n";
         }
 
@@ -436,8 +445,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
         }
     }
 
-
     private class ScrolledPane extends JFrame {
+
         private JScrollPane scrollPane;
 
         public ScrolledPane(String programName, String message, Window window) {
@@ -454,6 +463,5 @@ public class CallCloProgramAction extends AbstractVisatAction {
             topPanel.add(scrollPane, BorderLayout.CENTER);
         }
     }
-
 
 }

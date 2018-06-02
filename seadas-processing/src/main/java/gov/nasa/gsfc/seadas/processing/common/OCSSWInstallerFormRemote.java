@@ -2,7 +2,6 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
-import org.esa.beam.framework.ui.AppContext;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.client.WebTarget;
@@ -11,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
+import org.esa.snap.ui.AppContext;
 
 /**
  * Created by IntelliJ IDEA.

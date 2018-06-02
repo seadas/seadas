@@ -1,18 +1,20 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
+import static gov.nasa.gsfc.seadas.processing.common.FileSelector.PROPERTY_KEY_APP_LAST_OPEN_DIR;
 import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.framework.ui.BasicApp;
-import org.esa.beam.util.SystemUtils;
-import org.esa.beam.util.io.BeamFileChooser;
-import org.esa.beam.util.io.FileUtils;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.logging.Logger;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.core.util.io.FileUtils;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.SnapFileChooser;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +33,7 @@ public class ParFileUI {
 
     public ParFileUI(ProcessorModel pm) {
         processorModel = pm;
-        openInAppCheckBox = new JCheckBox("Open in " + VisatApp.getApp().getApplicationName());
+        openInAppCheckBox = new JCheckBox("Open in " + SnapApp.getDefault().getAppContext().getApplicationName());
         openInAppCheckBox.setSelected(pm.isOpenInSeadas());
         parStringPanel = new JPanel(new GridBagLayout());
         showDefaultCheckBox = new JCheckBox("Show Default Values");
@@ -95,12 +97,12 @@ public class ParFileUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final Component parent = (Component) e.getSource();
-                SeadasLogger.getLogger().info("current working directory: " + processorModel.getRootDir().getAbsolutePath());
+                Logger.getGlobal().info("current working directory: " + processorModel.getRootDir().getAbsolutePath());
 
                 String homeDirPath = SystemUtils.getUserHomeDir().getPath();
-                String openDir = VisatApp.getApp().getPreferences().getPropertyString(BasicApp.PROPERTY_KEY_APP_LAST_OPEN_DIR,
-                        homeDirPath);
-                final BeamFileChooser beamFileChooser = new BeamFileChooser(new File(openDir));
+                String openDir =((AppContext) SnapApp.getDefault()).getPreferences().getPropertyString(PROPERTY_KEY_APP_LAST_OPEN_DIR,
+                       homeDirPath);
+                final SnapFileChooser beamFileChooser = new SnapFileChooser(new File(openDir));
                 final int status = beamFileChooser.showOpenDialog(parent);
 
                 if (status == JFileChooser.APPROVE_OPTION) {
@@ -126,7 +128,7 @@ public class ParFileUI {
                                 option[0] = option[0].trim();
                                 option[1] = option[1].trim();
                                 if(!option[0].substring(0,1).equals("#")) { // ignore comments with = signs
-                                    SeadasLogger.getLogger().info("option1: " + option[0] + "   option2: " + option[1])  ;
+                                     Logger.getGlobal().info("option1: " + option[0] + "   option2: " + option[1])  ;
                                     pi = processorModel.getParamInfo(option[0]);
                                     if (pi == null) {
                                         JOptionPane.showMessageDialog(parent,
@@ -200,7 +202,7 @@ public class ParFileUI {
     }
 
     private File saveParameterFile(JComponent parent, File selectedFile) throws IOException {
-        final BeamFileChooser beamFileChooser = new BeamFileChooser();
+        final SnapFileChooser beamFileChooser = new SnapFileChooser();
         if (selectedFile != null) {
             beamFileChooser.setSelectedFile(selectedFile);
         }

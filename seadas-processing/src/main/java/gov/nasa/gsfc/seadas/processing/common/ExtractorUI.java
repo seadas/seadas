@@ -2,7 +2,6 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +9,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.HashMap;
+import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by IntelliJ IDEA.
@@ -109,7 +109,7 @@ public class ExtractorUI extends ProgramUIFactory {
             if (new File(geoFileName).exists()) {
                 return geoFileName;
             } else {
-                VisatApp.getApp().showErrorDialog(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
+                Dialogs.showError(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
                 return null;
             }
 

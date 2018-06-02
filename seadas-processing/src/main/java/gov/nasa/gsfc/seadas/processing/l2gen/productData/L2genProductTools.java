@@ -1,10 +1,9 @@
 package gov.nasa.gsfc.seadas.processing.l2gen.productData;
 
-import org.esa.beam.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.esa.snap.core.util.StringUtils;
 
 /**
  * Created with IntelliJ IDEA.

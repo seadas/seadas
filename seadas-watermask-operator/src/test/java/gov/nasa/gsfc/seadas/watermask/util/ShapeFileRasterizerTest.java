@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import gov.nasa.gsfc.seadas.watermask.operator.WatermaskUtils;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.zip.ZipFile;
+import org.esa.snap.watermask.operator.WatermaskUtils;
 
 public class ShapeFileRasterizerTest extends TestCase {
 

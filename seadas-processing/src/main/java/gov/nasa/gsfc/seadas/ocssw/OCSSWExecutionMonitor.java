@@ -8,10 +8,10 @@ import gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
-import org.esa.beam.visat.VisatApp;
 
 import java.io.IOException;
 import java.util.Arrays;
+import org.esa.snap.rcp.SnapApp;
 
 /**
  * Created by aabduraz on 1/17/18.
@@ -20,10 +20,9 @@ public class OCSSWExecutionMonitor {
 
     public void executeWithProgressMonitor(ProcessorModel processorModel, OCSSW ocssw, String programName){
 
-        VisatApp visatApp = VisatApp.getApp();
+        SnapApp snapApp = SnapApp.getDefault();
 
-        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(visatApp.getApplicationWindow(), "Running " + programName + " ...") {
-            @Override
+        ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(snapApp.getMainFrame(), "Running " + programName + " ...") {
             protected String doInBackground(ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);

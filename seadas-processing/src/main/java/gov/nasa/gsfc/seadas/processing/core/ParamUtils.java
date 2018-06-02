@@ -2,7 +2,6 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.common.XmlReader;
-import org.esa.beam.visat.VisatApp;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -10,6 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by IntelliJ IDEA.
@@ -147,13 +147,13 @@ public class ParamUtils {
         XmlReader xmlReader = new XmlReader();
         InputStream paramStream = ParamUtils.class.getResourceAsStream(paramXmlFileName);
         if (paramStream == null) {
-            VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " not found.");
+            Dialogs.showError("XML file " + paramXmlFileName + " not found.");
             return null;
         }
 
         Element rootElement = xmlReader.parseAndGetRootElement(paramStream);
         if (rootElement == null) {
-            VisatApp.getApp().showErrorDialog("XML file " + paramXmlFileName + " root element not found.");
+            Dialogs.showError("XML file " + paramXmlFileName + " root element not found.");
             return null;
         }
         NodeList optionNodelist = rootElement.getElementsByTagName("option");

@@ -9,9 +9,6 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -23,6 +20,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
 
 
 public class L2genForm extends JPanel implements CloProgramUI {
@@ -61,9 +61,9 @@ public class L2genForm extends JPanel implements CloProgramUI {
         masterData.showIOFields = showIOFields;
 
 
-        VisatApp visatApp = VisatApp.getApp();
-        visatApp.setStatusBarMessage("Initializing L2gen GUI");
-        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+        SnapApp snapApp = SnapApp.getDefault();
+        snapApp.setStatusBarMessage("Initializing L2gen GUI");
+        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                 masterData.getGuiName()) {
 
             @Override
@@ -147,8 +147,6 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
 
         masterData.setInitialized(true);
-        visatApp.clearStatusBarMessage();
-
     }
 
     public L2genForm(AppContext appContext, String xmlFileName, OCSSW ocssw) {
@@ -268,7 +266,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
     public Product getInitialSelectedSourceProduct() {
-        return VisatApp.getApp().getSelectedProduct();
+        return SnapApp.getDefault().getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
     }
 
     public File getInitialSelectedSourceFile() {

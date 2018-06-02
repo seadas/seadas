@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
-import org.esa.beam.framework.datamodel.Product;
-
 import java.beans.PropertyChangeListener;
 import java.io.File;
 

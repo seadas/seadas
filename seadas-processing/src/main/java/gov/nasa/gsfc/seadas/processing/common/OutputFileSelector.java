@@ -1,10 +1,6 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
 import com.bc.ceres.swing.binding.BindingContext;
-import org.esa.beam.framework.dataio.ProductIOPlugInManager;
-import org.esa.beam.framework.ui.AppContext;
-import org.esa.beam.util.io.FileChooserFactory;
-import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,13 +9,15 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import org.esa.snap.core.dataio.ProductIOPlugInManager;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.FileChooserFactory;
 
 /**
  * Created by IntelliJ IDEA.
  *
- * @author: Aynur Abdurazik
- * Date: 3/30/12
- * Time: 11:12 AM
+ * @author: Aynur Abdurazik Date: 3/30/12 Time: 11:12 AM
  */
 public class OutputFileSelector {
 
@@ -35,21 +33,19 @@ public class OutputFileSelector {
     private AppContext appContext;
     private String outFrameLabel;
 
-
-    public OutputFileSelector(VisatApp app, String outputFrameLabel) {
+    public OutputFileSelector(SnapApp app, String outputFrameLabel) {
 
         this(app, outputFrameLabel, new OutputFileSelectorModel());
     }
 
-    public OutputFileSelector(VisatApp app, String outputFrameLabel, OutputFileSelectorModel model) {
+    public OutputFileSelector(SnapApp app, String outputFrameLabel, OutputFileSelectorModel model) {
         this.model = model;
-        appContext = app;
+        appContext = (AppContext) app;
         this.outFrameLabel = outputFrameLabel;
         initComponents();
         bindComponents();
         updateUIState();
     }
-
 
     private void initComponents() {
 
@@ -64,7 +60,6 @@ public class OutputFileSelector {
         outputFileNameTextField.setMinimumSize(outputFileNameTextField.getPreferredSize());
         outputFileNameTextField.setText("");
 
-
         outputFileDirLabel = new JLabel("Directory:");
         outputFileDirLabel.setPreferredSize(outputFileDirLabel.getPreferredSize());
         outputFileDirLabel.setMinimumSize(outputFileDirLabel.getPreferredSize());
@@ -76,7 +71,6 @@ public class OutputFileSelector {
         outputFileDirTextField.setMaximumSize(outputFileDirTextField.getPreferredSize());
         outputFileDirTextField.setText("");
 
-
         outputFileDirChooserButton = new JButton(new ProductDirChooserAction());
 
         outputFileDirChooserButton.setMargin(new Insets(0, -7, 0, -7));
@@ -85,7 +79,6 @@ public class OutputFileSelector {
         outputFileDirChooserButton.setPreferredSize(size);
         outputFileDirChooserButton.setMinimumSize(size);
         outputFileDirChooserButton.setMaximumSize(size);
-
 
         openInAppCheckBox = new JCheckBox("Open in " + appContext.getApplicationName());
 
@@ -136,11 +129,9 @@ public class OutputFileSelector {
         return outputFileDirChooserButton;
     }
 
-
     public JCheckBox getOpenInAppCheckBox() {
         return openInAppCheckBox;
     }
-
 
     public void setOutputFileNameLabel(JLabel jLabel) {
         this.outputFileNameLabel = jLabel;
@@ -149,7 +140,6 @@ public class OutputFileSelector {
     public void setOutputFileDirLabel(JLabel jLabel) {
         this.outputFileDirLabel = jLabel;
     }
-
 
     public JPanel createDefaultPanel() {
 
@@ -168,7 +158,6 @@ public class OutputFileSelector {
 
         return mainPanel;
     }
-
 
     private void updateUIState() {
         if (model.isSaveToFileSelected()) {

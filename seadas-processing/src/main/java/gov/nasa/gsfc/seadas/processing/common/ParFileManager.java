@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Logger;    
 
 /**
  * Created by aabduraz on 7/25/16.
@@ -62,7 +63,7 @@ public class ParFileManager{
             return tempFile;
 
         } catch (IOException e) {
-            SeadasLogger.getLogger().warning("parfile is not created. " + e.getMessage());
+            Logger.getGlobal().warning("parfile is not created. " + e.getMessage());
             return null;
         }
     }

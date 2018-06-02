@@ -1,12 +1,12 @@
 package gov.nasa.gsfc.seadas.processing.core;
 
+import com.bc.ceres.core.runtime.RuntimeConfig;
+import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ProcessorTypeInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.visat.VisatApp;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
@@ -24,15 +24,19 @@ import java.lang.Boolean;
 import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.GEOFILE;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.rcp.util.Dialogs.Answer;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Aynur Abdurazik (aabduraz)
- * Date: 3/16/12
- * Time: 2:20 PM
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: Aynur Abdurazik (aabduraz) Date: 3/16/12
+ * Time: 2:20 PM To change this template use File | Settings | File Templates.
  */
 public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
+
     protected String programName;
 
     private ParamList paramList;
@@ -217,7 +221,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         addParamInfo(info);
     }
 
-
     public void addParamInfo(String name, String value, ParamInfo.Type type, int order) {
         ParamInfo info = new ParamInfo(name, value, type);
         info.setOrder(order);
@@ -227,9 +230,9 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     public String getPrimaryInputFileOptionName() {
         for (String name : primaryOptions) {
             ParamInfo param = paramList.getInfo(name);
-            if ((param != null) &&
-                    (param.getType() == ParamInfo.Type.IFILE) &&
-                    (!param.getName().toLowerCase().contains("geo"))) {
+            if ((param != null)
+                    && (param.getType() == ParamInfo.Type.IFILE)
+                    && (!param.getName().toLowerCase().contains("geo"))) {
                 return name;
             }
         }
@@ -334,7 +337,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     public boolean updateIFileInfo(String ifileName) {
 
-
         if (programName != null && (programName.equals("multilevel_processor") || programName.equals("multilevel_processor.py"))) {
             return true;
         }
@@ -358,10 +360,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             isIfileValid = false;
             updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
             removePropertyChangeListeners(getPrimaryInputFileOptionName());
-            int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
-            if (result == 0) {
-            } else {
-                updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
+
+            Answer answer = Dialogs.requestDecision(programName, "Cannot compute output file name. Would you like to continue anyway?", true, null);
+            switch (answer) {
+                case CANCELLED:
+                    updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
+                    break;
             }
         }
         return isIfileValid;
@@ -380,7 +384,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-
     public boolean updateOFileInfo(String newValue) {
         if (newValue != null && newValue.trim().length() > 0) {
             //String ofile = getOFileFullPath(newValue);
@@ -390,7 +393,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
         return false;
     }
-
 
     public void setParamValue(String name, String value) {
         SeadasFileUtils.debug("primary io file option names: " + getPrimaryInputFileOptionName() + " " + getPrimaryOutputFileOptionName());
@@ -405,14 +407,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-
     public String[] getCmdArrayPrefix() {
         return cmdArrayPrefix;
     }
 
     public EventInfo[] eventInfos = {
-            new EventInfo("none", this),
-    };
+        new EventInfo("none", this),};
 
     private EventInfo getEventInfo(String name) {
         for (EventInfo eventInfo : eventInfos) {
@@ -434,7 +434,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             }
         }
     }
-
 
     public void removePropertyChangeListeners(String propertyName) {
         EventInfo eventInfo = getEventInfo(propertyName);
@@ -724,7 +723,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         this.cmdArrayPrefix = cmdArrayPrefix;
     }
 
-
     @Override
     public String getImplicitInputFileExtensions() {
         return fileExtensions;
@@ -759,8 +757,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         this.ocssw = ocssw;
     }
 
-
     private static class Extractor_Processor extends ProcessorModel {
+
         Extractor_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
         }
@@ -792,10 +790,12 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 isIfileValid = false;
                 updateParamInfo(getPrimaryOutputFileOptionName(), "" + "\n");
                 removePropertyChangeListeners(getPrimaryInputFileOptionName());
-                int result = VisatApp.getApp().showQuestionDialog("Cannot compute output file name. Would you like to continue anyway?", "test");
-                if (result == 0) {
-                } else {
-                    updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
+
+                Answer answer = Dialogs.requestDecision(programName, "Cannot compute output file name. Would you like to continue anyway?", true, null);
+                switch (answer) {
+                    case CANCELLED:
+                        updateParamInfo(getPrimaryInputFileOptionName(), "" + "\n");
+                        break;
                 }
             }
             return isIfileValid;
@@ -814,8 +814,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
                     programName = L1AEXTRACT_VIIRS;
                     ocssw.setXmlFileName(L1AEXTRACT_VIIRS_XML_FILE);
-                } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
-                        (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
+                } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1)
+                        || (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
                     programName = L2EXTRACT;
                     ocssw.setXmlFileName(L2EXTRACT_XML_FILE);
                 }
@@ -827,6 +827,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     private static class Modis_L1B_Processor extends ProcessorModel {
+
         Modis_L1B_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
         }
@@ -864,6 +865,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     private static class LonLat2Pixels_Processor extends ProcessorModel {
+
         static final String _SWlon = "SWlon";
         static final String _SWlat = "SWlat";
         static final String _NElon = "NElon";
@@ -909,7 +911,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             });
         }
 
-
         @Override
         public void checkCompleteness() {
             String valueOfSWlon = getParamList().getInfo(_SWlon).getValue();
@@ -917,10 +918,10 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             String valueOfNElon = getParamList().getInfo(_NElon).getValue();
             String valueOfNElat = getParamList().getInfo(_NElat).getValue();
 
-            if ((valueOfSWlon != null && valueOfSWlon.trim().length() > 0) &&
-                    (valueOfSWlat != null && valueOfSWlat.trim().length() > 0) &&
-                    (valueOfNElon != null && valueOfNElon.trim().length() > 0) &&
-                    (valueOfNElat != null && valueOfNElat.trim().length() > 0)) {
+            if ((valueOfSWlon != null && valueOfSWlon.trim().length() > 0)
+                    && (valueOfSWlat != null && valueOfSWlat.trim().length() > 0)
+                    && (valueOfNElon != null && valueOfNElon.trim().length() > 0)
+                    && (valueOfNElat != null && valueOfNElat.trim().length() > 0)) {
                 HashMap<String, String> lonlats = ocssw.computePixelsFromLonLat(this);
                 if (lonlats != null) {
                     updateParamInfo(START_PIXEL_PARAM_NAME, lonlats.get(START_PIXEL_PARAM_NAME));
@@ -1070,6 +1071,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     private static class L2BinAquarius_Processor extends ProcessorModel {
+
         L2BinAquarius_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setMultipleInputFiles(true);
@@ -1077,6 +1079,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     private static class L3Bin_Processor extends ProcessorModel {
+
         L3Bin_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setMultipleInputFiles(true);
@@ -1104,8 +1107,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
     }
 
-
     private static class SMIGEN_Processor extends ProcessorModel {
+
         SMIGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setOpenInSeadas(true);
@@ -1144,8 +1147,8 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
 
     }
 
-
     private static class L3MAPGEN_Processor extends ProcessorModel {
+
         L3MAPGEN_Processor(final String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setOpenInSeadas(false);
@@ -1204,26 +1207,32 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     }
 
     private static class OCSSWInstaller_Processor extends ProcessorModel {
+
         OCSSWInstaller_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
         }
 
         /**
-         * The version number of the "git-branch" is the first two digits of the SeaDAS app number; trailing numbers should be ignored.
-         * For example, for SeaDAS 7.3.2, the "git-branch" option on command line should be prepared as "--git-branch=v7.3".
+         * The version number of the "git-branch" is the first two digits of the
+         * SeaDAS app number; trailing numbers should be ignored. For example,
+         * for SeaDAS 7.3.2, the "git-branch" option on command line should be
+         * prepared as "--git-branch=v7.3".
          *
          * @return
          */
         @Override
         public String[] getCmdArraySuffix() {
             String[] cmdArraySuffix = new String[1];
-            String[] parts = VisatApp.getApp().getAppVersion().split("\\.");
+            String[] parts = getSeaDASAppVersion().split("\\.");
             cmdArraySuffix[0] = "--git-branch=v" + parts[0] + "." + parts[1];
             getOcssw().setCommandArraySuffix(cmdArraySuffix);
             return cmdArraySuffix;
         }
+
+        private String getSeaDASAppVersion() {
+            RuntimeConfig runtimeConfig = RuntimeContext.getModuleContext().getRuntimeConfig();
+            return runtimeConfig.getContextProperty("version", "");
+        }
     }
 
 }
-
-

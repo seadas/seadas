@@ -17,24 +17,19 @@
     <name> Write Image Operator</name>
     <dependencies>
         <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-gpf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.beam</groupId>
-            <artifactId>beam-visat-rcp</artifactId>
-        </dependency>
-        <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-app</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.bc.ceres</groupId>
-            <artifactId>ceres-glayer</artifactId>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-contour-operator</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-contour-operator</artifactId>
+            <artifactId>seadas-writeimage-operator</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>
