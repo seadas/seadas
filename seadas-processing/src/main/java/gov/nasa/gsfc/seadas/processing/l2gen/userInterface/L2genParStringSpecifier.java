@@ -99,7 +99,7 @@ public class L2genParStringSpecifier {
 
     private void controlHandler() {
 
-        l2genData.setParString(jTextArea.getText(), false);
+        l2genData.setParString(jTextArea.getText(), false, false);
     }
 
 
@@ -109,6 +109,14 @@ public class L2genParStringSpecifier {
 
     public JTextArea getjTextArea() {
         return jTextArea;
+    }
+
+    public void setEditable(boolean editable) {
+        jTextArea.setEditable(editable);
+    }
+
+    public void setToolTip(String toolTipText) {
+        jTextArea.setToolTipText(toolTipText);
     }
 }
 
