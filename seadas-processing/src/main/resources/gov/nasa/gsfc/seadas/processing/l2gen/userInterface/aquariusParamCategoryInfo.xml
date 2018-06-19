@@ -16,14 +16,9 @@
     </category>
 
 
-    <category name="Processing Options">
-        <autoTab>1</autoTab>
-        <param>yancfile1</param>
-        <param>yancfile2</param>
-        <param>yancfile3</param>
-        <param>xrayfile1</param>
-        <param>xrayfile2</param>
-    </category>
+    <!--<category name="Processing Options">-->
+        <!--<autoTab>1</autoTab>-->
+    <!--</category>-->
 
 
     <category name="Miscellaneous">
@@ -32,8 +27,17 @@
     </category>
 
 
-    <category name="Params Not Supported in GUI">
+    <category name="Ancillary Files">
         <autoTab>0</autoTab>
+        <param>xrayfile1</param>
+        <param>xrayfile2</param>
+        <param>yancfile1</param>
+        <param>yancfile2</param>
+        <param>yancfile3</param>
+        <param>l2_uncertainties_file</param>
+        <param>rim_file</param>
+        <param>sif_file</param>
+        <param>sss_matchup_file</param>
         <param>par</param>
     </category>
 
