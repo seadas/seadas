@@ -38,7 +38,11 @@
         <param>rim_file</param>
         <param>sif_file</param>
         <param>sss_matchup_file</param>
+    </category>
+
+    <category name="Other">
         <param>par</param>
     </category>
+
 
 </categoryList>
