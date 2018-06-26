@@ -32,7 +32,6 @@ public class L2genData implements SeaDASProcessorModel {
     public static final String OPER_DIR = "l2gen";
     public static final String CANCEL = "cancel";
 
-
     public static enum Mode {
         L2GEN,
         L2GEN_AQUARIUS,
@@ -60,6 +59,7 @@ public class L2genData implements SeaDASProcessorModel {
         }
     }
 
+
     private static final String
             GUI_NAME = "l2gen",
             PRODUCT_INFO_XML = "productInfo.xml",
@@ -78,7 +78,7 @@ public class L2genData implements SeaDASProcessorModel {
             AQUARIUS_PRODUCT_CATEGORY_INFO_XML = "aquariusProductCategoryInfo.xml",
             AQUARIUS_DEFAULTS_FILE_PREFIX = "l2gen_aquarius_defaults_",
             AQUARIUS_GETANC = "getanc_aquarius.py",
-            AQUARIUS_DEFAULT_SUITE = "V2.0";
+            AQUARIUS_DEFAULT_SUITE = "V5.0.0";
 
 
     private static final String
@@ -166,16 +166,16 @@ public class L2genData implements SeaDASProcessorModel {
     private final HashMap<String, ParamInfo> paramInfoLookup = new HashMap<String, ParamInfo>();
     private L2genProductsParamInfo l2prodParamInfo = null;
 
-
     public boolean retainCurrentIfile = false;
     private boolean showDefaultsInParString = false;
 
     private ProcessorModel processorModel;
 
-
     private static L2genData L2genData = null;
     private static L2genData L2genAquariusData = null;
     private static L2genData L3genData = null;
+
+
 
     public static L2genData getNew(Mode mode, OCSSW ocssw) {
         switch (mode) {
@@ -192,9 +192,9 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
 
-//    private L2genData() {
-//        this(Mode.L2GEN);
-//    }
+    //    private L2genData() {
+    //        this(Mode.L2GEN);
+    //    }
 
     private L2genData(Mode mode, OCSSW ocssw) {
         this.ocssw = ocssw;
@@ -795,15 +795,15 @@ public class L2genData implements SeaDASProcessorModel {
         return paramInfos;
     }
 
-    public void setParString(String parString, boolean ignoreIfile) {
-        setParString(parString, ignoreIfile, false, null);
+    public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite) {
+        setParString(parString, ignoreIfile, ignoreSuite, false, null);
     }
 
-    public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode) {
-        setParString(parString, ignoreIfile, addParamsMode, null);
+    public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite, boolean addParamsMode) {
+        setParString(parString, ignoreIfile, ignoreSuite, addParamsMode, null);
     }
 
-    public void setParString(String parString, boolean ignoreIfile, boolean addParamsMode, File parFileDir) {
+    public void setParString(String parString, boolean ignoreIfile, boolean ignoreSuite, boolean addParamsMode, File parFileDir) {
 
         setParamsBeingSetViaParstring(true);
         // addParamsMode is a special mode.
@@ -836,14 +836,17 @@ public class L2genData implements SeaDASProcessorModel {
             }
         }
 
-        for (ParamInfo parfileParamInfo : parfileParamInfos) {
-            if (parfileParamInfo.getName().toLowerCase().equals(SUITE)) {
-                suite = parfileParamInfo.getValue();
-                break;
+        if (!ignoreSuite) {
+            for (ParamInfo parfileParamInfo : parfileParamInfos) {
+                if (parfileParamInfo.getName().toLowerCase().equals(SUITE)) {
+                    suite = parfileParamInfo.getValue();
+                    break;
+                }
             }
         }
 
-        if ((!ignoreIfile && ifile != null) || suite != null) {
+
+        if ((!ignoreIfile && ifile != null) || (!ignoreSuite && suite != null)) {
             setIfileAndSuiteParamValues(ifile, suite);
         }
 
@@ -946,18 +949,15 @@ public class L2genData implements SeaDASProcessorModel {
         return paramInfoLookup.get(name);
     }
 
-
     private String getParamValue(ParamInfo paramInfo) {
         if (paramInfo == null)
             return null;
         return paramInfo.getValue();
     }
 
-
     public String getParamValue(String name) {
         return getParamValue(getParamInfo(name));
     }
-
 
     private boolean getBooleanParamValue(ParamInfo paramInfo) {
         if (paramInfo.getValue().equals(ParamInfo.BOOLEAN_TRUE)) {
@@ -971,7 +971,6 @@ public class L2genData implements SeaDASProcessorModel {
         return getBooleanParamValue(getParamInfo(name));
     }
 
-
     private File getParamFile(ParamInfo paramInfo) {
         if (paramInfo != null && iFileInfo != null) {
             return paramInfo.getFile(iFileInfo.getFile().getParentFile());
@@ -983,11 +982,9 @@ public class L2genData implements SeaDASProcessorModel {
         return getParamFile(getParamInfo(name));
     }
 
-
     public void setParamValueAndDefault(String name, String value) {
         setParamValueAndDefault(getParamInfo(name), value);
     }
-
 
     public void setParamValueAndDefault(ParamInfo paramInfo, String value) {
         if (paramInfo == null) {
@@ -1012,7 +1009,6 @@ public class L2genData implements SeaDASProcessorModel {
             }
         }
     }
-
 
     private void setParamValue(ParamInfo paramInfo, String value) {
         if (paramInfo == null) {
@@ -1042,7 +1038,7 @@ public class L2genData implements SeaDASProcessorModel {
                 }
 
                 if (isKeepParams()) {
-                    setParString(tmpParString, true, true);
+                    setParString(tmpParString, true, false, true);
                 }
 
             } else if (paramInfo.getName().toLowerCase().equals(SUITE)) {
@@ -1065,15 +1061,14 @@ public class L2genData implements SeaDASProcessorModel {
         }
     }
 
-
     private boolean isAncFile(String fileName){
         boolean isAncFile = fileName.contains("/var/anc/");
         return isAncFile;
     }
+
     public void setParamValue(String name, String value) {
         setParamValue(getParamInfo(name), value);
     }
-
 
     private void setIfileAndSuiteParamValues(String ifileValue, String suiteValue) {
         setIfileandSuiteParamValuesWrapper(getParamInfo(IFILE), ifileValue, suiteValue);
@@ -1091,11 +1086,9 @@ public class L2genData implements SeaDASProcessorModel {
         setParamValue(getParamInfo(name), selected);
     }
 
-
     private void setParamValue(ParamInfo paramInfo, ParamValidValueInfo paramValidValueInfo) {
         setParamValue(paramInfo, paramValidValueInfo.getValue());
     }
-
 
     public void setParamValue(String name, ParamValidValueInfo paramValidValueInfo) {
         setParamValue(getParamInfo(name), paramValidValueInfo);
@@ -1109,11 +1102,9 @@ public class L2genData implements SeaDASProcessorModel {
         }
     }
 
-
     public boolean isParamDefault(String name) {
         return isParamDefault(getParamInfo(name));
     }
-
 
     private String getParamDefault(ParamInfo paramInfo) {
         if (paramInfo != null) {
@@ -1127,13 +1118,11 @@ public class L2genData implements SeaDASProcessorModel {
         return getParamDefault(getParamInfo(name));
     }
 
-
     private void setParamToDefaults(ParamInfo paramInfo) {
         if (paramInfo != null) {
             setParamValue(paramInfo, paramInfo.getDefaultValue());
         }
     }
-
 
     public void setParamToDefaults(String name) {
         setParamToDefaults(getParamInfo(name));
@@ -1144,7 +1133,6 @@ public class L2genData implements SeaDASProcessorModel {
             setParamToDefaults(paramInfo);
         }
     }
-
 
     public boolean isParamCategoryDefault(L2genParamCategoryInfo paramCategoryInfo) {
         boolean isDefault = true;
@@ -1157,7 +1145,6 @@ public class L2genData implements SeaDASProcessorModel {
 
         return isDefault;
     }
-
 
     private File getSensorInfoFilename() {
         if (iFileInfo != null) {
@@ -1174,11 +1161,9 @@ public class L2genData implements SeaDASProcessorModel {
         return null;
     }
 
-
     public String[] getSuiteList() {
         return ocssw.getMissionSuites(iFileInfo.getMissionName(), getGuiName());
     }
-
 
     private void resetWaveLimiter() {
         waveLimiterInfos.clear();
@@ -1233,7 +1218,6 @@ public class L2genData implements SeaDASProcessorModel {
         setIfileandSuiteParamValuesWrapper(paramInfo, value, null);
     }
 
-
     private void setIfileandSuiteParamValuesWrapper(final ParamInfo ifileParamInfo, final String ifileValue, String suiteValue) {
 
         String currIfile = getParamValue(IFILE);
@@ -1260,6 +1244,7 @@ public class L2genData implements SeaDASProcessorModel {
 
                     setIfileandSuiteParamValues(ifileParamInfo, ifileValue, newSuite);
                     pm.done();
+
                     return null;
                 }
 
@@ -1275,9 +1260,14 @@ public class L2genData implements SeaDASProcessorModel {
             }
         } else {
             setIfileandSuiteParamValues(ifileParamInfo, ifileValue, newSuite);
+            if (getMode() == Mode.L2GEN_AQUARIUS) {
+                setAncillaryFiles(false,false,false);
+
+                // todo setting some defaults to blank so they get force passed in on run
+                getParamInfo(SUITE).setDefaultValue("");
+            }
+
         }
-
-
     }
 
 
@@ -1313,6 +1303,8 @@ public class L2genData implements SeaDASProcessorModel {
             }
 
 
+
+
             if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS || iFileInfo.getMissionId() == MissionInfo.Id.VIIRS) {
                 updateLuts(iFileInfo.getMissionName());
             }
@@ -1332,6 +1324,8 @@ public class L2genData implements SeaDASProcessorModel {
             String progName;
             if (mode == Mode.L3GEN) {
                 progName = "l3gen";
+            } else if (mode == Mode.L2GEN_AQUARIUS) {
+                progName = "l2gen_aquarius";
             } else {
                 progName = "l2gen";
             }
@@ -1364,7 +1358,8 @@ public class L2genData implements SeaDASProcessorModel {
         setParamValueAndDefault(PAR, ParamInfo.NULL_STRING);
 
 
-        fireEvent(IFILE, oldIfile, ifileValue);
+        // This forces event to be fired - note suite could have changed and not ifile
+        fireEvent(IFILE, null, ifileValue);
 
         fireEvent(PARSTRING);
         enableEvent(L2PROD);
@@ -1396,8 +1391,14 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
 
+
+    //  Method: setAncillaryFiles
+    //          Calls the OCSSW getanc program, retrieves its STDOUT (an ancillary parameter list) and then updates the
+    //          GUI via the PARSTRING event to add these parameter/values to the existing GUI state
+
     public void setAncillaryFiles(boolean refreshDB, boolean forceDownload, boolean getNO2) {
         //   getanc.py --refreshDB <FILE>
+
 
         if (!isValidIfile()) {
             System.out.println("ERROR - Can not run getanc.py without a valid ifile.");
@@ -1453,6 +1454,10 @@ public class L2genData implements SeaDASProcessorModel {
                             if (file.getName().endsWith(".txt") || file.getName().endsWith(".anc")) {
                                 file.deleteOnExit();
                             }
+
+                            if (getMode() == Mode.L2GEN_AQUARIUS && file.getName().endsWith("L2_SCAT_V5.0.tar")) {
+                                file.delete();
+                            }
                         }
                     }
 
@@ -1469,13 +1474,24 @@ public class L2genData implements SeaDASProcessorModel {
                             String[] splitLine = line.split("=");
                             if (splitLine.length == 2) {
                                 File currentFile = new File(splitLine[1]);
-                                if (currentFile.isAbsolute()) {
-                                    if (currentFile.getParent() != null && currentFile.getParent().equals(iFile.getParent())) {
-                                        currentFile.deleteOnExit();
+
+                                boolean delete = true;
+
+                                if (getMode() == Mode.L2GEN_AQUARIUS) {
+                                    if (currentFile.getName().startsWith("y") && currentFile.getName().endsWith("h5")) {
+                                        delete = false;
                                     }
-                                } else {
-                                    File absoluteCurrentFile = new File(processorModel.getIFileDir().getAbsolutePath(), currentFile.getName());
-                                    absoluteCurrentFile.deleteOnExit();
+                                }
+
+                                if (delete) {
+                                    if (currentFile.isAbsolute()) {
+                                        if (currentFile.getParent() != null && currentFile.getParent().equals(iFile.getParent())) {
+                                            currentFile.deleteOnExit();
+                                        }
+                                    } else {
+                                        File absoluteCurrentFile = new File(processorModel.getIFileDir().getAbsolutePath(), currentFile.getName());
+                                        absoluteCurrentFile.deleteOnExit();
+                                    }
                                 }
                             }
                         }
@@ -1503,7 +1519,7 @@ public class L2genData implements SeaDASProcessorModel {
         pmSwingWorker.executeWithBlocking();
 
 
-        setParString(ancillaryFiles.toString(), true, true);
+        setParString(ancillaryFiles.toString(), true, true, true);
 
     }
 
@@ -1511,6 +1527,7 @@ public class L2genData implements SeaDASProcessorModel {
 
         //  System.out.println(string);
     }
+
 
 
     /**
@@ -1557,7 +1574,6 @@ public class L2genData implements SeaDASProcessorModel {
 
     }
 
-
     public boolean compareWavelengthLimiter(L2genWavelengthInfo wavelengthInfo) {
         for (L2genWavelengthInfo waveLimitorInfo : getWaveLimiterInfos()) {
             if (waveLimitorInfo.getWavelength() == wavelengthInfo.getWavelength()) {
@@ -1576,7 +1592,6 @@ public class L2genData implements SeaDASProcessorModel {
         return paramCategoryInfos;
     }
 
-
     public void addParamCategoryInfo(L2genParamCategoryInfo paramCategoryInfo) {
         paramCategoryInfos.add(paramCategoryInfo);
     }
@@ -1584,7 +1599,6 @@ public class L2genData implements SeaDASProcessorModel {
     public void clearParamCategoryInfos() {
         paramCategoryInfos.clear();
     }
-
 
     private void updateXmlBasedObjects(File iFile) throws IOException {
         updateXmlBasedObjects(iFile, null);
@@ -1608,7 +1622,6 @@ public class L2genData implements SeaDASProcessorModel {
         // will only update existing params; next time SeaDAS is run the new params will show up
         l2genReader.updateParamInfosWithXml(paramInfoStream);
     }
-
 
     private InputStream getProductInfoInputStream(Source source, boolean overwrite) throws IOException {
         File dataDir = SystemUtils.getApplicationDataDir();
@@ -1668,7 +1681,6 @@ public class L2genData implements SeaDASProcessorModel {
         return null;
     }
 
-
     private InputStream getParamInfoInputStream() throws IOException {
 
         File dataDir = SystemUtils.getApplicationDataDir();
@@ -1691,7 +1703,6 @@ public class L2genData implements SeaDASProcessorModel {
             throw new IOException("problem creating param XML file: " + e.getMessage());
         }
     }
-
 
     private InputStream getParamInfoInputStream(File file, String suite) throws IOException {
 
@@ -1720,6 +1731,8 @@ public class L2genData implements SeaDASProcessorModel {
         processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
 
         try {
+            // Aquarius will use the static xml file instead of a generated one
+            if (getMode() != Mode.L2GEN_AQUARIUS) {
             Process p = ocssw.executeSimple(processorModel);
             ocssw.waitForProcess();
             if (ocssw.getProcessExitValue() != 0) {
@@ -1727,6 +1740,7 @@ public class L2genData implements SeaDASProcessorModel {
             }
 
             ocssw.getIntermediateOutputFiles(processorModel);
+            }
 
             if (!xmlFile.exists()) {
                 return null;
@@ -1737,7 +1751,6 @@ public class L2genData implements SeaDASProcessorModel {
             throw new IOException("problem creating Parameter XML file: " + e.getMessage());
         }
     }
-
 
     public void setInitialValues(File iFile) {
         ParamInfo ifileParamInfo = getParamInfo(IFILE);
@@ -1751,7 +1764,6 @@ public class L2genData implements SeaDASProcessorModel {
 //            }
         }
     }
-
 
     public StatusInfo initXmlBasedObjects() throws IOException {
 
@@ -1783,16 +1795,13 @@ public class L2genData implements SeaDASProcessorModel {
         return myStatusInfo;
     }
 
-
     public void setL2prodParamInfo(L2genProductsParamInfo l2prodParamInfo) {
         this.l2prodParamInfo = l2prodParamInfo;
     }
 
-
     public void addProductInfo(L2genProductInfo productInfo) {
         l2prodParamInfo.addProductInfo(productInfo);
     }
-
 
     public void clearProductInfos() {
         l2prodParamInfo.clearProductInfos();
@@ -1802,11 +1811,9 @@ public class L2genData implements SeaDASProcessorModel {
         l2prodParamInfo.addIntegerProductInfo(productInfo);
     }
 
-
     public void clearIntegerProductInfos() {
         l2prodParamInfo.clearIntegerProductInfos();
     }
-
 
     public void sortProductInfos(Comparator<L2genProductInfo> comparator) {
         l2prodParamInfo.sortProductInfos(comparator);
@@ -1818,7 +1825,6 @@ public class L2genData implements SeaDASProcessorModel {
             fireEvent(L2PROD);
         }
     }
-
 
     /**
      * resets productInfos within productCategoryInfos to link to appropriate entry in productInfos
@@ -1838,7 +1844,6 @@ public class L2genData implements SeaDASProcessorModel {
     public void clearProductCategoryInfos() {
         l2prodParamInfo.clearProductCategoryInfos();
     }
-
 
     public L2genProductsParamInfo createL2prodParamInfo(String value) throws IOException {
 
@@ -1870,7 +1875,6 @@ public class L2genData implements SeaDASProcessorModel {
 
     }
 
-
     public String sortStringList(String stringlist) {
         String[] products = stringlist.split("\\s+");
         ArrayList<String> productArrayList = new ArrayList<String>();
@@ -1881,7 +1885,6 @@ public class L2genData implements SeaDASProcessorModel {
 
         return StringUtils.join(productArrayList, " ");
     }
-
 
     public static File installResource(final String fileName) {
         final File dataDir = new File(SystemUtils.getApplicationDataDir(), OPER_DIR);
@@ -1927,6 +1930,7 @@ public class L2genData implements SeaDASProcessorModel {
         return theFile;
     }
 
+
     public ProcessorModel getProcessorModel() {
         processorModel.setReadyToRun(isValidIfile());
         processorModel.setImplicitInputFileExtensions(getImplicitInputFileExtensions());
@@ -1950,7 +1954,6 @@ public class L2genData implements SeaDASProcessorModel {
         }
 
     }
-
 
     public boolean isInitialized() {
         return initialized;
@@ -1983,4 +1986,6 @@ public class L2genData implements SeaDASProcessorModel {
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
+
+
 }

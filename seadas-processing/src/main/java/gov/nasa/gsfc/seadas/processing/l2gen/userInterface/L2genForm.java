@@ -96,8 +96,16 @@ public class L2genForm extends JPanel implements CloProgramUI {
 
 
                     JPanel bottomPanel = new JPanel(new GridBagLayout());
-                    bottomPanel.add(keepParamsCheckbox,
-                            new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+
+                    if (masterData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
+                        bottomPanel.add(new JPanel(),
+                                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                    } else {
+                        bottomPanel.add(keepParamsCheckbox,
+                                new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL));
+                    }
+
+
                     bottomPanel.add(getOpenInAppCheckBox(),
                             new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE));
 
@@ -264,7 +272,7 @@ public class L2genForm extends JPanel implements CloProgramUI {
     }
 
     public void setParamString(String paramString) {
-        masterData.setParString(paramString, false);
+        masterData.setParString(paramString, false, false);
     }
 
     public Product getInitialSelectedSourceProduct() {
