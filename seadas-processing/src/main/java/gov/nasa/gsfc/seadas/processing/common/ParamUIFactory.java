@@ -337,7 +337,7 @@ public class ParamUIFactory {
     private JPanel makeButtonOptionPanel(final ParamInfo pi) {
         final JPanel singlePanel = new JPanel();
 
-        TableLayout comboParamLayout = new TableLayout(1);
+        TableLayout comboParamLayout = new TableLayout(8);
         comboParamLayout.setTableFill(TableLayout.Fill.HORIZONTAL);
         singlePanel.setLayout(comboParamLayout);
 
