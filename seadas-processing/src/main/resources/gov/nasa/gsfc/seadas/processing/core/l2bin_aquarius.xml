@@ -29,9 +29,37 @@
         </option>
         <option type="string">
             <name>resolve</name>
-            <value></value>
-            <default></default>
+            <value>1D</value>
+            <default>1D</default>
             <description>the bin resolution (typically '1D')</description>
+            <validValue>
+                <value>9</value>
+                <description>9</description>
+            </validValue>
+            <validValue>
+                <value>18</value>
+                <description>18</description>
+            </validValue>
+            <validValue>
+                <value>36</value>
+                <description>36</description>
+            </validValue>
+            <validValue>
+                <value>46</value>
+                <description>46</description>
+            </validValue>
+            <validValue>
+                <value>72</value>
+                <description>72</description>
+            </validValue>
+            <validValue>
+                <value>1D</value>
+                <description>1D</description>
+            </validValue>
+            <validValue>
+                <value>144</value>
+                <description>144</description>
+            </validValue>
             <usedAs>option</usedAs>
             <order>2</order>
         </option>
@@ -45,9 +73,25 @@
         </option>
         <option type="string">
             <name>suite</name>
-            <value></value>
-            <default></default>
+            <value>V5.0.0</value>
+            <default>V5.0.0</default>
             <description>suite</description>
+            <validValue>
+                <value>V5.0.0</value>
+                <description>V5.0.0</description>
+            </validValue>
+            <validValue>
+                <value>V5.0.0.RAIN</value>
+                <description>V5.0.0.RAIN</description>
+            </validValue>
+            <validValue>
+                <value>V5.0.0.smoothed</value>
+                <description>V5.0.0.smoothed</description>
+            </validValue>
+            <validValue>
+                <value>V5.0.0.RAIN.smoothed</value>
+                <description>V5.0.0.RAIN.smoothed</description>
+            </validValue>
             <usedAs>option</usedAs>
             <order>4</order>
         </option>
@@ -76,7 +120,7 @@
             <name>flaguse</name>
             <value></value>
             <default></default>
-            <description>flaguse</description>
+            <description>Flags to apply (uses default flags if nothing entered)</description>
             <usedAs>option</usedAs>
             <order>6</order>
         </option>
