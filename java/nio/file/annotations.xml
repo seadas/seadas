@@ -1,0 +1,5 @@
+<root>
+    <item name='java.nio.file.Paths'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>

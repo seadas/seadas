@@ -16,11 +16,13 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
-import org.esa.beam.framework.dataio.AbstractProductReader;
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.dataio.ProductReaderPlugIn;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.snap.core.dataio.AbstractProductReader;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;

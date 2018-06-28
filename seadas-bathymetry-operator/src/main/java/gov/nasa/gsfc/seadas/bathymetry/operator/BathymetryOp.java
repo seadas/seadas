@@ -2,24 +2,21 @@ package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
 import gov.nasa.gsfc.seadas.bathymetry.ui.BathymetryData;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.Operator;
-import org.esa.beam.framework.gpf.OperatorException;
-import org.esa.beam.framework.gpf.OperatorSpi;
-import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
-import org.esa.beam.framework.gpf.annotations.Parameter;
-import org.esa.beam.framework.gpf.annotations.SourceProduct;
-import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.util.ProductUtils;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.gpf.Operator;
+import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.Tile;
+import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.Parameter;
+import org.esa.snap.core.gpf.annotations.SourceProduct;
+import org.esa.snap.core.gpf.annotations.TargetProduct;
+import org.esa.snap.core.util.ProductUtils;
 import ucar.ma2.Array;
 
-
-import javax.naming.NameNotFoundException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 
 /**
  * The bathymetry operator is a GPF-Operator. It takes the geographic bounds of the input product and creates a new
@@ -124,7 +121,7 @@ public class BathymetryOp extends Operator {
     }
 
     private void validateSourceProduct() {
-        final GeoCoding geoCoding = sourceProduct.getGeoCoding();
+        final GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
         if (geoCoding == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }
@@ -184,7 +181,7 @@ public class BathymetryOp extends Operator {
 
 
         try {
-            final GeoCoding geoCoding = sourceProduct.getGeoCoding();
+            final GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
             final PixelPos pixelPos = new PixelPos();
             final GeoPos geoPos = new GeoPos();
 

@@ -16,8 +16,8 @@
 
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.*;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
@@ -377,7 +377,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
             latBand.setData(latRawData);
             lonBand.setData(lonRawData);
 
-            product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
+            product.setSceneGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
             
         }
     }

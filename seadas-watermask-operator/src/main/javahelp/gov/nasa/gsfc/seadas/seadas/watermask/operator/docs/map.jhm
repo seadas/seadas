@@ -3,8 +3,6 @@
 
 <map version="2.0">
 
-    <mapID target="FuTool" url="FuTool.html"/>
-    <mapID target="FuAlgo" url="FuAlgo.html"/>
-    <mapID target="FuOp" url="FuOp.html"/>
+    <mapID target="coastlineLandMasks" url="CoastlineLandMasks.html"/>
 
 </map>

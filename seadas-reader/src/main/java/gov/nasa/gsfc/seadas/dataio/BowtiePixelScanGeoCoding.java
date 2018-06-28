@@ -16,12 +16,12 @@
 
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.GeoCodingFactory;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.PixelPos;
-import org.esa.beam.framework.dataop.maptransf.Datum;
-import org.esa.beam.util.math.MathUtils;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoCodingFactory;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.dataop.maptransf.Datum;
+import org.esa.snap.core.util.math.MathUtils;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
@@ -29,31 +29,31 @@ import org.opengis.referencing.operation.MathTransform;
  * Created by dshea on 11/25/14.
  */
 public class BowtiePixelScanGeoCoding implements GeoCoding {
-    private static final float EPS = 0.04F; // used by quad-tree search
+    private static final double EPS = 0.04F; // used by quad-tree search
     private static final boolean TRACE = false;
-    private static final float D2R = (float) (Math.PI / 180.0);
+    private static final double D2R = (double) (Math.PI / 180.0);
 
     private int width;
     private int height;
-    private float[] lats;
-    private float[] lons;
+    private double[] lats;
+    private double[] lons;
 
     private Boolean crossingMeridianAt180;
 
 
     private static class Result {
 
-        public static final float INVALID = Float.MAX_VALUE;
+        public static final double INVALID = Float.MAX_VALUE;
 
         private int x;
         private int y;
-        private float delta;
+        private double delta;
 
         private Result() {
             delta = INVALID;
         }
 
-        public final boolean update(final int x, final int y, final float delta) {
+        public final boolean update(final int x, final int y, final double delta) {
             final boolean b = delta < this.delta;
             if (b) {
                 this.x = x;
@@ -69,7 +69,7 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         }
     }
 
-    public BowtiePixelScanGeoCoding(float[] lats, float[] lons, int width, int height) {
+    public BowtiePixelScanGeoCoding(double[] lats, double[] lons, int width, int height) {
         this.lats = lats;
         this.lons = lons;
         this.width = width;
@@ -152,8 +152,8 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
                 if (y0 > 0 && pixelPos.y - y0 < 0.5f || y0 == height - 1) {
                     y0 -= 1;
                 }
-                final float wx = pixelPos.x - (x0 + 0.5f);
-                final float wy = pixelPos.y - (y0 + 0.5f);
+                final double wx = pixelPos.x - (x0 + 0.5f);
+                final double wy = pixelPos.y - (y0 + 0.5f);
 
                 GeoPos d00 = new GeoPos();
                 GeoPos d10 = new GeoPos();
@@ -166,8 +166,8 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
                 getGeoPosInternal(x0 + 1, y0 + 1, d11);
 
                 if(d00.isValid() && d10.isValid() && d01.isValid() && d11.isValid()) {
-                    float lat = MathUtils.interpolate2D(wx, wy, d00.lat, d10.lat, d01.lat, d11.lat);
-                    float lon = GeoCodingFactory.interpolateLon(wx, wy, d00.lon, d10.lon, d01.lon, d11.lon);
+                    double lat = MathUtils.interpolate2D(wx, wy, d00.lat, d10.lat, d01.lat, d11.lat);
+                    double lon = GeoCodingFactory.interpolateLon(wx, wy, d00.lon, d10.lon, d01.lon, d11.lon);
                     geoPos.setLocation(lat, lon);
                     return geoPos;
                 }
@@ -178,7 +178,7 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
     }
 
     private boolean quadTreeRecursion(final int depth,
-                                      final float lat, final float lon,
+                                      final double lat, final double lon,
                                       final int i, final int j,
                                       final int w, final int h,
                                       final Result result) {
@@ -205,20 +205,20 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         return b1 || b2 || b3 || b4;
     }
 
-    private static float min(final float a, final float b) {
+    private static double min(final double a, final double b) {
         return (a <= b) ? a : b;
     }
 
-    private static float max(final float a, final float b) {
+    private static double max(final double a, final double b) {
         return (a >= b) ? a : b;
     }
 
-    private static float sqr(final float dx, final float dy) {
+    private static double sqr(final double dx, final double dy) {
         return dx * dx + dy * dy;
     }
 
-    static float getNegativeLonMax(float lon0, float lon1, float lon2, float lon3) {
-        float lonMax;
+    static double getNegativeLonMax(double lon0, double lon1, double lon2, double lon3) {
+        double lonMax;
         lonMax = -180.0f;
         if (lon0 < 0.0f) {
             lonMax = lon0;
@@ -235,8 +235,8 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         return lonMax;
     }
 
-    static float getPositiveLonMin(float lon0, float lon1, float lon2, float lon3) {
-        float lonMin;
+    static double getPositiveLonMin(double lon0, double lon1, double lon2, double lon3) {
+        double lonMin;
         lonMin = 180.0f;
         if (lon0 >= 0.0f) {
             lonMin = lon0;
@@ -253,20 +253,20 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         return lonMin;
     }
 
-    static boolean isCrossingMeridianInsideQuad(boolean crossingMeridianInsideProduct, float lon0, float lon1,
-                                                float lon2, float lon3) {
+    static boolean isCrossingMeridianInsideQuad(boolean crossingMeridianInsideProduct, double lon0, double lon1,
+                                                double lon2, double lon3) {
         if (!crossingMeridianInsideProduct) {
             return false;
         }
-        float lonMin = min(lon0, min(lon1, min(lon2, lon3)));
-        float lonMax = max(lon0, max(lon1, max(lon2, lon3)));
+        double lonMin = min(lon0, min(lon1, min(lon2, lon3)));
+        double lonMax = max(lon0, max(lon1, max(lon2, lon3)));
 
         return Math.abs(lonMax - lonMin) > 180.0;
     }
 
     private boolean quadTreeSearch(final int depth,
-                                   final float lat,
-                                   final float lon,
+                                   final double lat,
+                                   final double lon,
                                    final int x, final int y,
                                    final int w, final int h,
                                    final Result result) {
@@ -282,25 +282,25 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
 
         GeoPos geoPos = new GeoPos();
         getGeoPosInternal(x1, y1, geoPos);
-        final float lat0 = geoPos.lat;
-        float lon0 = geoPos.lon;
+        final double lat0 = geoPos.lat;
+        double lon0 = geoPos.lon;
         getGeoPosInternal(x1, y2, geoPos);
-        final float lat1 = geoPos.lat;
-        float lon1 = geoPos.lon;
+        final double lat1 = geoPos.lat;
+        double lon1 = geoPos.lon;
         getGeoPosInternal(x2, y1, geoPos);
-        final float lat2 = geoPos.lat;
-        float lon2 = geoPos.lon;
+        final double lat2 = geoPos.lat;
+        double lon2 = geoPos.lon;
         getGeoPosInternal(x2, y2, geoPos);
-        final float lat3 = geoPos.lat;
-        float lon3 = geoPos.lon;
+        final double lat3 = geoPos.lat;
+        double lon3 = geoPos.lon;
 
-        final float epsL = EPS;
-        final float latMin = min(lat0, min(lat1, min(lat2, lat3))) - epsL;
-        final float latMax = max(lat0, max(lat1, max(lat2, lat3))) + epsL;
-        float lonMin;
-        float lonMax;
+        final double epsL = EPS;
+        final double latMin = min(lat0, min(lat1, min(lat2, lat3))) - epsL;
+        final double latMax = max(lat0, max(lat1, max(lat2, lat3))) + epsL;
+        double lonMin;
+        double lonMax;
         if (isCrossingMeridianInsideQuad(isCrossingMeridianAt180(), lon0, lon1, lon2, lon3)) {
-            final float signumLon = Math.signum(lon);
+            final double signumLon = Math.signum(lon);
             if (signumLon > 0f) {
                 // position is in a region with positive longitudes, so cut negative longitudes from quad area
                 lonMax = 180.0f;
@@ -319,7 +319,7 @@ public class BowtiePixelScanGeoCoding implements GeoCoding {
         final boolean definitelyOutside = lat < latMin || lat > latMax || lon < lonMin || lon > lonMax;
         if (!definitelyOutside) {
             if (w == 2 && h == 2) {
-                final float f = (float) Math.cos(lat * D2R);
+                final double f = (double) Math.cos(lat * D2R);
                 if (result.update(x1, y1, sqr(lat - lat0, f * (lon - lon0)))) {
                     pixelFound = true;
                 }

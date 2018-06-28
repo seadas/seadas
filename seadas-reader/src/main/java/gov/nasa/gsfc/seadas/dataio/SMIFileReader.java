@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.datamodel.*;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -9,8 +9,8 @@ import ucar.ma2.Array;
 import ucar.ma2.Index;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
-import ucar.nc2.Variable;
 import ucar.nc2.Group;
+import ucar.nc2.Variable;
 
 import java.awt.*;
 import java.io.IOException;
@@ -309,7 +309,7 @@ public class SMIFileReader extends SeadasFileReader {
             easting += pixelSizeY / 2.0;
 
             try {
-                product.setGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
+                product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
                                                       product.getSceneRasterWidth(),
                                                       product.getSceneRasterHeight(),
                                                       easting, northing,
@@ -362,7 +362,7 @@ public class SMIFileReader extends SeadasFileReader {
                 pixelY = 0.0;
             }
             try {
-                product.setGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
+                product.setSceneGeoCoding(new CrsGeoCoding(DefaultGeographicCRS.WGS84,
                                                       product.getSceneRasterWidth(),
                                                       product.getSceneRasterHeight(),
                                                       westing, northing,

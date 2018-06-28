@@ -1,9 +1,10 @@
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.dataio.netcdf.GenericNetCdfReader;
-import org.esa.beam.framework.datamodel.CrsGeoCoding;
-import org.esa.beam.framework.datamodel.MetadataElement;
-import org.esa.beam.framework.datamodel.Product;
+
+import org.esa.snap.core.datamodel.CrsGeoCoding;
+import org.esa.snap.core.datamodel.MetadataElement;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.dataio.netcdf.GenericNetCdfReader;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -99,7 +100,7 @@ public class L1BGociFileReader extends GenericNetCdfReader {
 
             double pixelSize = Math.round((sceneCenter[0]-sceneTopRight[0])/(product.getSceneRasterWidth()/2.0));
 
-            product.setGeoCoding(new CrsGeoCoding(orthoCRS,
+            product.setSceneGeoCoding(new CrsGeoCoding(orthoCRS,
                     product.getSceneRasterWidth(),
                     product.getSceneRasterHeight(),
                     easting, northing,pixelSize,pixelSize,

@@ -26,15 +26,16 @@
     <name>SeaDAS Tool Box</name>
     <description>Tools from SeaDAS</description>
     <url>https://seadas.gsfc.nasa.gov</url>
-    
+
     <modules>
-       
+        <module>seadas-kit</module>
+        <module>seadas-watermask-operator</module>
     </modules>
-    
+
     <packaging>pom</packaging>
-    
+
     <properties>
-        <snap.version>7.0.0.-SNAPSHOT</snap.version>
+        <snap.version>7.0.0-SNAPSHOT</snap.version>
         <!--
             snap.version is the Maven module version.
             snap.nbmSpecVersion is the NetBeans module specification version.
@@ -45,10 +46,10 @@
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
         <netcdf.version>4.3.22</netcdf.version>
+        <jersey.version>2.27</jersey.version>
         <brandingToken>seadas</brandingToken>
         <user.language>en</user.language>
     </properties>
-
 
     <repositories>
         <repository>
@@ -69,26 +70,6 @@
             <name>NASA SeaDAS repository</name>
             <url>https://seadas.gsfc.nasa.gov/mvn-seadas</url>
         </repository>
-        <!--        <repository>
-            <id>release.maven.java.net</id>
-            <name>java.net Maven Release Repository</name>
-            <url>https://maven.java.net/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-        <repository>
-            <id>maven-repository.unidata.ucar.edu</id>
-            <name>Unidata Repository</name>
-            <url>http://artifacts.unidata.ucar.edu/content/repositories/unidata-releases</url>
-        </repository>
-        <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>-->
     </repositories>
 
     <pluginRepositories>
@@ -105,25 +86,9 @@
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
         </pluginRepository>
-        <pluginRepository>
-            <id>seadas-repo</id>
-            <name>NASA SeaDAS repository</name>
-            <url>https://seadas.gsfc.nasa.gov/mvn-seadas</url>
-        </pluginRepository>
-        <!--        <pluginRepository>
-            <id>apache.org</id>
-            <name>Maven Plugin Snapshots</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>-->
     </pluginRepositories>
-    
- 
+
+
     <distributionManagement>
         <repository>
             <id>snap-repo-public</id>
@@ -137,7 +102,7 @@
             <url>http://nexus.senbox.net/nexus/content/repositories/snapshots/</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
-    </distributionManagement>   
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -238,14 +203,6 @@
                 <version>1.10.19</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.esa.snap</groupId>
-                <artifactId>snap-core</artifactId>
-                <version>${snap.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-
 
             <!-- NetBeans Modules -->
 
@@ -308,60 +265,11 @@
                 <version>1.1</version>
             </dependency>
 
-            <!-- GSON for JSON support ########################################  -->
-<!--            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.glassfish.jersey</groupId>
-                <artifactId>jersey-bom</artifactId>
-                <version>${jersey.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-grizzly2-http</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-             uncomment this to get JSON support:
-             <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-moxy</artifactId>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-multipart</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-processing</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.xerial</groupId>
-                <artifactId>sqlite-jdbc</artifactId>
-                <version>3.7.2</version>
-            </dependency>-->
         </dependencies>
 
     </dependencyManagement>
 
     <build>
-        <!--        <outputDirectory>../modules/${project.artifactId}-${project.version}</outputDirectory>-->
-
-        <!-- Maven plugin configurations common to all BEAM modules -->
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -417,7 +325,7 @@
                     </execution>
                 </executions>
             </plugin>
-               
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -591,5 +499,5 @@
         </developer>
 
     </developers>
-    
+
 </project>

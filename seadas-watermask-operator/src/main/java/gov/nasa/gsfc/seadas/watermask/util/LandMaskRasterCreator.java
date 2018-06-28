@@ -17,9 +17,9 @@
 package gov.nasa.gsfc.seadas.watermask.util;
 
 import com.bc.ceres.glevel.MultiLevelImage;
-import org.esa.beam.framework.dataio.ProductIO;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.Product;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

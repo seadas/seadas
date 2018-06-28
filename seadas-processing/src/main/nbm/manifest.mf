@@ -4,6 +4,6 @@ AutoUpdate-Essential-Module: false
 OpenIDE-Module-Java-Dependencies: Java > 1.8
 OpenIDE-Module-Display-Category: SeaDAS Toolbox
 OpenIDE-Module-Layer: layer.xml
-OpenIDE-Module-Long-Description:
+OpenIDE-Module-Long-Description: SeaDAS OBPG Processing Tools
 OpenIDE-Module-Specification-Version: ${seadas.nbmSpecVersion}
 OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help

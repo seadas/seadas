@@ -1,14 +1,19 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import com.bc.ceres.core.CoreException;
-import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.core.runtime.ConfigurationElement;
-import com.bc.ceres.core.runtime.RuntimeContext;
+
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
-import gov.nasa.gsfc.seadas.ProcessorTypeInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.actions.AbstractSnapAction;
+import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.ui.AppContext;
+import org.esa.snap.ui.ModalDialog;
+import org.esa.snap.ui.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,23 +22,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.esa.snap.core.dataio.ProductIO;
-import org.esa.snap.core.util.SystemUtils;
-import org.esa.snap.rcp.actions.AbstractSnapAction;
-import org.esa.snap.rcp.util.Dialogs;
-import org.esa.snap.ui.AppContext;
-import org.esa.snap.ui.ModalDialog;
-import org.esa.snap.ui.UIUtils;
+
 
 /**
  * @author Aynur Abdurazik
@@ -209,8 +203,9 @@ public class CallCloProgramAction extends AbstractSnapAction {
         final ProcessorModel processorModel = pm;
 
         ProgressMonitorSwingWorker swingWorker = new ProgressMonitorSwingWorker<String, Object>(getAppContext().getApplicationWindow(), "Running " + programName + " ...") {
+
             @Override
-            protected String doInBackground(ProgressMonitor pm) throws Exception {
+            protected String doInBackground(com.bc.ceres.core.ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);
                 final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
@@ -330,7 +325,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
         }
 
         @Override
-        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
+        public void handleLineOnStdoutRead(String line, Process process, com.bc.ceres.core.ProgressMonitor progressMonitor) {
             stdoutOn = true;
             if (!progressSeen) {
                 progressSeen = true;
@@ -352,7 +347,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
+        public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             if (!stdoutOn) {
                 if (!progressSeen) {
                     progressSeen = true;
@@ -386,13 +381,13 @@ public class CallCloProgramAction extends AbstractSnapAction {
         }
 
         @Override
-        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
+        public void handleLineOnStdoutRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             Logger.getLogger(programName).info(programName + ": " + line);
             executionErrorLog = executionErrorLog + line + "\n";
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
+        public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             Logger.getLogger(programName).info(programName + " stderr: " + line);
             executionErrorLog = executionErrorLog + line + "\n";
         }
@@ -405,14 +400,14 @@ public class CallCloProgramAction extends AbstractSnapAction {
     private static class TerminationHandler implements ProcessObserver.Handler {
 
         @Override
-        public void handleLineOnStdoutRead(String line, Process process, ProgressMonitor progressMonitor) {
+        public void handleLineOnStdoutRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             if (progressMonitor.isCanceled()) {
                 process.destroy();
             }
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
+        public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             if (progressMonitor.isCanceled()) {
                 process.destroy();
             }
@@ -429,7 +424,7 @@ public class CallCloProgramAction extends AbstractSnapAction {
         }
 
         @Override
-        public void handleLineOnStderrRead(String line, Process process, ProgressMonitor progressMonitor) {
+        public void handleLineOnStderrRead(String line, Process process,  com.bc.ceres.core.ProgressMonitor progressMonitor) {
             int len = line.length();
             if (len > 70) {
                 String[] parts = line.trim().split("\\s+", 2);

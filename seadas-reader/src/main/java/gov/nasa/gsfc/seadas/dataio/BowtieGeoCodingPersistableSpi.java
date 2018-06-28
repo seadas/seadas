@@ -16,8 +16,8 @@
 
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.dataio.dimap.spi.DimapPersistable;
-import org.esa.beam.dataio.dimap.spi.DimapPersistableSpi;
+import org.esa.snap.core.dataio.dimap.spi.DimapPersistable;
+import org.esa.snap.core.dataio.dimap.spi.DimapPersistableSpi;
 import org.jdom.Element;
 
 public class BowtieGeoCodingPersistableSpi implements DimapPersistableSpi {

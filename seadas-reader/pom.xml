@@ -22,10 +22,12 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
-        <version>8.0</version>
+        <version>8.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>seadas-reader</artifactId>
+    <packaging>nbm</packaging>
+
     <name>SeaDAS OBPG Ocean Color Product Reader</name>
     <version>1.7.2</version>
     <description>A reader for NASA Ocean Color (OBPG) Data Products</description>
@@ -47,6 +49,10 @@
             <artifactId>snap-core</artifactId>
             <version>7.0.0-SNAPSHOT</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-rcp</artifactId>
         </dependency>
     </dependencies>
 

@@ -4,47 +4,35 @@ import com.bc.ceres.binding.Property;
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.binding.ValidationException;
 import com.bc.ceres.core.ProgressMonitor;
-import com.bc.ceres.glayer.*;
+import com.bc.ceres.glayer.CollectionLayer;
+import com.bc.ceres.glayer.Layer;
+import com.bc.ceres.glayer.LayerFilter;
+import com.bc.ceres.glayer.LayerTypeRegistry;
 import com.bc.ceres.glayer.support.ImageLayer;
 import com.bc.ceres.glayer.support.LayerUtils;
 import com.bc.ceres.grender.Viewport;
 import com.bc.ceres.grender.support.BufferedImageRendering;
-import com.bc.ceres.grender.support.DefaultViewport;
-import com.sun.media.jai.codec.ImageCodec;
-import com.sun.media.jai.codec.ImageEncoder;
-import gov.nasa.gsfc.seadas.contour.action.ShowVectorContourOverlayAction;
-import gov.nasa.gsfc.seadas.contour.data.ContourData;
-import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.Operator;
-import org.esa.beam.framework.gpf.OperatorException;
-import org.esa.beam.framework.gpf.OperatorSpi;
-import org.esa.beam.framework.gpf.Tile;
-import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
-import org.esa.beam.framework.gpf.annotations.Parameter;
-import org.esa.beam.framework.gpf.annotations.SourceProduct;
-import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.framework.ui.application.ApplicationDescriptor;
-import org.esa.beam.framework.ui.application.support.DefaultApplicationDescriptor;
-import org.esa.beam.framework.ui.product.*;
-import org.esa.beam.glayer.ColorBarLayerType;
-import org.esa.beam.glayer.GraticuleLayer;
-import org.esa.beam.glayer.GraticuleLayerType;
-import org.esa.beam.glayer.MaskLayerType;
-import org.esa.beam.gpf.operators.standard.ReadOp;
-import org.esa.beam.util.ProductUtils;
-import org.esa.beam.util.PropertyMap;
-import org.esa.beam.util.geotiff.GeoTIFF;
-import org.esa.beam.util.geotiff.GeoTIFFMetadata;
-import org.esa.beam.util.math.MathUtils;
-import org.esa.beam.visat.VisatApp;
-import org.esa.beam.visat.actions.ShowColorBarOverlayAction;
-import org.esa.beam.visat.actions.imgfilter.CreateFilteredBandAction;
-import org.esa.beam.visat.actions.imgfilter.model.Filter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.gpf.Operator;
+import org.esa.snap.core.gpf.OperatorException;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.Tile;
+import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.Parameter;
+import org.esa.snap.core.gpf.annotations.SourceProduct;
+import org.esa.snap.core.gpf.annotations.TargetProduct;
+import org.esa.snap.core.gpf.common.ReadOp;
+import org.esa.snap.core.layer.GraticuleLayer;
+import org.esa.snap.core.layer.GraticuleLayerType;
+import org.esa.snap.core.layer.MaskLayerType;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.core.util.math.MathUtils;
+import org.esa.snap.ui.product.ProductSceneImage;
+import org.esa.snap.ui.product.ProductSceneView;
+import org.esa.snap.ui.product.SimpleFeaturePointFigure;
+import org.esa.snap.ui.product.VectorDataLayerFilterFactory;
+import org.geotools.util.logging.LoggerFactory;
 
-import javax.media.jai.operator.BandSelectDescriptor;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -59,10 +47,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Logger;
 import java.util.List;
 
 /**
- * @author kutila
  * @author aynur abdurazik
  */
 @OperatorMetadata(alias = "WriteImage", version = "1.0", copyright = "Ocean Biology Processing Group, NASA", authors = "Kutila G, Aynur Abdurazik",
@@ -698,47 +686,6 @@ public class WriteImageOp extends Operator {
         return new Dimension(imageWidth, imageHeight);
     }
 
-//    public void getContourLayer(ProductSceneView productSceneView, Band sourceBand) {
-//        productSceneView.setGcpOverlayEnabled(true);
-//        Product sourceProduct = productSceneView.getProduct();
-//        ContourInterval ci = new ContourInterval("contour_test_line_", 0.08, "am5", 1);
-//        ArrayList<ContourInterval> contourIntervals = new ArrayList<>();
-//        contourIntervals.add(ci);
-//        ContourData contourData = new ContourData(sourceBand, "am5", sourceBandName, 1);
-//        contourData.setContourIntervals(contourIntervals);
-//        contourData.setBand(sourceBand);
-//
-//        ShowVectorContourOverlayAction action = new ShowVectorContourOverlayAction();
-//        action.setGeoCoding((GeoCoding) sourceProduct.getGeoCoding());
-//        ArrayList<VectorDataNode> vectorDataNodes = action.createVectorDataNodesforContours(contourData);
-//
-//
-//        for (VectorDataNode vectorDataNode : vectorDataNodes) {
-//            System.out.println("vector data " + vectorDataNode.toString());
-//            // remove the old vector data node with the same name.
-//            if (sourceProduct.getVectorDataGroup().contains(vectorDataNode.getName())) {
-//                sourceProduct.getVectorDataGroup().remove(sourceProduct.getVectorDataGroup().get(vectorDataNode.getName()));
-//            }
-//            productSceneView.getProduct().getVectorDataGroup().add(vectorDataNode);
-//            if (productSceneView != null) {
-//                productSceneView.setLayersVisible(vectorDataNode);
-//            }
-//            final LayerFilter nodeFilter = VectorDataLayerFilterFactory.createNodeFilter(vectorDataNode);
-//            Layer vectorDataLayer = LayerUtils.getChildLayer(productSceneView.getRootLayer(),
-//                    LayerUtils.SEARCH_DEEP,
-//                    nodeFilter);
-//            List<Layer> children = productSceneView.getRootLayer().getChildren();
-//
-//            if (vectorDataLayer != null) {
-//                vectorDataLayer.setVisible(true);
-//            } else {
-//                //System.out.println("vector data layer is null " + vectorDataNode.toString());
-//            }
-//
-//        }
-//
-//    }
-
     /**
      * Adds annotation layer.
      * @param productSceneView
@@ -790,30 +737,6 @@ public class WriteImageOp extends Operator {
             //setTextAnnotationFont(productSceneView, textFont, textColor, textOutlineColor);
         }
     }
-
-//    private void setTextAnnotationFont(ProductSceneView productSceneView, Font textFont, Color textColor, Color textOutlineColor) {
-//        productSceneView.getRootLayer().getChildren();
-//        final FigureCollection figureCollection =
-//        final Figure[] figures = figureCollection.getFigures();
-//        System.out.println("figure collection " + figures.length);
-//        for (Figure figure : figures) {
-//            System.out.println(figure.getClass().getName());
-//            if (figure instanceof SimpleFeaturePointFigure) {
-//                System.out.println("figure name: " + ((SimpleFeaturePointFigure) figure).getSimpleFeature().getName());
-//                        ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
-//            }
-//        }
-//
-//        final SimpleFeatureFigure[] sff = productSceneView.getFeatureFigures(false);
-//        System.out.println(" sinple feature figure  " + sff.length);
-//        for (Figure figure:sff) {
-//            System.out.println(figure.getClass().getName());
-//            if (figure instanceof SimpleFeaturePointFigure) {
-//                System.out.println("figure name: " + ((SimpleFeaturePointFigure) figure).getSimpleFeature().getName());
-//                ((SimpleFeaturePointFigure) figure).updateFontColor(textFont, textColor, textOutlineColor);
-//            }
-//        }
-//    }
 
     /**
      *

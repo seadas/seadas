@@ -16,13 +16,17 @@
 
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import org.esa.beam.framework.dataio.*;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.*;
-import org.esa.beam.jai.*;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.ProductData;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.image.ImageHeader;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author Thomas Storm

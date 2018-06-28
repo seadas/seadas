@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gov.nasa.gsfc.seadas.about;
+package org.esa.seadas.about;
 
 import org.esa.snap.rcp.about.AboutBox;
 import org.esa.snap.rcp.util.BrowserUtils;

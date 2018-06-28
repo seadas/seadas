@@ -5,7 +5,7 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
-        <version>7.5</version>
+        <version>8.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -18,18 +18,21 @@
     <dependencies>
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-app</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-contour-operator</artifactId>
         </dependency>
         <dependency>
-            <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-writeimage-operator</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-            <type>jar</type>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-gpf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-core</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-ui</artifactId>
+            <version>${snap.version}</version>
         </dependency>
     </dependencies>
 </project>

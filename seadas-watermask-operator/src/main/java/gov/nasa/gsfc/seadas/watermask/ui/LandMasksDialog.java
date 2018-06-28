@@ -1,10 +1,9 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
-import org.esa.beam.framework.help.HelpSys;
-import org.esa.beam.framework.ui.UIUtils;
-import org.esa.beam.framework.ui.tool.ToolButtonFactory;
 
-import javax.help.DefaultHelpBroker;
+import org.esa.snap.ui.UIUtils;
+import org.esa.snap.ui.tool.ToolButtonFactory;
+
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.*;
@@ -13,47 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Map;
-
-/**
- * Created with IntelliJ IDEA.
- * User: knowles
- * Date: 9/5/12
- * Time: 8:46 AM
- * To change this template use File | Settings | File Templates.
- */
-
-// BEAM COMMENTS
-//
-
-//        JPanel lwcPanel = GridBagUtils.createPanel();
-//        JPanel coastlinePanel = GridBagUtils.createPanel();
-//        GridBagConstraints coastlineConstraints = new GridBagConstraints();
-//        int rightInset = 10;
-//
-//        SpinnerModel transparencyModel = new SpinnerNumberModel(0.4, 0.0, 1.0, 0.1);
-//        JSpinner transparencySpinner = new JSpinner(transparencyModel);
-//
-//        SpinnerModel samplingModel = new SpinnerNumberModel(1, 1, 10, 1);
-//        JSpinner xSamplingSpinner = new JSpinner(samplingModel);
-//        JSpinner ySamplingSpinner = new JSpinner(samplingModel);
-//
-//        Integer[] resolutions = {50, 150};
-//        JComboBox resolutionComboBox = new JComboBox(resolutions);
-//
-//        GridBagUtils.addToPanel(coastlinePanel, new JCheckBox("Coastline"), coastlineConstraints, "anchor=WEST, gridx=0, gridy=0");
-//        GridBagUtils.addToPanel(coastlinePanel, new JLabel("Mask name: "), coastlineConstraints, "gridy=1, insets.right="+ rightInset);
-//        GridBagUtils.addToPanel(coastlinePanel, new JTextField("Coastline"), coastlineConstraints, "gridx=1, insets.right=0");
-//        GridBagUtils.addToPanel(coastlinePanel, new JLabel("Line color: "), coastlineConstraints, "gridx=0, gridy=2, insets.right=" + rightInset);
-//        GridBagUtils.addToPanel(coastlinePanel, new ColorExComboBox(), coastlineConstraints, "gridx=1, insets.right=0");
-//        GridBagUtils.addToPanel(coastlinePanel, new JLabel("Transparency: "), coastlineConstraints, "gridy=2, insets.right="+ rightInset);
-//        GridBagUtils.addToPanel(coastlinePanel, transparencySpinner, coastlineConstraints, "gridx=1, insets.right=0");
-//        GridBagUtils.addToPanel(coastlinePanel, new JLabel("Resolution: "), coastlineConstraints, "gridy=3, insets.right="+ rightInset);
-//        GridBagUtils.addToPanel(coastlinePanel, resolutionComboBox, coastlineConstraints, "gridx=1, insets.right=0");
-//        GridBagUtils.addToPanel(coastlinePanel, new JLabel("Supersampling factor x: "), coastlineConstraints, "gridy=4, insets.right="+ rightInset);
-//        GridBagUtils.addToPanel(coastlinePanel, xSamplingSpinner, coastlineConstraints, "gridx=1, insets.right=0");
-//        GridBagUtils.addToPanel(coastlinePanel, new JLabel("Supersampling factor y: "), coastlineConstraints, "gridy=5, insets.right="+ rightInset);
-//        GridBagUtils.addToPanel(coastlinePanel, ySamplingSpinner, coastlineConstraints, "gridx=1, insets.right=0");
 
 class LandMasksDialog extends JDialog {
 
@@ -68,7 +26,7 @@ class LandMasksDialog extends JDialog {
     public LandMasksDialog(LandMasksData landMasksData, boolean masksCreated) {
         this.landMasksData = landMasksData;
 
-        initHelpBroker();
+        //initHelpBroker();
 
         if (helpBroker != null) {
             helpButton = getHelpButton(HELP_ID);
@@ -105,16 +63,16 @@ class LandMasksDialog extends JDialog {
     }
 
 
-    private void initHelpBroker() {
-        HelpSet helpSet = HelpSys.getHelpSet();
-        if (helpSet != null) {
-            helpBroker = helpSet.createHelpBroker();
-            if (helpBroker instanceof DefaultHelpBroker) {
-                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
-                defaultHelpBroker.setActivationWindow(this);
-            }
-        }
-    }
+//    private void initHelpBroker() {
+//        HelpSet helpSet = HelpCtx.setHelpIDString();
+//        if (helpSet != null) {
+//            helpBroker = helpSet.createHelpBroker();
+//            if (helpBroker instanceof DefaultHelpBroker) {
+//                DefaultHelpBroker defaultHelpBroker = (DefaultHelpBroker) helpBroker;
+//                defaultHelpBroker.setActivationWindow(this);
+//            }
+//        }
+//    }
 
 
 

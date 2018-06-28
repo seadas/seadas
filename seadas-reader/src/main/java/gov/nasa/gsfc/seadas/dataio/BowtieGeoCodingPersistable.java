@@ -16,11 +16,11 @@
 
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.dataio.dimap.DimapProductConstants;
-import org.esa.beam.dataio.dimap.spi.DimapPersistable;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.Product;
-import org.esa.beam.framework.datamodel.TiePointGrid;
+import org.esa.snap.core.dataio.dimap.DimapProductConstants;
+import org.esa.snap.core.dataio.dimap.spi.DimapPersistable;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.jdom.Element;
 
 public class BowtieGeoCodingPersistable implements DimapPersistable {

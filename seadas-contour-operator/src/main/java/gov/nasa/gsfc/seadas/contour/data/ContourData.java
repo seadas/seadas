@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.contour.data;
 
-import org.esa.beam.framework.datamodel.Band;
+import org.esa.snap.core.datamodel.Band;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;

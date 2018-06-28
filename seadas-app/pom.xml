@@ -6,58 +6,23 @@
     <parent>
         <artifactId>seadas</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>8.0</version>
+        <version>8.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>seadas-app</artifactId>
     <packaging>nbm</packaging>
      
     <name>SeaDAS Toolbox Kit Module</name>
-    <description>The SeaDAS Toolbox is a SNAP extension dedicated to the processing, 
-        analysis and visualization of NASA OBPG science data.</description>
-    <version>2.0</version>
-
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>nbm-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>nbm</goal>
-                            <goal>cluster</goal>
-                            <goal>autoupdate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <useDefaultManifestFile>true</useDefaultManifestFile>
-                </configuration>
-            </plugin>
-        </plugins>
-
-    </build>
+    <description>The SeaDAS Toolbox is a SNAP extension dedicated to the processing, analysis and visualization of NASA OBPG science data.</description>
 
     <dependencies>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-core</artifactId>
         </dependency>
 
         <!-- RESTFUL WS support ########################################  -->
@@ -97,33 +62,33 @@
             <artifactId>jersey-hk2</artifactId>
             <version>${jersey.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>ceres-core</artifactId>
-            <version>${snap.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>snap-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.bc.ceres</groupId>
-            <artifactId>ceres-core</artifactId>
-            <version>0.14.1</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <!-- make sure, a given "seadas.build.id" property is replaced in module.xml -->
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>gov.nasa.gsfc.seadas.*</publicPackage>
+                    </publicPackages>
+                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
 
 </project>

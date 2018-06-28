@@ -16,12 +16,10 @@
 
 package gov.nasa.gsfc.seadas.watermask.operator;
 
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.dataop.maptransf.Datum;
-import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.gpf.OperatorSpi;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.dataop.maptransf.Datum;
+import org.esa.snap.core.gpf.GPF;
 import org.junit.Before;
-import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
@@ -43,7 +41,7 @@ public class WatermaskOpTest {
     @Before
     public void setUp() throws Exception {
         sourceProduct = new Product("dummy", "type", 1, 1);
-        sourceProduct.setGeoCoding(new MyGeoCoding());
+        sourceProduct.setSceneGeoCoding(new MyGeoCoding());
         parameters = new HashMap<String, Object>();
         GPF.getDefaultInstance().getOperatorSpiRegistry().loadOperatorSpis();
     }

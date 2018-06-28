@@ -16,18 +16,22 @@
 
 package gov.nasa.gsfc.seadas.watermask.operator;
 
-import org.esa.beam.jai.*;
-import org.esa.beam.util.*;
-import org.esa.beam.util.jai.*;
+import org.esa.snap.core.image.ImageHeader;
+import org.esa.snap.core.util.ImageUtils;
+import org.esa.snap.core.util.jai.SingleBandedSampleModel;
 
-import javax.imageio.*;
-import javax.media.jai.*;
+import javax.imageio.ImageIO;
+import javax.media.jai.JAI;
+import javax.media.jai.SourcelessOpImage;
 import java.awt.*;
 import java.awt.image.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import java.util.zip.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * OpImage to read from MODIS-based water mask images for below 60° south.

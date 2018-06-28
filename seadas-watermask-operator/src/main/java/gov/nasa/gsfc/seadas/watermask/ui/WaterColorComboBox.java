@@ -1,7 +1,5 @@
 package gov.nasa.gsfc.seadas.watermask.ui;
 
-import com.jidesoft.combobox.ColorExComboBox;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +14,7 @@ import java.awt.event.ActionListener;
 public class WaterColorComboBox {    private LandMasksData landMasksData;
 
     private JLabel jLabel;
-    private ColorExComboBox colorExComboBox = new ColorExComboBox();
+    private JComboBox colorExComboBox = new JComboBox();
 
     public WaterColorComboBox(LandMasksData landMasksData) {
 
@@ -24,8 +22,7 @@ public class WaterColorComboBox {    private LandMasksData landMasksData;
 
         jLabel = new JLabel("Color");
         jLabel.setToolTipText("Water mask color");
-
-        colorExComboBox.setSelectedColor(landMasksData.getWaterMaskColor());
+        colorExComboBox.getEditor().getEditorComponent().setBackground((landMasksData.getWaterMaskColor()));
         colorExComboBox.setPreferredSize(colorExComboBox.getPreferredSize());
 
         addControlListeners();
@@ -37,7 +34,7 @@ public class WaterColorComboBox {    private LandMasksData landMasksData;
         colorExComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                landMasksData.setWaterMaskColor(colorExComboBox.getSelectedColor());
+                landMasksData.setWaterMaskColor(colorExComboBox.getEditor().getEditorComponent().getBackground());
             }
         });
     }
@@ -47,7 +44,7 @@ public class WaterColorComboBox {    private LandMasksData landMasksData;
         return jLabel;
     }
 
-    public ColorExComboBox getColorExComboBox() {
+    public JComboBox  getColorExComboBox() {
         return colorExComboBox;
     }
 }

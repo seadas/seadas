@@ -1,6 +1,8 @@
 package gov.nasa.gsfc.seadas;
 
 import com.bc.ceres.core.runtime.RuntimeContext;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.rcp.util.Dialogs;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -15,18 +17,14 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.regex.Pattern;
-import org.esa.snap.core.util.SystemUtils;
-import org.esa.snap.rcp.util.Dialogs;
 
 /**
  * Created by aabduraz on 5/25/17.
@@ -62,7 +60,6 @@ public class OCSSWInfo {
     public static final String VIRTUAL_MACHINE_SERVER_API = "localhost";
 
     private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
 
     private static OCSSWInfo ocsswInfo = null;

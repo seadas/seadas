@@ -1,13 +1,13 @@
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import org.esa.beam.framework.dataio.ProductIO;
-import org.esa.beam.framework.datamodel.Band;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.PixelPos;
-import org.esa.beam.framework.datamodel.Product;
 import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.FileWriter;

@@ -57,13 +57,16 @@
              Make sure the list of dependencies reflects the wanted contents of the SeaDASBX.
              Use same order as in the <modules> tag of the parent POM.
         -->
-
+        <!--<dependency>-->
+            <!--<groupId>gov.nasa.gsfc.seadas</groupId>-->
+            <!--<artifactId>seadas-app</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
-            <artifactId>seadas-processing</artifactId>
+            <artifactId>seadas-watermask-operator</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
@@ -78,7 +81,43 @@
             <artifactId>org-openide-util-ui</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-core</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-gpf</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-ui</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-core</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-ui</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-jai</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-glayer</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

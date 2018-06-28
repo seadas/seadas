@@ -2,14 +2,11 @@ package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.Attribute;
-import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -156,7 +153,7 @@ public class BathymetryReader {
         return  startLat + latIndex * deltaLatStrange;
     }
 
-    public int getLatIndex(float lat) {
+    public int getLatIndex(double lat) {
         int latIndex = (int) ((lat - startLat) / deltaLatStrange);
 
         if (latIndex > dimensionLat - 1) {
@@ -170,7 +167,7 @@ public class BathymetryReader {
         return latIndex;
     }
 
-    public int getLonIndex(float lon) {
+    public int getLonIndex(double lon) {
         int lonIndex = (int) ((lon - startLon) / deltaLonStrange);
 
         if (lonIndex > dimensionLon - 1) {

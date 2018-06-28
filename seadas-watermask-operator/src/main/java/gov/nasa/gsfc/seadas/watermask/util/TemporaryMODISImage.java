@@ -1,15 +1,21 @@
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import com.bc.ceres.glevel.*;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.jai.*;
-import org.esa.beam.util.*;
+import com.bc.ceres.glevel.MultiLevelImage;
 import gov.nasa.gsfc.seadas.watermask.operator.WatermaskClassifier;
+import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.image.ImageHeader;
+import org.esa.snap.core.util.ImageUtils;
 
-import javax.media.jai.*;
+import javax.media.jai.JAI;
+import javax.media.jai.SourcelessOpImage;
 import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
+import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.util.ArrayList;
 
 /**
  */
@@ -63,7 +69,7 @@ class TemporaryMODISImage extends SourcelessOpImage {
                 final GeoPos geoPos = strategy.getGeoPos(x + xOffset, y + yOffset);
                 final Product[] products = getProducts(geoPos);
                 for (Product product : products) {
-                    product.getGeoCoding().getPixelPos(geoPos, pixelPos);
+                    product.getSceneGeoCoding().getPixelPos(geoPos, pixelPos);
                     final Band band = product.getBand("water_mask");
                     final MultiLevelImage sourceImage = band.getSourceImage();
                     final Raster tile = sourceImage.getTile(sourceImage.XToTileX((int) pixelPos.x), sourceImage.YToTileY((int) pixelPos.y));
@@ -82,7 +88,7 @@ class TemporaryMODISImage extends SourcelessOpImage {
     private Product[] getProducts(GeoPos geoPos) {
         final java.util.List<Product> result = new ArrayList<Product>();
         for (Product product : products) {
-            final PixelPos pixelPos = product.getGeoCoding().getPixelPos(geoPos, null);
+            final PixelPos pixelPos = product.getSceneGeoCoding().getPixelPos(geoPos, null);
             if (pixelPos.isValid() &&
                     pixelPos.x > 0 &&
                     pixelPos.x < product.getSceneRasterWidth() &&

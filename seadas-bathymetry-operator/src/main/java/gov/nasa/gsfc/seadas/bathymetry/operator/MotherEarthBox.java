@@ -1,6 +1,6 @@
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
-import org.esa.beam.framework.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.GeoPos;
 
 import java.util.ArrayList;
 

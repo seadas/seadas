@@ -17,14 +17,14 @@
 package gov.nasa.gsfc.seadas.watermask.operator;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.*;
-import org.esa.beam.framework.gpf.annotations.OperatorMetadata;
-import org.esa.beam.framework.gpf.annotations.Parameter;
-import org.esa.beam.framework.gpf.annotations.SourceProduct;
-import org.esa.beam.framework.gpf.annotations.TargetProduct;
-import org.esa.beam.util.ProductUtils;
-import org.esa.beam.visat.actions.imgfilter.model.Filter;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.gpf.*;
+import org.esa.snap.core.gpf.annotations.OperatorMetadata;
+import org.esa.snap.core.gpf.annotations.Parameter;
+import org.esa.snap.core.gpf.annotations.SourceProduct;
+import org.esa.snap.core.gpf.annotations.TargetProduct;
+import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.rcp.imgfilter.model.Filter;
 
 import java.awt.*;
 import java.io.IOException;
@@ -150,7 +150,7 @@ public class WatermaskOp extends Operator {
         try {
             final String targetBandName = targetBand.getName();
             final PixelPos pixelPos = new PixelPos();
-            final GeoCoding geoCoding = sourceProduct.getGeoCoding();
+            final GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
             for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                 for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
                     pixelPos.x = x;
@@ -211,7 +211,7 @@ public class WatermaskOp extends Operator {
     }
 
     private void validateSourceProduct() {
-        final GeoCoding geoCoding = sourceProduct.getGeoCoding();
+        final GeoCoding geoCoding = sourceProduct.getSceneGeoCoding();
         if (geoCoding == null) {
             throw new OperatorException("The source product must be geo-coded.");
         }

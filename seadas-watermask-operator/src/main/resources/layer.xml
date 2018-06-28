@@ -2,36 +2,33 @@
 
     <folder name="Actions">
         <folder name="Operators">
-            <file name="org-esa-s3tbx-olci-snowalbedo-OlciSnowAlbedoOpAction.instance">
+            <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
-                <attr name="displayName" stringvalue="OLCI Snow Albedo Processor"/>
-                <attr name="dialogTitle" stringvalue="OLCI Snow Albedo Processor"/>
-                <attr name="operatorName" stringvalue="OLCI.SnowAlbedo"/>
-                <attr name="helpId" stringvalue="olciSnowAlbedoProcessor"/>
-                <attr name="targetProductNameSuffix" stringvalue="_snowalbedo"/>
+                <attr name="displayName" stringvalue="Watermask Classification"/>
+                <attr name="dialogTitle" stringvalue="Watermask  Classification"/>
+                <attr name="operatorName" stringvalue="WatermaskClassification"/>
+                <attr name="helpId" stringvalue="WatermaskTool"/>
+                <attr name="targetProductNameSuffix" stringvalue="_watermask"/>
             </file>
-
         </folder>
     </folder>
 
     <folder name="Menu">
         <folder name="Optical">
-            <folder name="Thematic Land Processing">
-                <file name="org-esa-s3tbx-olci-snowalbedo-OlciSnowAlbedoOpAction.shadow">
-                    <attr name="originalFile"
-                          stringvalue="Actions/Operators/org-esa-s3tbx-olci-snowalbedo-OlciSnowAlbedoOpAction.instance"/>
-                    <attr name="position" intvalue="10000"/>
+            <folder name="Water Mask Processing">
+                <file name="gov-nasa-gsfc-seadas-WatermaskOpAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Operators/gov-nasa-gsfc-seadas-WatermaskOpAction.instance"/>
+                    <attr name="position" intvalue="10010"/>
                 </file>
-
             </folder>
         </folder>
     </folder>
 
     <folder name="Services">
         <folder name="javahelp">
-            <file name="org-esa-s3tbx-OlciSnowAlbedoOp-helpset.xml" url="helpset.xml">
-                <attr name="position" intvalue="4630"/>
+            <file name="gov-nasa-gsfc-seadas-WatermaskOp-helpset.xml" url="helpset.xml">
+                <attr name="position" intvalue="4610"/>
             </file>
         </folder>
     </folder>

@@ -7,18 +7,17 @@
     <parent>
         <artifactId>seadas</artifactId>
         <groupId>gov.nasa.gsfc.seadas</groupId>
-        <version>8.0</version>
+        <version>8.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>seadas-processing</artifactId>
     <groupId>gov.nasa.gsfc.seadas</groupId>
     <name>SeaDAS Processing</name>
-    <version>1.5</version>
     <description>
         Integrates the OBPG OCSSW processing software into SeaDAS.
     </description>
 
-    <packaging>jar</packaging>
+    <packaging>nbm</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,14 +27,10 @@
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-ui</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
@@ -80,31 +75,23 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-app</artifactId>
-            <version>2.0</version>
+            <version>8.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>ceres-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>ceres-ui</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>ceres-binding</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -115,8 +102,6 @@
         <dependency>
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-gpf-ui</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -128,9 +113,35 @@
         <dependency>
             <groupId>gov.nasa.gsfc.seadas</groupId>
             <artifactId>seadas-processing</artifactId>
-            <version>1.5</version>
+            <version>${project.version}</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>gov.nasa.gsfc.seadas.processing.*</publicPackage>
+                    </publicPackages>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

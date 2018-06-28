@@ -16,12 +16,12 @@
 
 package gov.nasa.gsfc.seadas.watermask.operator;
 
-import org.esa.beam.framework.datamodel.GeoCoding;
-import org.esa.beam.framework.datamodel.GeoPos;
-import org.esa.beam.framework.datamodel.PixelPos;
-import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
 import gov.nasa.gsfc.seadas.watermask.util.ImageDescriptor;
 import gov.nasa.gsfc.seadas.watermask.util.ImageDescriptorBuilder;
+import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
 
 import javax.media.jai.OpImage;
 import java.awt.image.Raster;
@@ -463,7 +463,7 @@ public class WatermaskClassifier {
     private int getWaterMaskSample(GeoPos geoPos) {
         final int waterMaskSample;
         if (geoPos.isValid()) {
-            waterMaskSample = getWaterMaskSample(geoPos.lat, geoPos.lon);
+            waterMaskSample = getWaterMaskSample((float)geoPos.lat, (float)geoPos.lon);
         } else {
             waterMaskSample = WatermaskClassifier.INVALID_VALUE;
         }

@@ -16,11 +16,11 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.framework.dataio.ProductSubsetDef;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.util.Guardian;
-import org.esa.beam.util.math.IndexValidator;
-import org.esa.beam.util.math.Range;
+import org.esa.snap.core.dataio.ProductSubsetDef;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.util.Guardian;
+import org.esa.snap.core.util.math.IndexValidator;
+import org.esa.snap.core.util.math.Range;
 
 import java.awt.*;
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
      * @return lines in the scene
      */
     public int getSceneHeight() {
-        return _lonGrid.getSceneRasterHeight();
+        return _lonGrid.getRasterHeight();
     }
 
     /**
@@ -211,10 +211,10 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
     private void init() throws IOException {
         _gcList = new ArrayList<GeoCoding>();
         _centerLineList = new ArrayList<PolyLine>();
-        final float osX = _lonGrid.getOffsetX();
-        final float osY = _lonGrid.getOffsetY();
-        final float ssX = _lonGrid.getSubSamplingX();
-        final float ssY = _lonGrid.getSubSamplingY();
+        final float osX = (float)_lonGrid.getOffsetX();
+        final float osY = (float)_lonGrid.getOffsetY();
+        final float ssX = (float)_lonGrid.getSubSamplingX();
+        final float ssY = (float)_lonGrid.getSubSamplingY();
 
         final float[] latFloats = (float[]) _latGrid.getDataElems();
         final float[] lonFloats = (float[]) _lonGrid.getDataElems();
@@ -301,7 +301,7 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
         GeoCoding gc = createStripeGeocode(lats, lons, y, stripeW, stripeH, offsetX, offsetY, subSamplingX, subSamplingY);
         if (gc != null) {
             _gcList.add(gc);
-            _centerLineList.add(createCenterPolyLine(gc, _latGrid.getSceneRasterWidth(), _scanlineHeight));
+            _centerLineList.add(createCenterPolyLine(gc, _latGrid.getRasterWidth(), _scanlineHeight));
         } else {
             _gcList.add(null);
             _centerLineList.add(null);
@@ -323,8 +323,8 @@ public class BowtieTiePointGeoCoding extends AbstractBowtieGeoCoding {
     }
 
     /**
-     * Transfers the geo-coding of the {@link org.esa.beam.framework.datamodel.Scene srcScene} to the {@link org.esa.beam.framework.datamodel.Scene destScene} with respect to the given
-     * {@link org.esa.beam.framework.dataio.ProductSubsetDef subsetDef}.
+     * Transfers the geo-coding of the {@link org.esa.snap.core.datamodel.Scene srcScene} to the {@link org.esa.snap.core.datamodel.Scene destScene} with respect to the given
+     * {@link org.esa.snap.core.dataio.ProductSubsetDef subsetDef}.
      *
      * @param srcScene  the source scene
      * @param destScene the destination scene

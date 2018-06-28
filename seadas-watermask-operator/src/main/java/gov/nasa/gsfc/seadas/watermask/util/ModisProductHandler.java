@@ -16,14 +16,23 @@
 
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import org.esa.beam.framework.dataio.*;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.*;
-import org.esa.beam.gpf.operators.standard.reproject.*;
+import org.esa.snap.core.dataio.ProductIO;
+import org.esa.snap.core.datamodel.GeoCoding;
+import org.esa.snap.core.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.PixelPos;
+import org.esa.snap.core.datamodel.Product;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.gpf.OperatorSpi;
+import org.esa.snap.core.gpf.common.reproject.ReprojectionOp;
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Thomas Storm
@@ -62,7 +71,7 @@ public class ModisProductHandler {
 
         for (String file : files) {
             final Product product = ProductIO.readProduct(new File(source, file));
-            final GeoCoding geoCoding = product.getGeoCoding();
+            final GeoCoding geoCoding = product.getSceneGeoCoding();
             PixelPos sceneLL = new PixelPos(0 + 0.5f, product.getSceneRasterHeight() - 1 + 0.5f);
             PixelPos sceneLR = new PixelPos(product.getSceneRasterWidth() - 1 + 0.5f,
                     product.getSceneRasterHeight() - 1 + 0.5f);
@@ -102,7 +111,7 @@ public class ModisProductHandler {
         for (File file : products) {
             final Product product = ProductIO.readProduct(file);
             PixelPos sceneLL = new PixelPos(0 + 0.5f, product.getSceneRasterHeight() - 1 + 0.5f);
-            final GeoCoding geoCoding = product.getGeoCoding();
+            final GeoCoding geoCoding = product.getSceneGeoCoding();
             geoCoding.getGeoPos(sceneLL, gp);
             if (gp.getLat() <= -60.0f) {
                 this.products.add(product);

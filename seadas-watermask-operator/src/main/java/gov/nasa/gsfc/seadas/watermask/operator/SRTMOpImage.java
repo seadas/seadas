@@ -17,17 +17,13 @@
 package gov.nasa.gsfc.seadas.watermask.operator;
 
 import com.bc.ceres.core.Assert;
-import org.esa.beam.jai.ImageHeader;
-import org.esa.beam.util.ImageUtils;
+import org.esa.snap.core.image.ImageHeader;
+import org.esa.snap.core.util.ImageUtils;
 
 import javax.media.jai.JAI;
 import javax.media.jai.SourcelessOpImage;
-import java.awt.Point;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.WritableRaster;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

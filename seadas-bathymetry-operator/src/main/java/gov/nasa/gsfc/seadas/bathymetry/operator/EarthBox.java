@@ -1,7 +1,7 @@
 package gov.nasa.gsfc.seadas.bathymetry.operator;
 
 
-import org.esa.beam.framework.datamodel.GeoPos;
+import org.esa.snap.core.datamodel.GeoPos;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,18 +15,18 @@ public class EarthBox {
     public static final float NULL_COORDINATE = (float) -999;
     public static final int NULL_LENGTH = -999;
 
-    private float minLatLimit = (float) -90;
-    private float maxLatLimit = (float) 90;
-    private float minLonLimit = (float) -180;
-    private float maxLonLimit = (float) 180;
+    private double minLatLimit = (float) -90;
+    private double maxLatLimit = (float) 90;
+    private double minLonLimit = (float) -180;
+    private double maxLonLimit = (float) 180;
 
-    private float minLat = NULL_COORDINATE;
-    private float maxLat = NULL_COORDINATE;
-    private float minLon = NULL_COORDINATE;
-    private float maxLon = NULL_COORDINATE;
+    private double minLat = NULL_COORDINATE;
+    private double maxLat = NULL_COORDINATE;
+    private double minLon = NULL_COORDINATE;
+    private double maxLon = NULL_COORDINATE;
 
-    float deltaLat = NULL_COORDINATE;
-    float deltaLon = NULL_COORDINATE;
+    double deltaLat = NULL_COORDINATE;
+    double deltaLon = NULL_COORDINATE;
 
     private int latDimensionLength = NULL_LENGTH;
     private int lonDimensionLength = NULL_LENGTH;
@@ -43,13 +43,13 @@ public class EarthBox {
     }
 
     public void add(GeoPos geoPos) {
-        float lat = geoPos.lat;
-        float lon = geoPos.lon;
+        double lat = geoPos.lat;
+        double lon = geoPos.lon;
 
         add(lat, lon);
     }
 
-    public void add(float lat, float lon) {
+    public void add(double lat, double lon) {
         if (lat > getMaxLat() || getMaxLat() == NULL_COORDINATE) {
             setMaxLat(lat);
         }
@@ -82,7 +82,7 @@ public class EarthBox {
     }
 
 
-    private void setMinLat(float minLat) {
+    private void setMinLat(double minLat) {
         if (minLat < minLatLimit) {
             minLat = minLatLimit;
         }
@@ -91,7 +91,7 @@ public class EarthBox {
     }
 
 
-    private void setMaxLat(float maxLat) {
+    private void setMaxLat(double maxLat) {
         if (maxLat > maxLatLimit) {
             maxLat = maxLatLimit;
         }
@@ -100,7 +100,7 @@ public class EarthBox {
     }
 
 
-    private void setMinLon(float minLon) {
+    private void setMinLon(double minLon) {
         if (minLon < minLonLimit) {
             minLon = minLonLimit;
         }
@@ -109,7 +109,7 @@ public class EarthBox {
     }
 
 
-    private void setMaxLon(float maxLon) {
+    private void setMaxLon(double maxLon) {
         if (maxLon > maxLonLimit) {
             maxLon = maxLonLimit;
         }
@@ -129,7 +129,7 @@ public class EarthBox {
     }
 
 
-    public void setValues(float minLat, float maxLat, float minLon, float maxLon, short[][] values, short[][] waterSurfaceValues, short missingValue) {
+    public void setValues(double minLat, double maxLat, double minLon, double maxLon, short[][] values, short[][] waterSurfaceValues, short missingValue) {
         this.values = values;
         this.waterSurfaceValues = waterSurfaceValues;
 
@@ -148,19 +148,19 @@ public class EarthBox {
     }
 
 
-    public float getMinLat() {
+    public double getMinLat() {
         return minLat;
     }
 
-    public float getMaxLat() {
+    public double getMaxLat() {
         return maxLat;
     }
 
-    public float getMinLon() {
+    public double getMinLon() {
         return minLon;
     }
 
-    public float getMaxLon() {
+    public double getMaxLon() {
         return maxLon;
     }
 
@@ -183,18 +183,18 @@ public class EarthBox {
         return getWaterSurfaceValue(geoPos.lat, geoPos.lon);
     }
 
-    public short getValue(float lat, float lon) {
+    public short getValue(double lat, double lon) {
         int latIndex = getLatIndex(lat);
         int lonIndex = getLonIndex(lon);
 
 
         short value;
         if (isGetValueAverage()) {
-            float lutLat = getLat(latIndex);
-            float lutLon = getLon(lonIndex);
+            double lutLat = getLat(latIndex);
+            double lutLon = getLon(lonIndex);
 
-            float lutLatN;
-            float lutLatS;
+            double lutLatN;
+            double lutLatS;
             int lutLatIndexN;
             int lutLatIndexS;
 
@@ -224,8 +224,8 @@ public class EarthBox {
             }
 
 
-            float lutLonE;
-            float lutLonW;
+            double lutLonE;
+            double lutLonW;
             int lutLonIndexE;
             int lutLonIndexW;
 
@@ -265,13 +265,13 @@ public class EarthBox {
             short cornerValueSE = getValue(lutLatIndexS, lutLonIndexE);
 
             if (cornerValueNW != getMissingValue() && cornerValueNE != getMissingValue() && cornerValueSW != getMissingValue() && cornerValueSE != getMissingValue()) {
-                float deltaLutLat = lutLatN - lutLatS;
+                double deltaLutLat = lutLatN - lutLatS;
                 short sideValueW;
                 short sideValueE;
 
                 if (deltaLutLat > 0) {
-                    float weightLutLatS = (lutLatN - lat) / deltaLutLat;
-                    float weightLutLatN = 1 - weightLutLatS;
+                    double weightLutLatS = (lutLatN - lat) / deltaLutLat;
+                    double weightLutLatN = 1 - weightLutLatS;
 
                     sideValueW = (short) (weightLutLatN * cornerValueNW + weightLutLatS * cornerValueSW);
                     sideValueE = (short) (weightLutLatN * cornerValueNE + weightLutLatS * cornerValueSE);
@@ -281,12 +281,12 @@ public class EarthBox {
                 }
 
 
-                float deltaLutLon = lutLonE - lutLonW;
+                double deltaLutLon = lutLonE - lutLonW;
 
 
                 if (deltaLutLon > 0) {
-                    float weightSideW = (lutLonE - lon) / deltaLutLon;
-                    float weightSideE = 1 - weightSideW;
+                    double weightSideW = (lutLonE - lon) / deltaLutLon;
+                    double weightSideE = 1 - weightSideW;
 
                     value = (short) (weightSideW * sideValueW + weightSideE * sideValueE);
                 } else {
@@ -304,18 +304,18 @@ public class EarthBox {
     }
 
 
-    public short getWaterSurfaceValue(float lat, float lon) {
+    public short getWaterSurfaceValue(double lat, double lon) {
         int latIndex = getLatIndex(lat);
         int lonIndex = getLonIndex(lon);
 
 
         short waterSurfaceValue;
         if (isGetValueAverage()) {
-            float lutLat = getLat(latIndex);
-            float lutLon = getLon(lonIndex);
+            double lutLat = getLat(latIndex);
+            double lutLon = getLon(lonIndex);
 
-            float lutLatN;
-            float lutLatS;
+            double lutLatN;
+            double lutLatS;
             int lutLatIndexN;
             int lutLatIndexS;
 
@@ -345,8 +345,8 @@ public class EarthBox {
             }
 
 
-            float lutLonE;
-            float lutLonW;
+            double lutLonE;
+            double lutLonW;
             int lutLonIndexE;
             int lutLonIndexW;
 
@@ -386,13 +386,13 @@ public class EarthBox {
             short cornerValueSE = getWaterSurfaceValue(lutLatIndexS, lutLonIndexE);
 
             if (cornerValueNW != getMissingValue() && cornerValueNE != getMissingValue() && cornerValueSW != getMissingValue() && cornerValueSE != getMissingValue()) {
-                float deltaLutLat = lutLatN - lutLatS;
+                double deltaLutLat = lutLatN - lutLatS;
                 short sideValueW;
                 short sideValueE;
 
                 if (deltaLutLat > 0) {
-                    float weightLutLatS = (lutLatN - lat) / deltaLutLat;
-                    float weightLutLatN = 1 - weightLutLatS;
+                    double weightLutLatS = (lutLatN - lat) / deltaLutLat;
+                    double weightLutLatN = 1 - weightLutLatS;
 
                     sideValueW = (short) (weightLutLatN * cornerValueNW + weightLutLatS * cornerValueSW);
                     sideValueE = (short) (weightLutLatN * cornerValueNE + weightLutLatS * cornerValueSE);
@@ -402,12 +402,12 @@ public class EarthBox {
                 }
 
 
-                float deltaLutLon = lutLonE - lutLonW;
+                double deltaLutLon = lutLonE - lutLonW;
 
 
                 if (deltaLutLon > 0) {
-                    float weightSideW = (lutLonE - lon) / deltaLutLon;
-                    float weightSideE = 1 - weightSideW;
+                    double weightSideW = (lutLonE - lon) / deltaLutLon;
+                    double weightSideE = 1 - weightSideW;
 
                     waterSurfaceValue = (short) (weightSideW * sideValueW + weightSideE * sideValueE);
                 } else {
@@ -434,7 +434,7 @@ public class EarthBox {
         return waterSurfaceValues[latIndex][lonIndex];
     }
 
-    public float getLon(int lonIndex) {
+    public double getLon(int lonIndex) {
 
         if (lonIndex > getLonDimensionLength() - 1) {
             lonIndex = getLonDimensionLength() - 1;
@@ -447,7 +447,7 @@ public class EarthBox {
         return getMinLon() + lonIndex * getDeltaLon();
     }
 
-    public float getLat(int latIndex) {
+    public double getLat(int latIndex) {
 
         if (latIndex > getLatDimensionLength() - 1) {
             latIndex = getLatDimensionLength() - 1;
@@ -461,7 +461,7 @@ public class EarthBox {
     }
 
 
-    private float getDeltaLat() {
+    private  double getDeltaLat() {
         if (deltaLat == NULL_COORDINATE) {
             setDeltaLat();
         }
@@ -469,7 +469,7 @@ public class EarthBox {
         return deltaLat;
     }
 
-    private float getDeltaLon() {
+    private  double getDeltaLon() {
         if (deltaLon == NULL_COORDINATE) {
             setDeltaLon();
         }
@@ -477,7 +477,7 @@ public class EarthBox {
         return deltaLon;
     }
 
-    private int getLatIndex(float lat) {
+    private int getLatIndex(double lat) {
         int latIndex = (int) ((lat - getMinLat()) / getDeltaLat());
 
         if (latIndex > getLatDimensionLength() - 1) {
@@ -490,7 +490,7 @@ public class EarthBox {
         return latIndex;
     }
 
-    private int getLonIndex(float lon) {
+    private int getLonIndex(double lon) {
         int lonIndex = (int) ((lon - getMinLon()) / getDeltaLon());
         if (lonIndex > getLonDimensionLength() - 1) {
             lonIndex = getLonDimensionLength() - 1;

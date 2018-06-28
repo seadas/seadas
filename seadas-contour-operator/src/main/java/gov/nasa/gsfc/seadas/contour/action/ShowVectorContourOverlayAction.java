@@ -8,13 +8,13 @@ import gov.nasa.gsfc.seadas.contour.data.ContourInterval;
 import gov.nasa.gsfc.seadas.contour.operator.Contour1Spi;
 import gov.nasa.gsfc.seadas.contour.operator.ContourDescriptor;
 import gov.nasa.gsfc.seadas.contour.ui.ContourDialog;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.framework.ui.product.ProductSceneView;
-import org.esa.beam.util.FeatureUtils;
-import org.esa.beam.util.ProductUtils;
-import org.esa.beam.visat.VisatApp;
-import org.esa.beam.visat.actions.AbstractShowOverlayAction;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.util.FeatureUtils;
+import org.esa.snap.core.util.ProductUtils;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.actions.layer.overlay.AbstractOverlayAction;
+import org.esa.snap.rcp.util.Dialogs;
+import org.esa.snap.ui.product.ProductSceneView;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -42,7 +42,7 @@ import java.util.Collection;
  * Time: 2:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
+public class ShowVectorContourOverlayAction extends AbstractOverlayAction {
 
     final String DEFAULT_STYLE_FORMAT = "fill:%s; fill-opacity:0.5; stroke:%s; stroke-opacity:1.0; stroke-width:1.0; stroke-dasharray:%s; symbol:cross";
     Product product;
@@ -51,10 +51,10 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
     @Override
     public void actionPerformed(CommandEvent event) {
-        VisatApp visatApp = VisatApp.getApp();
-        final ProductSceneView sceneView = VisatApp.getApp().getSelectedProductSceneView();
-        product = visatApp.getSelectedProduct();
-        ProductNodeGroup<Band> products = visatApp.getApp().getSelectedProduct().getBandGroup();
+        SnapApp snapApp = SnapApp.getDefault();
+        final ProductSceneView sceneView = snapApp.getSelectedProductSceneView();
+        product = snapApp.getSelectedProduct();
+        ProductNodeGroup<Band> products = snapApp.getSelectedProduct().getBandGroup();
         ContourDialog contourDialog = new ContourDialog(product, getActiveBands(products));
         contourDialog.setVisible(true);
         contourDialog.dispose();
@@ -67,7 +67,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
         if (contourDialog.isContourCanceled()) {
             return;
         }
-        setGeoCoding(product.getGeoCoding());
+        setGeoCoding(product.getSceneGeoCoding());
         ContourData contourData = contourDialog.getContourData();
         noDataValue = contourDialog.getNoDataValue();
         ArrayList<VectorDataNode> vectorDataNodes = createVectorDataNodesforContours(contourData);
@@ -154,14 +154,14 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
             } catch (Exception e) {
                 if (contourData.getLevels().size() != 0)
                     System.out.println(e.getMessage());
-                if (VisatApp.getApp() != null) {
-                    VisatApp.getApp().showErrorDialog("failed to create contour lines");
+                if (SnapApp.getDefault() != null) {
+                    Dialogs.showError("failed to create contour lines");
                 }
                 continue;
             }
             if (featureCollection.isEmpty()) {
-                if (VisatApp.getApp() != null) {
-                    VisatApp.getApp().showErrorDialog("Contour Lines", "No records found for ." + contourData.getBand().getName() + " at " + (contourValue * scalingFactor + scalingOffset));
+                if (SnapApp.getDefault() != null) {
+                    Dialogs.showError("Contour Lines", "No records found for ." + contourData.getBand().getName() + " at " + (contourValue * scalingFactor + scalingOffset));
                 }
                     continue;
             }
@@ -210,7 +210,7 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
             try {
                 transformFeatureCollection(featureCollection, geoCoding.getImageCRS(), mapCRS);
             } catch (TransformException e) {
-                VisatApp.getApp().showErrorDialog("transformation failed!");
+                Dialogs.showError("transformation failed!");
             }
         }
 
@@ -255,6 +255,26 @@ public class ShowVectorContourOverlayAction extends AbstractShowOverlayAction {
 
     public void setGeoCoding(GeoCoding geoCoding) {
         this.geoCoding = geoCoding;
+    }
+
+    @Override
+    protected void initActionProperties() {
+
+    }
+
+    @Override
+    protected boolean getActionSelectionState(ProductSceneView view) {
+        return false;
+    }
+
+    @Override
+    protected boolean getActionEnabledState(ProductSceneView view) {
+        return false;
+    }
+
+    @Override
+    protected void setOverlayEnableState(ProductSceneView view) {
+
     }
 }
 

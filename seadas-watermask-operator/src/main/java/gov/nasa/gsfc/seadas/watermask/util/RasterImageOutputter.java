@@ -16,22 +16,18 @@
 
 package gov.nasa.gsfc.seadas.watermask.util;
 
-import org.esa.beam.util.io.FileUtils;
-import org.esa.beam.util.math.Histogram;
-import org.esa.beam.util.math.Range;
 import gov.nasa.gsfc.seadas.watermask.operator.WatermaskUtils;
+import org.esa.snap.core.util.io.FileUtils;
+import org.esa.snap.core.util.math.Histogram;
+import org.esa.snap.core.util.math.Range;
 
 import javax.imageio.ImageIO;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;

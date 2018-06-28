@@ -1,12 +1,13 @@
 package gov.nasa.gsfc.seadas.watermask.util;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.util.ResourceInstaller;
-import org.esa.beam.util.SystemUtils;
+import org.esa.snap.core.util.ResourceInstaller;
+import org.esa.snap.core.util.SystemUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Path;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,7 +26,7 @@ public class ResourceInstallationUtils {
 
     public static String getIconFilename(String icon, Class sourceClass) {
 
-        URL sourceUrl = ResourceInstaller.getSourceUrl(sourceClass);
+        Path sourceUrl = ResourceInstaller.findModuleCodeBasePath(sourceClass);
         String iconFilename = sourceUrl.toString() + ICON_PATH + icon;
 
         return iconFilename;
@@ -125,8 +126,8 @@ public class ResourceInstallationUtils {
         File targetFile = getTargetFile(filename);
 
         if (!targetFile.canRead()) {
-            URL sourceUrl = ResourceInstaller.getSourceUrl(sourceClass);
-            ResourceInstaller resourceInstaller = new ResourceInstaller(sourceUrl, AUXPATH, targetFile.getParentFile());
+            Path sourceUrl = ResourceInstaller.findModuleCodeBasePath(sourceClass);
+            ResourceInstaller resourceInstaller = new ResourceInstaller(sourceUrl, targetFile.getParentFile().toPath());
             try {
                 resourceInstaller.install(filename, ProgressMonitor.NULL);
             } catch (Exception e) {

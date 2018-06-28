@@ -15,16 +15,13 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.dataop.maptransf.Datum;
+
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
-import org.esa.snap.core.datamodel.AbstractGeoCoding;
-import org.esa.snap.core.datamodel.GeoCoding;
-import org.esa.snap.core.datamodel.GeoPos;
-import org.esa.snap.core.datamodel.PixelPos;
-import org.esa.snap.core.datamodel.ProductNode;
-import org.esa.snap.core.dataop.maptransf.Datum;
 
 /**
  * The <code>AbstractBowtieGeoCoding</code> class is a special geo-coding for
@@ -143,7 +140,7 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
     }
 
     /**
-     * Gets the datum, the reference point or surface against which {@link org.esa.beam.framework.datamodel.GeoPos} measurements are made.
+     * Gets the datum, the reference point or surface against which {@link org.esa.snap.core.datamodel.GeoPos} measurements are made.
      *
      * @return the datum
      */
@@ -207,9 +204,9 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
         for (pixelPos.x = 0; pixelPos.x < sceneWidth + 0.5; pixelPos.x += stepX) {
             geoCoding.getGeoPos(pixelPos, geoPos);
             if (pixelPos.x == 0) {
-                polyLine.moveTo(geoPos.lon, geoPos.lat);
+                polyLine.moveTo((float)geoPos.lon, (float)geoPos.lat);
             } else {
-                polyLine.lineTo(geoPos.lon, geoPos.lat);
+                polyLine.lineTo((float)geoPos.lon, (float)geoPos.lat);
             }
         }
 
@@ -232,7 +229,7 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
         int index = _lastCenterLineIndex;
         index = getNextCenterLineIndex(index, 1);
         final PolyLine centerLine1 = _centerLineList.get(index);
-        double v = centerLine1.getDistance(geoPos.lon, geoPos.lat);
+        double v = centerLine1.getDistance((float)geoPos.lon, (float)geoPos.lat);
         int vIndex = index;
 
         int direction = -1;
@@ -243,7 +240,7 @@ public abstract class AbstractBowtieGeoCoding extends AbstractGeoCoding {
             index += direction;
             index = getNextCenterLineIndex(index, direction);
             final PolyLine centerLine2 = _centerLineList.get(index);
-            final double v2 = centerLine2.getDistance(geoPos.lon, geoPos.lat);
+            final double v2 = centerLine2.getDistance((float)geoPos.lon, (float)geoPos.lat);
             if (v2 < v) {
                 if (index == _smallestValidIndex || index == _biggestValidIndex) {
                     return index;

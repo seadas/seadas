@@ -16,15 +16,15 @@
 package gov.nasa.gsfc.seadas.dataio;
 
 import com.bc.ceres.core.ProgressMonitor;
-import org.esa.beam.dataio.dimap.DimapProductConstants;
-import org.esa.beam.dataio.dimap.spi.DimapPersistable;
-import org.esa.beam.dataio.dimap.spi.DimapPersistence;
-import org.esa.beam.framework.dataio.ProductIOException;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.util.PropertyMap;
-import org.esa.beam.util.SystemUtils;
-import org.esa.beam.util.io.CsvReader;
-import org.esa.beam.visat.VisatApp;
+import org.esa.snap.core.dataio.ProductIOException;
+import org.esa.snap.core.dataio.dimap.DimapProductConstants;
+import org.esa.snap.core.dataio.dimap.spi.DimapPersistable;
+import org.esa.snap.core.dataio.dimap.spi.DimapPersistence;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.util.PropertyMap;
+import org.esa.snap.core.util.SystemUtils;
+import org.esa.snap.core.util.io.CsvReader;
+import org.esa.snap.rcp.SnapApp;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -43,21 +43,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 import static java.lang.System.arraycopy;
-
-import org.esa.beam.dataio.netcdf.ProfileReadContext;
-
-import javax.swing.*;
 
 
 public abstract class SeadasFileReader {
 
-    final VisatApp visatApp = VisatApp.getApp();
+    final SnapApp snapApp = SnapApp.getDefault();
     private PropertyMap configuration = null;
 
     protected boolean mustFlipX;
@@ -92,8 +89,8 @@ public abstract class SeadasFileReader {
     public SeadasFileReader(SeadasProductReader productReader) {
         this.productReader = productReader;
         //Added this condition for gpt calls
-        if (visatApp != null) {
-            this.configuration = visatApp.getPreferences();
+        if (snapApp != null) {
+            this.configuration = snapApp.getPreferencesPropertyMap();
         }
         ncFile = productReader.getNcfile();
         globalAttributes = ncFile.getGlobalAttributes();
@@ -107,13 +104,13 @@ public abstract class SeadasFileReader {
                                           ProgressMonitor pm) throws IOException, InvalidRangeException {
 
         if (mustFlipY) {
-            sourceOffsetY = destBand.getSceneRasterHeight() - (sourceOffsetY + sourceHeight);
+            sourceOffsetY = destBand.getRasterHeight() - (sourceOffsetY + sourceHeight);
         }
         if (mustFlipX) {
-            sourceOffsetX = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
+            sourceOffsetX = destBand.getRasterWidth() - (sourceOffsetX + sourceWidth);
         }
         sourceOffsetY += leadLineSkip;
-        int widthRemainder = destBand.getSceneRasterWidth() - (sourceOffsetX + sourceWidth);
+        int widthRemainder = destBand.getRasterWidth() - (sourceOffsetX + sourceWidth);
 
         if (widthRemainder < 0) {
             sourceWidth += widthRemainder;
@@ -1548,12 +1545,13 @@ public abstract class SeadasFileReader {
     public boolean getUseFlagNames() {
 
         if (configuration != null) {
-            return configuration.getPropertyBool(Mask.ImageType.PARAMETER_NAME_MASK_L2_FLAGNAMES_ENABLED, Mask.ImageType.DEFAULT_L2_FLAGNAMES_ENABLED);
+            return configuration.getPropertyBool(PARAMETER_NAME_MASK_L2_FLAGNAMES_ENABLED, DEFAULT_L2_FLAGNAMES_ENABLED);
         } else {
-            return Mask.ImageType.DEFAULT_L2_FLAGNAMES_ENABLED;
+            return DEFAULT_L2_FLAGNAMES_ENABLED;
         }
 
     }
 
-
+    public static final boolean DEFAULT_L2_FLAGNAMES_ENABLED = true;
+    public static final String PARAMETER_NAME_MASK_L2_FLAGNAMES_ENABLED = "mask.l2.flagnames.enabled";
 }

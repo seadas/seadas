@@ -2,21 +2,19 @@ package gov.nasa.gsfc.seadas.watermask.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
 import org.esa.snap.core.datamodel.*;
+import org.esa.snap.core.gpf.GPF;
+import org.esa.snap.core.util.ProductUtils;
 import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.actions.AbstractSnapAction;
 import org.esa.snap.rcp.imgfilter.model.Filter;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.operator.FormatDescriptor;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.ActionEvent;
 import java.awt.image.RenderedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +41,7 @@ import java.util.Map;
  * @author Danny Knowles
  * @author Marco Peters
  */
-public class WaterMaskVPI extends AbstractSnapPlugin {
+public class WaterMaskAction extends AbstractSnapAction {
 
     public static final String COMMAND_ID = "Coastline, Land & Water";
     public static final String TOOL_TIP = "Add coastline, land and water masks";
@@ -53,47 +51,6 @@ public class WaterMaskVPI extends AbstractSnapPlugin {
 
     public static final String LAND_WATER_MASK_OP_ALIAS = "LandWaterMask";
     public static final String TARGET_TOOL_BAR_NAME = "layersToolBar";
-
-
-    @Override
-    public void start(final SnapApp snapApp) {
-        final ExecCommand action = snapApp.getCommandManager().createExecCommand(COMMAND_ID,
-                new ToolbarCommand(snapApp));
-
-        String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, WaterMaskVPI.class);
-        //  action.setLargeIcon(UIUtils.loadImageIcon(ICON));
-        try {
-            URL iconUrl = new URL(iconFilename);
-            ImageIcon imageIcon = new ImageIcon(iconUrl);
-            action.setLargeIcon(imageIcon);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-
-        final AbstractButton lwcButton = snapApp.createToolButton(COMMAND_ID);
-        lwcButton.setToolTipText(TOOL_TIP);
-
-        final AbstractButton lwcButton2 = snapApp.createToolButton(COMMAND_ID);
-        lwcButton2.setToolTipText(TOOL_TIP);
-
-        snapApp.getMainFrame().addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                CommandBar layersBar = snapApp.getToolBar(TARGET_TOOL_BAR_NAME);
-                if (layersBar != null) {
-                    layersBar.add(lwcButton);
-                }
-
-
-                CommandBar seadasDefaultBar = snapApp.getToolBar("seadasDeluxeToolsToolBar");
-                if (seadasDefaultBar != null) {
-                    seadasDefaultBar.add(lwcButton2);
-                }
-            }
-
-        });
-    }
 
 
     private void showLandWaterCoastMasks(final SnapApp snapApp) {
@@ -380,35 +337,82 @@ public class WaterMaskVPI extends AbstractSnapPlugin {
         band.setSourceImage(newImage);
     }
 
-    private class ToolbarCommand extends CommandAdapter {
-        private final VisatApp visatApp;
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-        public ToolbarCommand(VisatApp visatApp) {
-            this.visatApp = visatApp;
-        }
-
-        @Override
-        public void actionPerformed(
-                CommandEvent event) {
-            showLandWaterCoastMasks(
-                    visatApp);
-
-        }
-
-        @Override
-        public void updateState(
-                CommandEvent event) {
-            Product selectedProduct = visatApp.getSelectedProduct();
-            boolean productSelected = selectedProduct != null;
-            boolean hasBands = false;
-            boolean hasGeoCoding = false;
-            if (productSelected) {
-                hasBands = selectedProduct.getNumBands() > 0;
-                hasGeoCoding = selectedProduct.getGeoCoding() != null;
-            }
-            event.getCommand().setEnabled(
-                    productSelected && hasBands && hasGeoCoding);
-        }
     }
+
+
+//    @Override
+//    public void start(final SnapApp snapApp) {
+//        final ExecCommand action = snapApp.getCommandManager().createExecCommand(COMMAND_ID,
+//                new ToolbarCommand(snapApp));
+//
+//        String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, WaterMaskAction.class);
+//        //  action.setLargeIcon(UIUtils.loadImageIcon(ICON));
+//        try {
+//            URL iconUrl = new URL(iconFilename);
+//            ImageIcon imageIcon = new ImageIcon(iconUrl);
+//            action.setLargeIcon(imageIcon);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        final AbstractButton lwcButton = snapApp.createToolButton(COMMAND_ID);
+//        lwcButton.setToolTipText(TOOL_TIP);
+//
+//        final AbstractButton lwcButton2 = snapApp.createToolButton(COMMAND_ID);
+//        lwcButton2.setToolTipText(TOOL_TIP);
+//
+//        snapApp.getMainFrame().addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowOpened(WindowEvent e) {
+//                CommandBar layersBar = snapApp.getToolBar(TARGET_TOOL_BAR_NAME);
+//                if (layersBar != null) {
+//                    layersBar.add(lwcButton);
+//                }
+//
+//
+//                CommandBar seadasDefaultBar = snapApp.getToolBar("seadasDeluxeToolsToolBar");
+//                if (seadasDefaultBar != null) {
+//                    seadasDefaultBar.add(lwcButton2);
+//                }
+//            }
+//
+//        });
+//    }
+//
+//
+//    private class ToolbarCommand extends CommandAdapter {
+//        private final SnapApp snapApp;
+//
+//        public ToolbarCommand(SnapApp snapApp) {
+//            this.snapApp = snapApp;
+//        }
+//
+//        @Override
+//        public void actionPerformed(
+//                CommandEvent event) {
+//            showLandWaterCoastMasks(
+//                    snapApp);
+//
+//        }
+//
+//        @Override
+//        public void updateState(
+//                CommandEvent event) {
+//            Product selectedProduct = snapApp.getSelectedProduct();
+//            boolean productSelected = selectedProduct != null;
+//            boolean hasBands = false;
+//            boolean hasGeoCoding = false;
+//            if (productSelected) {
+//                hasBands = selectedProduct.getNumBands() > 0;
+//                hasGeoCoding = selectedProduct.getGeoCoding() != null;
+//            }
+//            event.getCommand().setEnabled(
+//                    productSelected && hasBands && hasGeoCoding);
+//        }
+//    }
 }
 

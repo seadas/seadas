@@ -15,11 +15,11 @@
  */
 package gov.nasa.gsfc.seadas.dataio;
 
-import org.esa.beam.dataio.netcdf.util.NetcdfFileOpener;
-import org.esa.beam.framework.dataio.DecodeQualification;
-import org.esa.beam.framework.dataio.ProductReader;
-import org.esa.beam.framework.dataio.ProductReaderPlugIn;
-import org.esa.beam.util.io.BeamFileFilter;
+import org.esa.snap.core.dataio.DecodeQualification;
+import org.esa.snap.core.dataio.ProductReader;
+import org.esa.snap.core.dataio.ProductReaderPlugIn;
+import org.esa.snap.core.util.io.SnapFileFilter;
+import org.esa.snap.dataio.netcdf.util.NetcdfFileOpener;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 
@@ -169,13 +169,13 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
     }
 
     @Override
-    public BeamFileFilter getProductFileFilter() {
+    public SnapFileFilter getProductFileFilter() {
         String[] formatNames = getFormatNames();
         String formatName = "";
         if (formatNames.length > 0) {
             formatName = formatNames[0];
         }
-        return new BeamFileFilter(formatName, getDefaultFileExtensions(), getDescription(null));
+        return new SnapFileFilter(formatName, getDefaultFileExtensions(), getDescription(null));
     }
 
     /**
