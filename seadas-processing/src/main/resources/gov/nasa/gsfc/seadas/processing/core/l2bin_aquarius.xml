@@ -152,11 +152,7 @@
             <name>fit</name>
             <value></value>
             <default></default>
-            <description>{"C", "L", "B", "Q"}
-                "C" - constant fit (1 parameter)
-                "L" - linear fit (2 parameters)
-                "B" - bilinear fit (3 parameters)
-                "Q" - quadratic fit (4 parameters)
+            <description>Fit: C=constant, L=linear, B=bilinear, Q=quadratic
             </description>
             <validValue>
                 <value>C</value>
