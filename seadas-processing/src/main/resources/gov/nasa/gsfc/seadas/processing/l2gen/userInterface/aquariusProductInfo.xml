@@ -1,830 +1,11 @@
 <productList>
-    <product name="rad_TaV">
-        <algorithm>
-            <prefix>rad_Tav</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta V polarization</description>
-        </algorithm>
-    </product>
-    <product name="rad_TaH">
-        <algorithm>
-            <prefix>rad_TaH</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta H polarization</description>
-        </algorithm>
-    </product>
-    <product name="rad_Ta3">
-        <algorithm>
-            <prefix>rad_Ta3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_TfV">
-        <algorithm>
-            <prefix>rad_TfV</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta V polarization (rfi filtered)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TfH">
-        <algorithm>
-            <prefix>rad_TfH</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta H polarization (rfi filtered)</description>
-        </algorithm>
-    </product>
-    <product name="rad_Tf3">
-        <algorithm>
-            <prefix>rad_Tf3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta 3rd Stokes (rfi filtered)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TaV0">
-        <algorithm>
-            <prefix>rad_TaV0</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta V polar (no exp drift)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TaH0">
-        <algorithm>
-            <prefix>rad_TaH0</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta H polar (no exp drift)</description>
-        </algorithm>
-    </product>
-    <product name="rad_Ta30">
-        <algorithm>
-            <prefix>rad_Ta30</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta 3rd Stokes (no exp drift)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TfV0">
-        <algorithm>
-            <prefix>rad_TfV0</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta V (rfi filtered</description>
-        </algorithm>
-    </product>
-    <product name="rad_TfH0">
-        <algorithm>
-            <prefix>rad_TfH0</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta H (rfi filtered</description>
-        </algorithm>
-    </product>
-    <product name="rad_Tf30">
-        <algorithm>
-            <prefix>rad_Tf30</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta 3 (rfi filtered</description>
-        </algorithm>
-    </product>
-    <product name="rad_toi_V">
-        <algorithm>
-            <prefix>rad_toi_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer TOI Tb V polarization</description>
-        </algorithm>
-    </product>
-    <product name="rad_toi_H">
-        <algorithm>
-            <prefix>rad_toi_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer TOI Tb H polarization</description>
-        </algorithm>
-    </product>
-    <product name="rad_toi_3">
-        <algorithm>
-            <prefix>rad_toi_3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer TOI Tb 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_toa_V_nolc">
-        <algorithm>
-            <prefix>rad_toa_V_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer TOA Tb V polarization (nolc)</description>
-        </algorithm>
-    </product>
-    <product name="rad_toa_H_nolc">
-        <algorithm>
-            <prefix>rad_toa_H_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer TOA Tb H polarization (nolc)</description>
-        </algorithm>
-    </product>
-    <product name="rad_toa_V">
-        <algorithm>
-            <prefix>rad_toa_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer TOA Tb V polarization</description>
-        </algorithm>
-    </product>
-    <product name="rad_toa_H">
-        <algorithm>
-            <prefix>rad_toa_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer TOA Tb H polarization</description>
-        </algorithm>
-    </product>
-    <product name="rad_far_TaH">
-        <algorithm>
-            <prefix>rad_far_TaH</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Degrees</units>
-            <description>Radiometer Faraday Angle</description>
-        </algorithm>
-    </product>
-    <product name="rad_galact_Ta_dir_V">
-        <algorithm>
-            <prefix>rad_galact_Ta_dir_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Galactic Direct Corr V polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_galact_Ta_dir_H">
-        <algorithm>
-            <prefix>rad_galact_Ta_dir_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Galactic Direct Corr H polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_galact_Ta_dir_3">
-        <algorithm>
-            <prefix>rad_galact_Ta_dir_3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Galactic Direct Corr 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_galact_Ta_ref_V">
-        <algorithm>
-            <prefix>rad_galact_Ta_ref_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Galactic Reflect Corr V polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_galact_Ta_ref_H">
-        <algorithm>
-            <prefix>rad_galact_Ta_ref_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Galactic Reflect Corr H polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_galact_Ta_ref_3">
-        <algorithm>
-            <prefix>rad_galact_Ta_ref_3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Galactic Reflect Corr 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_dir_V">
-        <algorithm>
-            <prefix>rad_solar_Ta_dir_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Direct Corr V polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_dir_H">
-        <algorithm>
-            <prefix>rad_solar_Ta_dir_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Direct Corr H polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_dir_3">
-        <algorithm>
-            <prefix>rad_solar_Ta_dir_3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Direct Corr 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_ref_V">
-        <algorithm>
-            <prefix>rad_solar_Ta_ref_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Reflect Corr V polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_ref_H">
-        <algorithm>
-            <prefix>rad_solar_Ta_ref_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Reflect Corr H polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_ref_3">
-        <algorithm>
-            <prefix>rad_solar_Ta_ref_3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Reflect Corr 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_bak_V">
-        <algorithm>
-            <prefix>rad_solar_Ta_bak_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Back Scattered V polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_bak_H">
-        <algorithm>
-            <prefix>rad_solar_Ta_bak_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Back Scattered H polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_solar_Ta_bak_3">
-        <algorithm>
-            <prefix>rad_solar_Ta_bak_3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Solar Back Scattered 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_moon_Ta_ref_V">
-        <algorithm>
-            <prefix>rad_moon_Ta_ref_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Lunar Reflect Corr V polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_moon_Ta_ref_H">
-        <algorithm>
-            <prefix>rad_moon_Ta_ref_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Lunar Reflect Corr H polar</description>
-        </algorithm>
-    </product>
-    <product name="rad_moon_Ta_ref_3">
-        <algorithm>
-            <prefix>rad_moon_Ta_ref_3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Lunar Reflect Corr 3rd Stokes</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbV_nolc">
-        <algorithm>
-            <prefix>rad_TbV_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Earth surface Tb V polarization (no lc)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbH_nolc">
-        <algorithm>
-            <prefix>rad_TbH_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Earth surface Tb H polarization (nolc)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbV_rc_nolc">
-        <algorithm>
-            <prefix>rad_TbV_rc_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb V polarization (roughness corr, nolc)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbH_rc_nolc">
-        <algorithm>
-            <prefix>rad_TbH_rc_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb H polarization (roughness corr, nolc)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbV_rc">
-        <algorithm>
-            <prefix>rad_TbV_rc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb V polarization (rough corr)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbH_rc">
-        <algorithm>
-            <prefix>rad_TbH_rc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb H polarization (rough corr)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbV">
-        <algorithm>
-            <prefix>rad_TbV</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb V polarization (no rough corr)</description>
-        </algorithm>
-    </product>
-    <product name="rad_TbH">
-        <algorithm>
-            <prefix>rad_TbH</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb H polarization (no rough corr)</description>
-        </algorithm>
-    </product>
-    <product name="rad_Tb_consistency_nolc">
-        <algorithm>
-            <prefix>rad_Tb_consistency_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb consistency check (nolc)</description>
-        </algorithm>
-    </product>
-    <product name="rad_Tb_consistency">
-        <algorithm>
-            <prefix>rad_Tb_consistency</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Tb consistency check</description>
-        </algorithm>
-    </product>
-    <product name="SSS_nolc">
-        <algorithm>
-            <prefix>SSS_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>PSU</units>
-            <description>Sea Surface Salinity (nolc)</description>
-        </algorithm>
-    </product>
-    <product name="SSS_error_nolc">
-        <algorithm>
-            <prefix>SSS_error_nolc</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>PSU</units>
-            <description>Sea Surface Salinity error (nolc)</description>
-        </algorithm>
-    </product>
-    <product name="SSS">
-        <algorithm>
-            <prefix>SSS</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>PSU</units>
-            <description>Sea Surface Salinity</description>
-        </algorithm>
-    </product>
-    <product name="SSS_error">
-        <algorithm>
-            <prefix>SSS_error</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>PSU</units>
-            <description>Sea Surface Salinity error</description>
-        </algorithm>
-    </product>
-    <product name="rad_exp_TaV">
-        <algorithm>
-            <prefix>rad_exp_TaV</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta V (expected)</description>
-        </algorithm>
-    </product>
-    <product name="rad_exp_TaH">
-        <algorithm>
-            <prefix>rad_exp_TaH</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta H (expected)</description>
-        </algorithm>
-    </product>
-    <product name="rad_exp_Ta3">
-        <algorithm>
-            <prefix>rad_exp_Ta3</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Ta 3rd Stokes (expected)</description>
-        </algorithm>
-    </product>
-    <product name="rad_exp_TbV">
-        <algorithm>
-            <prefix>rad_exp_TbV</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Tb V (expected)</description>
-        </algorithm>
-    </product>
-    <product name="rad_exp_TbH">
-        <algorithm>
-            <prefix>rad_exp_TbH</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Tb H (expected)</description>
-        </algorithm>
-    </product>
-    <product name="rad_exp_TbV0">
-        <algorithm>
-            <prefix>rad_exp_TbV0</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Tb V (expected smooth)</description>
-        </algorithm>
-    </product>
-    <product name="rad_exp_TbH0">
-        <algorithm>
-            <prefix>rad_exp_TbH0</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Radiometer Tb H (expected smooth)</description>
-        </algorithm>
-    </product>
-    <product name="scat_VV_ant">
-        <algorithm>
-            <prefix>scat_VV_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOI Scatterometer NRCS for VV polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_HH_ant">
-        <algorithm>
-            <prefix>scat_HH_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOI Scatterometer NRCS for HH polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_HV_ant">
-        <algorithm>
-            <prefix>scat_HV_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOI Scatterometer NRCS for HV polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_VH_ant">
-        <algorithm>
-            <prefix>scat_VH_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOI Scatterometer NRCS for VH polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_VV_toa">
-        <algorithm>
-            <prefix>scat_VV_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOA Scatterometer NRCS for VV polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_HH_toa">
-        <algorithm>
-            <prefix>scat_HH_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOA Scatterometer NRCS for HH polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_HV_toa">
-        <algorithm>
-            <prefix>scat_HV_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOA Scatterometer NRCS for HV polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_VH_toa">
-        <algorithm>
-            <prefix>scat_VH_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOA Scatterometer NRCS for VH polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_VV_exp">
-        <algorithm>
-            <prefix>scat_VV_exp</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>Expected Sigma0 for VV polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_HH_exp">
-        <algorithm>
-            <prefix>scat_HH_exp</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>Expected Sigma0 for HH polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_HV_exp">
-        <algorithm>
-            <prefix>scat_HV_exp</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>Expected Sigma0 for HV polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_VH_exp">
-        <algorithm>
-            <prefix>scat_VH_exp</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>Expected Sigma0 for VH polarization</description>
-        </algorithm>
-    </product>
-    <product name="scat_tot_toa">
-        <algorithm>
-            <prefix>scat_tot_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>db</units>
-            <description>TOA Scatterometer (Total)</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_VV_ant">
-        <algorithm>
-            <prefix>Kpc_VV_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for ANT VV NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_HH_ant">
-        <algorithm>
-            <prefix>Kpc_HH_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for ANT HH NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_HV_ant">
-        <algorithm>
-            <prefix>Kpc_HV_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for ANT HV NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_VH_ant">
-        <algorithm>
-            <prefix>Kpc_VH_ant</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for ANT VH NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_VV_toa">
-        <algorithm>
-            <prefix>Kpc_VV_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for TOA VV NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_HH_toa">
-        <algorithm>
-            <prefix>Kpc_HH_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for TOA HH NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_HV_toa">
-        <algorithm>
-            <prefix>Kpc_HV_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for TOA HV NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_VH_toa">
-        <algorithm>
-            <prefix>Kpc_VH_toa</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Kpc statistical uncertainty for TOA VH NRCS</description>
-        </algorithm>
-    </product>
-    <product name="Kpc_total">
-        <algorithm>
-            <prefix>Kpc_total</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units></units>
-            <description>Statistical uncertainty for total power NRCS</description>
-        </algorithm>
-    </product>
-    <product name="wind_uncertainty">
-        <algorithm>
-            <prefix>wind_uncertainty</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>meters</units>
-            <description>Estimated wind speed error</description>
-        </algorithm>
-    </product>
-    <product name="scat_wind_speed">
-        <algorithm>
-            <prefix>scat_wind_speed</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>meters</units>
-            <description>Scatterometer Wind Speed</description>
-        </algorithm>
-    </product>
-    <product name="scat_esurf_V">
-        <algorithm>
-            <prefix>scat_esurf_V</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>excess surface scatterometer emissivity (V pol)</description>
-        </algorithm>
-    </product>
-    <product name="scat_esurf_H">
-        <algorithm>
-            <prefix>scat_esurf_H</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>excess surface scatterometer emissivity (H pol)</description>
-        </algorithm>
-    </product>
-    <product name="scat_esurf_V_uncertainty">
-        <algorithm>
-            <prefix>scat_esurf_V_uncertainty</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Uncertainty in surface emmissivity (V-pol)</description>
-        </algorithm>
-    </product>
-    <product name="scat_esurf_H_uncertainty">
-        <algorithm>
-            <prefix>scat_esurf_H_uncertainty</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Uncertainty in surface emmissivity (H-pol)</description>
-        </algorithm>
-    </product>
-    <product name="anc_wind_speed">
-        <algorithm>
-            <prefix>anc_wind_speed</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>meters</units>
-            <description>Ancillary Wind Speed 10m above surface</description>
-        </algorithm>
-    </product>
-    <product name="anc_wind_dir">
-        <algorithm>
-            <prefix>anc_wind_dir</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>degrees</units>
-            <description>Ancillary Wind Direction 10m above surface</description>
-        </algorithm>
-    </product>
-    <product name="anc_surface_temp">
-        <algorithm>
-            <prefix>anc_surface_temp</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Surface Temperature</description>
-        </algorithm>
-    </product>
-    <product name="anc_surface_pressure">
-        <algorithm>
-            <prefix>anc_surface_pressure</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Pascals</units>
-            <description>Surface Pressure</description>
-        </algorithm>
-    </product>
     <product name="anc_cwat">
         <algorithm>
             <prefix>anc_cwat</prefix>
             <suffix></suffix>
             <parameterType></parameterType>
-            <units>kg m-2</units>
-            <description>Cloud Water</description>
+            <units></units>
+            <description></description>
         </algorithm>
     </product>
     <product name="anc_sm">
@@ -833,7 +14,70 @@
             <suffix></suffix>
             <parameterType></parameterType>
             <units></units>
-            <description>Soil Moisture</description>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_SSS_argo">
+        <algorithm>
+            <prefix>anc_SSS_argo</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_SSS_hycom">
+        <algorithm>
+            <prefix>anc_SSS_hycom</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_subsurf_temp">
+        <algorithm>
+            <prefix>anc_subsurf_temp</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_surface_pressure">
+        <algorithm>
+            <prefix>anc_surface_pressure</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_surface_temp_err">
+        <algorithm>
+            <prefix>anc_surface_temp_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_surface_temp">
+        <algorithm>
+            <prefix>anc_surface_temp</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_surface_temp_SSS_sens">
+        <algorithm>
+            <prefix>anc_surface_temp_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
         </algorithm>
     </product>
     <product name="anc_swe">
@@ -841,17 +85,35 @@
             <prefix>anc_swe</prefix>
             <suffix></suffix>
             <parameterType></parameterType>
-            <units>kg</units>
-            <description>Snow Water Equivalent</description>
+            <units></units>
+            <description></description>
         </algorithm>
     </product>
-    <product name="anc_SSS">
+    <product name="anc_swh">
         <algorithm>
-            <prefix>anc_SSS</prefix>
+            <prefix>anc_swh</prefix>
             <suffix></suffix>
             <parameterType></parameterType>
-            <units>PSU</units>
-            <description>Sea surface salinity climatology</description>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_Tb_dw">
+        <algorithm>
+            <prefix>anc_Tb_dw</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_Tb_up">
+        <algorithm>
+            <prefix>anc_Tb_up</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
         </algorithm>
     </product>
     <product name="anc_trans">
@@ -860,34 +122,457 @@
             <suffix></suffix>
             <parameterType></parameterType>
             <units></units>
-            <description>Atmospheric Transmittance</description>
+            <description></description>
         </algorithm>
     </product>
-    <product name="anc_Tb_up">
+    <product name="anc_wind_dir">
         <algorithm>
-            <prefix>anc_Tb_up</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Upwelling atmospheric brightness temperature</description>
-        </algorithm>
-    </product>
-    <product name="anc_Tb_dw">
-        <algorithm>
-            <prefix>anc_Tb_dw</prefix>
-            <suffix></suffix>
-            <parameterType></parameterType>
-            <units>Kelvin</units>
-            <description>Downwelling atmospheric brightness temperature</description>
-        </algorithm>
-    </product>
-    <product name="rad_land_frac">
-        <algorithm>
-            <prefix>rad_land_frac</prefix>
+            <prefix>anc_wind_dir</prefix>
             <suffix></suffix>
             <parameterType></parameterType>
             <units></units>
-            <description>Fraction of land contamination (radiometer)</description>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="anc_wind_speed">
+        <algorithm>
+            <prefix>anc_wind_speed</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="density">
+        <algorithm>
+            <prefix>density</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="EIA_err">
+        <algorithm>
+            <prefix>EIA_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="EIA_SSS_sens">
+        <algorithm>
+            <prefix>EIA_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="IU_coupling_err">
+        <algorithm>
+            <prefix>IU_coupling_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="IU_coupling_SSS_sens">
+        <algorithm>
+            <prefix>IU_coupling_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HH_ant">
+        <algorithm>
+            <prefix>Kpc_HH_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HH_toa">
+        <algorithm>
+            <prefix>Kpc_HH_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HV_ant">
+        <algorithm>
+            <prefix>Kpc_HV_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_HV_toa">
+        <algorithm>
+            <prefix>Kpc_HV_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_total">
+        <algorithm>
+            <prefix>Kpc_total</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VH_ant">
+        <algorithm>
+            <prefix>Kpc_VH_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VH_toa">
+        <algorithm>
+            <prefix>Kpc_VH_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VV_ant">
+        <algorithm>
+            <prefix>Kpc_VV_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="Kpc_VV_toa">
+        <algorithm>
+            <prefix>Kpc_VV_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="NEDT_3_err">
+        <algorithm>
+            <prefix>NEDT_3_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="NEDT_3_SSS_sens">
+        <algorithm>
+            <prefix>NEDT_3_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="NEDT_H_err">
+        <algorithm>
+            <prefix>NEDT_H_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="NEDT_H_SSS_sens">
+        <algorithm>
+            <prefix>NEDT_H_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="NEDT_V_err">
+        <algorithm>
+            <prefix>NEDT_V_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="NEDT_V_SSS_sens">
+        <algorithm>
+            <prefix>NEDT_V_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_dtb_sst_wspd_H">
+        <algorithm>
+            <prefix>rad_dtb_sst_wspd_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_dtb_sst_wspd_V">
+        <algorithm>
+            <prefix>rad_dtb_sst_wspd_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_Ta3_hhh">
+        <algorithm>
+            <prefix>rad_exp_Ta3_hhh</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_Ta3">
+        <algorithm>
+            <prefix>rad_exp_Ta3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TaH_hhh">
+        <algorithm>
+            <prefix>rad_exp_TaH_hhh</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TaH">
+        <algorithm>
+            <prefix>rad_exp_TaH</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TaV_hhh">
+        <algorithm>
+            <prefix>rad_exp_TaV_hhh</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TaV">
+        <algorithm>
+            <prefix>rad_exp_TaV</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbH0">
+        <algorithm>
+            <prefix>rad_exp_TbH0</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbH">
+        <algorithm>
+            <prefix>rad_exp_TbH</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbV0">
+        <algorithm>
+            <prefix>rad_exp_TbV0</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_exp_TbV">
+        <algorithm>
+            <prefix>rad_exp_TbV</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_far_rot_ang">
+        <algorithm>
+            <prefix>rad_far_rot_ang</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_dTa_H">
+        <algorithm>
+            <prefix>rad_galact_dTa_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_dTa_V">
+        <algorithm>
+            <prefix>rad_galact_dTa_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_dir_3">
+        <algorithm>
+            <prefix>rad_galact_Ta_dir_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_dir_H">
+        <algorithm>
+            <prefix>rad_galact_Ta_dir_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_dir_V">
+        <algorithm>
+            <prefix>rad_galact_Ta_dir_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_err">
+        <algorithm>
+            <prefix>rad_galact_Ta_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_3">
+        <algorithm>
+            <prefix>rad_galact_Ta_ref_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_GO_H">
+        <algorithm>
+            <prefix>rad_galact_Ta_ref_GO_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_GO_V">
+        <algorithm>
+            <prefix>rad_galact_Ta_ref_GO_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_H">
+        <algorithm>
+            <prefix>rad_galact_Ta_ref_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_ref_V">
+        <algorithm>
+            <prefix>rad_galact_Ta_ref_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_galact_Ta_SSS_sens">
+        <algorithm>
+            <prefix>rad_galact_Ta_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_geo_rot_ang">
+        <algorithm>
+            <prefix>rad_geo_rot_ang</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_hhh_wind_speed">
+        <algorithm>
+            <prefix>rad_hhh_wind_speed</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_hh_wind_speed">
+        <algorithm>
+            <prefix>rad_hh_wind_speed</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
         </algorithm>
     </product>
     <product name="rad_ice_frac">
@@ -896,25 +581,682 @@
             <suffix></suffix>
             <parameterType></parameterType>
             <units></units>
-            <description>Fraction of ice contamination (radiometer)</description>
+            <description></description>
         </algorithm>
     </product>
-    <product name="rad_gice">
+    <product name="rad_land_frac">
         <algorithm>
-            <prefix>rad_gice</prefix>
+            <prefix>rad_land_frac</prefix>
             <suffix></suffix>
             <parameterType></parameterType>
             <units></units>
-            <description>Gain-smoothed ice fraction (radiometer)</description>
+            <description></description>
         </algorithm>
     </product>
-    <product name="scat_land_frac">
+    <product name="rad_moon_Ta_err">
         <algorithm>
-            <prefix>scat_land_frac</prefix>
+            <prefix>rad_moon_Ta_err</prefix>
             <suffix></suffix>
             <parameterType></parameterType>
             <units></units>
-            <description>Fraction of land contamination (scatterometer)</description>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_moon_Ta_ref_3">
+        <algorithm>
+            <prefix>rad_moon_Ta_ref_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_moon_Ta_ref_H">
+        <algorithm>
+            <prefix>rad_moon_Ta_ref_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_moon_Ta_ref_V">
+        <algorithm>
+            <prefix>rad_moon_Ta_ref_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_moon_Ta_SSS_sens">
+        <algorithm>
+            <prefix>rad_moon_Ta_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_pol_rot_ang">
+        <algorithm>
+            <prefix>rad_pol_rot_ang</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_bak_3">
+        <algorithm>
+            <prefix>rad_solar_Ta_bak_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_bak_H">
+        <algorithm>
+            <prefix>rad_solar_Ta_bak_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_bak_V">
+        <algorithm>
+            <prefix>rad_solar_Ta_bak_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_dir_3">
+        <algorithm>
+            <prefix>rad_solar_Ta_dir_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_dir_H">
+        <algorithm>
+            <prefix>rad_solar_Ta_dir_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_dir_V">
+        <algorithm>
+            <prefix>rad_solar_Ta_dir_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_ref_3">
+        <algorithm>
+            <prefix>rad_solar_Ta_ref_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_ref_H">
+        <algorithm>
+            <prefix>rad_solar_Ta_ref_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_solar_Ta_ref_V">
+        <algorithm>
+            <prefix>rad_solar_Ta_ref_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_Ta30">
+        <algorithm>
+            <prefix>rad_Ta30</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_Ta3">
+        <algorithm>
+            <prefix>rad_Ta3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TaH0">
+        <algorithm>
+            <prefix>rad_TaH0</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TaH">
+        <algorithm>
+            <prefix>rad_TaH</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TaV0">
+        <algorithm>
+            <prefix>rad_TaV0</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TaV">
+        <algorithm>
+            <prefix>rad_TaV</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_Tb_consistency_nolc">
+        <algorithm>
+            <prefix>rad_Tb_consistency_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_Tb_consistency">
+        <algorithm>
+            <prefix>rad_Tb_consistency</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH_nolc">
+        <algorithm>
+            <prefix>rad_TbH_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH">
+        <algorithm>
+            <prefix>rad_TbH</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH_rc_nolc">
+        <algorithm>
+            <prefix>rad_TbH_rc_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbH_rc">
+        <algorithm>
+            <prefix>rad_TbH_rc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_ice_contam_err">
+        <algorithm>
+            <prefix>rad_TbV_ice_contam_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_ice_contam_SSS_sens">
+        <algorithm>
+            <prefix>rad_TbV_ice_contam_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_land_contam_err">
+        <algorithm>
+            <prefix>rad_TbV_land_contam_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_land_contam_SSS_sens">
+        <algorithm>
+            <prefix>rad_TbV_land_contam_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_nolc">
+        <algorithm>
+            <prefix>rad_TbV_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV">
+        <algorithm>
+            <prefix>rad_TbV</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_rc_nolc">
+        <algorithm>
+            <prefix>rad_TbV_rc_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TbV_rc">
+        <algorithm>
+            <prefix>rad_TbV_rc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_Tf30">
+        <algorithm>
+            <prefix>rad_Tf30</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_Tf3">
+        <algorithm>
+            <prefix>rad_Tf3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TfH0">
+        <algorithm>
+            <prefix>rad_TfH0</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TfH">
+        <algorithm>
+            <prefix>rad_TfH</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TfV0">
+        <algorithm>
+            <prefix>rad_TfV0</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_TfV">
+        <algorithm>
+            <prefix>rad_TfV</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_H_nolc">
+        <algorithm>
+            <prefix>rad_toa_H_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_H">
+        <algorithm>
+            <prefix>rad_toa_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_V_nolc">
+        <algorithm>
+            <prefix>rad_toa_V_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_toa_V">
+        <algorithm>
+            <prefix>rad_toa_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_toi_3">
+        <algorithm>
+            <prefix>rad_toi_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_toi_H">
+        <algorithm>
+            <prefix>rad_toi_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_toi_V">
+        <algorithm>
+            <prefix>rad_toi_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_wind_dir_rand_err">
+        <algorithm>
+            <prefix>rad_wind_dir_rand_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_wind_dir_rand_SSS_sens">
+        <algorithm>
+            <prefix>rad_wind_dir_rand_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_wind_speed_rand_err">
+        <algorithm>
+            <prefix>rad_wind_speed_rand_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_wind_speed_rand_SSS_sens">
+        <algorithm>
+            <prefix>rad_wind_speed_rand_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_wind_speed_syst_err">
+        <algorithm>
+            <prefix>rad_wind_speed_syst_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rad_wind_speed_syst_SSS_sens">
+        <algorithm>
+            <prefix>rad_wind_speed_syst_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="RFI_level_err">
+        <algorithm>
+            <prefix>RFI_level_err</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="RFI_level_SSS_sens">
+        <algorithm>
+            <prefix>RFI_level_SSS_sens</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_anom1">
+        <algorithm>
+            <prefix>rim_anom1</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_anom3">
+        <algorithm>
+            <prefix>rim_anom3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_anom5">
+        <algorithm>
+            <prefix>rim_anom5</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_anom">
+        <algorithm>
+            <prefix>rim_anom</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_bf_irr">
+        <algorithm>
+            <prefix>rim_bf_irr</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_irr">
+        <algorithm>
+            <prefix>rim_irr</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_pss">
+        <algorithm>
+            <prefix>rim_pss</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="rim_sss">
+        <algorithm>
+            <prefix>rim_sss</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_H">
+        <algorithm>
+            <prefix>scat_esurf_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_H_uncertainty">
+        <algorithm>
+            <prefix>scat_esurf_H_uncertainty</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_V">
+        <algorithm>
+            <prefix>scat_esurf_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_esurf_V_uncertainty">
+        <algorithm>
+            <prefix>scat_esurf_V_uncertainty</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_HH_ant">
+        <algorithm>
+            <prefix>scat_HH_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_HH_exp">
+        <algorithm>
+            <prefix>scat_HH_exp</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_HH_toa">
+        <algorithm>
+            <prefix>scat_HH_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_HV_ant">
+        <algorithm>
+            <prefix>scat_HV_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_HV_exp">
+        <algorithm>
+            <prefix>scat_HV_exp</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_HV_toa">
+        <algorithm>
+            <prefix>scat_HV_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
         </algorithm>
     </product>
     <product name="scat_ice_frac">
@@ -923,7 +1265,286 @@
             <suffix></suffix>
             <parameterType></parameterType>
             <units></units>
-            <description>Fraction of ice contamination (scatterometer)</description>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_land_frac">
+        <algorithm>
+            <prefix>scat_land_frac</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_tot_toa">
+        <algorithm>
+            <prefix>scat_tot_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_VH_ant">
+        <algorithm>
+            <prefix>scat_VH_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_VH_exp">
+        <algorithm>
+            <prefix>scat_VH_exp</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_VH_toa">
+        <algorithm>
+            <prefix>scat_VH_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_VV_ant">
+        <algorithm>
+            <prefix>scat_VV_ant</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_VV_exp">
+        <algorithm>
+            <prefix>scat_VV_exp</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_VV_toa">
+        <algorithm>
+            <prefix>scat_VV_toa</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="scat_wind_speed">
+        <algorithm>
+            <prefix>scat_wind_speed</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="spiciness">
+        <algorithm>
+            <prefix>spiciness</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS">
+        <algorithm>
+            <prefix>SSS</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_matchup">
+        <algorithm>
+            <prefix>SSS_matchup</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_nolc">
+        <algorithm>
+            <prefix>SSS_nolc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_EIA">
+        <algorithm>
+            <prefix>SSS_unc_EIA</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_galact_Ta">
+        <algorithm>
+            <prefix>SSS_unc_galact_Ta</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_IU_coupling">
+        <algorithm>
+            <prefix>SSS_unc_IU_coupling</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_moon_Ta">
+        <algorithm>
+            <prefix>SSS_unc_moon_Ta</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_NEDT_3">
+        <algorithm>
+            <prefix>SSS_unc_NEDT_3</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_NEDT_H">
+        <algorithm>
+            <prefix>SSS_unc_NEDT_H</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_NEDT_V">
+        <algorithm>
+            <prefix>SSS_unc_NEDT_V</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc">
+        <algorithm>
+            <prefix>SSS_unc</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_ran">
+        <algorithm>
+            <prefix>SSS_unc_ran</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_RFI_level">
+        <algorithm>
+            <prefix>SSS_unc_RFI_level</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_surface_temp">
+        <algorithm>
+            <prefix>SSS_unc_surface_temp</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_sys">
+        <algorithm>
+            <prefix>SSS_unc_sys</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_TbV_ice_contam">
+        <algorithm>
+            <prefix>SSS_unc_TbV_ice_contam</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_TbV_land_contam">
+        <algorithm>
+            <prefix>SSS_unc_TbV_land_contam</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_wind_dir_rand">
+        <algorithm>
+            <prefix>SSS_unc_wind_dir_rand</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_wind_speed_rand">
+        <algorithm>
+            <prefix>SSS_unc_wind_speed_rand</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="SSS_unc_wind_speed_syst">
+        <algorithm>
+            <prefix>SSS_unc_wind_speed_syst</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
+        </algorithm>
+    </product>
+    <product name="wind_uncertainty">
+        <algorithm>
+            <prefix>wind_uncertainty</prefix>
+            <suffix></suffix>
+            <parameterType></parameterType>
+            <units></units>
+            <description></description>
         </algorithm>
     </product>
 </productList>
