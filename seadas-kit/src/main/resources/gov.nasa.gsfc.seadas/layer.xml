@@ -3,15 +3,15 @@
 <filesystem>
 
     <folder name="Menu">
-        <folder name="Optical">
+        <folder name="SeaDAS">
             <attr name="position" intvalue="500"/>
-            <folder name="Preprocessing">
+            <folder name="OC Processing">
                 <attr name="position" intvalue="200"/>
             </folder>
-            <folder name="Thematic Land Processing">
+            <folder name="Contour Lines">
                 <attr name="position" intvalue="300"/>
             </folder>
-            <folder name="Thematic Water Processing">
+            <folder name="SeaDAS Reader">
                 <attr name="position" intvalue="400"/>
             </folder>
 

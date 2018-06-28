@@ -2,17 +2,10 @@ package gov.nasa.gsfc.seadas.watermask.ui;
 
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import com.jidesoft.action.CommandBar;
 import gov.nasa.gsfc.seadas.watermask.util.ResourceInstallationUtils;
-import org.esa.beam.framework.datamodel.*;
-import org.esa.beam.framework.gpf.GPF;
-import org.esa.beam.framework.ui.command.CommandAdapter;
-import org.esa.beam.framework.ui.command.CommandEvent;
-import org.esa.beam.framework.ui.command.ExecCommand;
-import org.esa.beam.util.ProductUtils;
-import org.esa.beam.visat.AbstractVisatPlugIn;
-import org.esa.beam.visat.VisatApp;
-import org.esa.beam.visat.actions.imgfilter.model.Filter;
+import org.esa.snap.core.datamodel.*;
+import org.esa.snap.rcp.SnapApp;
+import org.esa.snap.rcp.imgfilter.model.Filter;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -50,7 +43,7 @@ import java.util.Map;
  * @author Danny Knowles
  * @author Marco Peters
  */
-public class WaterMaskVPI extends AbstractVisatPlugIn {
+public class WaterMaskVPI extends AbstractSnapPlugin {
 
     public static final String COMMAND_ID = "Coastline, Land & Water";
     public static final String TOOL_TIP = "Add coastline, land and water masks";
@@ -63,9 +56,9 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
 
 
     @Override
-    public void start(final VisatApp visatApp) {
-        final ExecCommand action = visatApp.getCommandManager().createExecCommand(COMMAND_ID,
-                new ToolbarCommand(visatApp));
+    public void start(final SnapApp snapApp) {
+        final ExecCommand action = snapApp.getCommandManager().createExecCommand(COMMAND_ID,
+                new ToolbarCommand(snapApp));
 
         String iconFilename = ResourceInstallationUtils.getIconFilename(ICON, WaterMaskVPI.class);
         //  action.setLargeIcon(UIUtils.loadImageIcon(ICON));
@@ -78,22 +71,22 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
         }
 
 
-        final AbstractButton lwcButton = visatApp.createToolButton(COMMAND_ID);
+        final AbstractButton lwcButton = snapApp.createToolButton(COMMAND_ID);
         lwcButton.setToolTipText(TOOL_TIP);
 
-        final AbstractButton lwcButton2 = visatApp.createToolButton(COMMAND_ID);
+        final AbstractButton lwcButton2 = snapApp.createToolButton(COMMAND_ID);
         lwcButton2.setToolTipText(TOOL_TIP);
 
-        visatApp.getMainFrame().addWindowListener(new WindowAdapter() {
+        snapApp.getMainFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                CommandBar layersBar = visatApp.getToolBar(TARGET_TOOL_BAR_NAME);
+                CommandBar layersBar = snapApp.getToolBar(TARGET_TOOL_BAR_NAME);
                 if (layersBar != null) {
                     layersBar.add(lwcButton);
                 }
 
 
-                CommandBar seadasDefaultBar = visatApp.getToolBar("seadasDeluxeToolsToolBar");
+                CommandBar seadasDefaultBar = snapApp.getToolBar("seadasDeluxeToolsToolBar");
                 if (seadasDefaultBar != null) {
                     seadasDefaultBar.add(lwcButton2);
                 }
@@ -103,9 +96,9 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
     }
 
 
-    private void showLandWaterCoastMasks(final VisatApp visatApp) {
+    private void showLandWaterCoastMasks(final SnapApp snapApp) {
 
-        final Product product = visatApp.getSelectedProduct();
+        final Product product = snapApp.getSelectedProduct(SnapApp.SelectionSourceHint.AUTO);
         if (product != null) {
             final ProductNodeGroup<Mask> maskGroup = product.getMaskGroup();
             final ProductNodeGroup<Band> bandGroup = product.getBandGroup();
@@ -198,7 +191,7 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
 
                     if (sourceFileInfo.isEnabled()) {
 
-                        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(visatApp.getMainFrame(),
+                        ProgressMonitorSwingWorker pmSwingWorker = new ProgressMonitorSwingWorker(snapApp.getMainFrame(),
                                 "Computing Masks") {
 
                             @Override
@@ -339,9 +332,9 @@ public class WaterMaskVPI extends AbstractVisatPlugIn {
                                     }
 
 
-//                    visatApp.setSelectedProductNode(waterFractionBand);
+//                    snapApp.setSelectedProductNode(waterFractionBand);
 
-//        ProductSceneView selectedProductSceneView = visatApp.getSelectedProductSceneView();
+//        ProductSceneView selectedProductSceneView = snapApp.getSelectedProductSceneView();
 //        if (selectedProductSceneView != null) {
 //            RasterDataNode raster = selectedProductSceneView.getRaster();
 //            raster.getOverlayMaskGroup().add(landMask);
