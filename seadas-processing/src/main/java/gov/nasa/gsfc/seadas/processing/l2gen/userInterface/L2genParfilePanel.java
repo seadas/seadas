@@ -45,7 +45,7 @@ public class L2genParfilePanel {
         suiteComboBox = new L2genSuiteComboBox(l2genData);
 
         if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
-            parStringSpecifier.setEditable(false);
+            parStringSpecifier.setEditable(true);
             parStringSpecifier.setToolTip("<html>This parameter text field is not editable for Aquarius.<br>" +
                     "If you need custom files you can use the <b>Load Parameters</b> feature.</html>");
         }
