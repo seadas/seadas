@@ -238,7 +238,35 @@
 
 <hr>
 
+
+
 <a name="COMMAND_LINE_HELP"></a>
+
+
+<h3>Command line example</h3>
+
+<p><pre>1. Run getanc_aquarius.py:
+% getanc_aquarius.py Q2014006082500.L1A_SCI
+
+
+
+2. Copy step 1 output params to parfile called "l2gen.par":
+l2_uncertainties_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/PERT_L2_2014006_13843_V5.0.dat
+rim_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/RIM_CFRSL_20140106_06_CMORPH_V1.2.h5
+sif_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/SIF2014006082500.L2.h5
+sss_matchup_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/N2014006082500_L2_MATCHUP_V2.h5
+suite=V5.0.0
+xrayfile1=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/N201400600_XRAY_GOES_24h.h5
+yancfile1=y2014010606.h5
+yancfile2=y2014010612.h5
+
+
+3. Run l2gen_aquarius (via ocssw_runner):
+% ocssw_runner l2gen_aquarius ifile=Q2014006082500.L1A_SCI ofile=Q2014006081500.L2_SCI_V5.0.0 par=l2gen.par
+
+</pre></p>
+
+<hr>
 
 <h3>l2gen_aquarius Help (Command Line Version)</h3>
 
