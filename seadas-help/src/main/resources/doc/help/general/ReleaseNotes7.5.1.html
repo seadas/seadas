@@ -41,12 +41,11 @@ PRIMARY PACKAGE
 
 
 
-
-
+    
 OBPG SCIENCE PROCESSING CODE AND RELATED GUI
     Now supports Aquarius in both GUI and command line.  The GUI has been simplified and now uses a predefined
     suite (V5.0.0) and automatically retrieves all needed ancillary data.
-    
+
 
     l2gen_aquarius
     ------
@@ -58,6 +57,18 @@ OBPG SCIENCE PROCESSING CODE AND RELATED GUI
         - Updated.
 
 
+    ##############################################################################
+    The radiometer processor source code for the final reprocessing of the Aquarius
+    mission (v5.0), along with instructions for compiling the code is available:
+
+    https://oceandata.sci.gsfc.nasa.gov/ocssw/salinity_code.tar.gz
+
+    This bundle does not include the code for the scatterometer instrument as those
+    codes have not been released by JPL.  The radiometer code uses the files output
+    by the scatterometer processing code as ancillary input.  These processed files
+    are available and the ancillary retrieval scripts provided with SeaDAS will
+    identify and retrieve the appropriate files.
+    ##############################################################################
 
 
         
