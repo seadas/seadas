@@ -59,7 +59,8 @@ public abstract class OCSSWInstallerForm extends JPanel implements CloProgramUI 
                     "OLI",
                     "OSMI",
                     "SEAWIFS",
-                    "VIIRSN"}
+                    "VIIRSN",
+                    "VIIRSJ1"}
     ));
     private static final Set<String> DEFAULT_MISSIONS = new HashSet<String>(Arrays.asList(
             new String[]{

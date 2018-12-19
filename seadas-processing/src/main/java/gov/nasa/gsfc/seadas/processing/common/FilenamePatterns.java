@@ -58,7 +58,7 @@ public class FilenamePatterns {
 
 
         File oFile;
-        if (fileInfo.isMissionId(MissionInfo.Id.VIIRS)) {
+        if (fileInfo.isMissionId(MissionInfo.Id.VIIRSN) || fileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)) {
             oFile = getViirsOfilename(fileInfo.getFile());
         } else {
             if (fileInfo.getTypeId() == FileTypeInfo.Id.L3BIN) {
@@ -105,7 +105,7 @@ public class FilenamePatterns {
         StringBuilder geofile = new StringBuilder();
         File geoFile = null;
 
-        if (iFileInfo.isMissionId(MissionInfo.Id.VIIRS) && iFileInfo.isTypeId(FileTypeInfo.Id.SDR)) {
+        if ((iFileInfo.isMissionId(MissionInfo.Id.VIIRSN) || iFileInfo.isMissionId(MissionInfo.Id.VIIRSJ1)) && iFileInfo.isTypeId(FileTypeInfo.Id.SDR)) {
             String VIIRS_GEOFILE_PREFIX = "GMTCO";
             geofileBasename.append(VIIRS_GEOFILE_PREFIX);
             geofileBasename.append(iFileInfo.getFile().getName().substring(VIIRS_IFILE_PREFIX.length()));
@@ -118,8 +118,8 @@ public class FilenamePatterns {
         } else {
             ArrayList<File> possibleGeoFiles = new ArrayList<File>();
 
-            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP" };
-            String STRING_TO_INSERT[] = {"GEO", "geo", "GEO-M_SNPP" };
+            String STRING_TO_BE_REPLACED[] = {"L1A_LAC", "L1B_LAC", "L1A.LAC", "L1B.LAC", "L1A_SNPP", "L1B-M_SNPP", "L1A_JPSS1", "L1B-M_JPSS1" };
+            String STRING_TO_INSERT[] = {"GEO", "geo", "GEO-M_SNPP", "GEO-M_JPSS1"};
 
             /**
              * replace last occurrence of instance of STRING_TO_BE_REPLACED[]

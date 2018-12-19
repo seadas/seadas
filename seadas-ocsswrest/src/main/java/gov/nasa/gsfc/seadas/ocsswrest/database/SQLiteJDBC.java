@@ -304,7 +304,7 @@ public class SQLiteJDBC {
             preparedStatement.executeUpdate();
 
             //13. insert viirs mission info
-            preparedStatement.setString(1, "VIIRS");
+            preparedStatement.setString(1, "VIIRSN");
             preparedStatement.setString(2, "VIIRS VIIRSN");
             preparedStatement.setString(3, "viirs/npp");
             preparedStatement.executeUpdate();
@@ -332,6 +332,13 @@ public class SQLiteJDBC {
             preparedStatement.setString(2, "OLCI");
             preparedStatement.setString(3, "olci");
             preparedStatement.executeUpdate();
+
+            //17. insert viirs mission info
+            preparedStatement.setString(1, "VIIRSJ1");
+            preparedStatement.setString(2, "VIIRSJ1");
+            preparedStatement.setString(3, "viirs/j1");
+            preparedStatement.executeUpdate();
+
 
             stmt.close();
             preparedStatement.close();

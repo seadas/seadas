@@ -164,8 +164,16 @@
             <value>false</value>
             <default>false</default>
             <usedAs>flag</usedAs>
-            <description>install VIIRSN files</description>
+            <description>install VIIRS SNPP files</description>
             <order>19</order>
+        </option>
+        <option type="boolean">
+            <name>--viirsj1</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install VIIRS JPSS1 files</description>
+            <order>20</order>
         </option>
         <option type="boolean">
             <name>--verbose</name>
@@ -173,7 +181,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>print out verbose status</description>
-            <order>20</order>
+            <order>21</order>
         </option>
         <option type="boolean">
             <name>--clean</name>
@@ -181,7 +189,7 @@
             <default>false</default>
             <usedAs>flag</usedAs>
             <description>clean install</description>
-            <order>21</order>
+            <order>22</order>
         </option>
     </options>
 </paramInfo>

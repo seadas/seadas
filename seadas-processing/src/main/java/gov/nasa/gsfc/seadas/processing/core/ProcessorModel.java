@@ -811,7 +811,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
                 } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
                     programName = L1AEXTRACT_SEAWIFS;
                     ocssw.setXmlFileName(L1AEXTRACT_SEAWIFS_XML_FILE);
-                } else if (missionName.indexOf("VIIRS") != -1 && fileType.indexOf("1A") != -1) {
+                } else if ((missionName.indexOf("VIIRSN") != -1 || missionName.indexOf("VIIRSJ1") != -1) && fileType.indexOf("1A") != -1) {
                     programName = L1AEXTRACT_VIIRS;
                     ocssw.setXmlFileName(L1AEXTRACT_VIIRS_XML_FILE);
                 } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||

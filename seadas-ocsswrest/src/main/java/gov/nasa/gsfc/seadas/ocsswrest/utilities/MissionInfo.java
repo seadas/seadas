@@ -26,7 +26,8 @@ public class MissionInfo {
         OCTS,
         OSMI,
         SEAWIFS,
-        VIIRS,
+        VIIRSN,
+        VIIRSJ1,
         OCM1,
         OCM2,
         OLI,
@@ -43,8 +44,11 @@ public class MissionInfo {
     public final static String[] MODIST_NAMES = {"MODIS Terra", "TERRA", "MODIST"};
     public final static String MODIST_DIRECTORY = "modis/terra";
 
-    public final static String[] VIIRS_NAMES = {"VIIRSN", "VIIRS"};
-    public final static String VIIRS_DIRECTORY = "viirs/npp";
+    public final static String[] VIIRSN_NAMES = {"VIIRSN", "VIIRS"};
+    public final static String VIIRSN_DIRECTORY = "viirs/npp";
+
+    public final static String[] VIIRSJ1_NAMES = {"VIIRSJ1"};
+    public final static String VIIRSJ1_DIRECTORY = "viirs/j1";
 
     public final static String[] MERIS_NAMES = {"MERIS"};
     public final static String MERIS_DIRECTORY = "meris";
@@ -120,7 +124,8 @@ public class MissionInfo {
         directories.put(Id.SEAWIFS, SEAWIFS_DIRECTORY);
         directories.put(Id.MODISA, MODISA_DIRECTORY);
         directories.put(Id.MODIST, MODIST_DIRECTORY);
-        directories.put(Id.VIIRS, VIIRS_DIRECTORY);
+        directories.put(Id.VIIRSN, VIIRSN_DIRECTORY);
+        directories.put(Id.VIIRSJ1, VIIRSJ1_DIRECTORY);
         directories.put(Id.MERIS, MERIS_DIRECTORY);
         directories.put(Id.CZCS, CZCS_DIRECTORY);
         directories.put(Id.AQUARIUS, AQUARIUS_DIRECTORY);
@@ -140,7 +145,8 @@ public class MissionInfo {
         names.put(Id.SEAWIFS, SEAWIFS_NAMES);
         names.put(Id.MODISA, MODISA_NAMES);
         names.put(Id.MODIST, MODIST_NAMES);
-        names.put(Id.VIIRS, VIIRS_NAMES);
+        names.put(Id.VIIRSN, VIIRSN_NAMES);
+        names.put(Id.VIIRSJ1, VIIRSJ1_NAMES);
         names.put(Id.MERIS, MERIS_NAMES);
         names.put(Id.CZCS, CZCS_NAMES);
         names.put(Id.AQUARIUS, AQUARIUS_NAMES);
@@ -216,7 +222,7 @@ public class MissionInfo {
             return;
         }
 
-        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRS)) {
+        if (isId(Id.MODISA) || isId(Id.MODIST) || isId(Id.VIIRSN) || isId(Id.VIIRSJ1)) {
             setGeofileRequired(true);
         } else {
             setGeofileRequired(false);
