@@ -63,7 +63,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
         dialogTitle = getValue(config, "dialogTitle", programName);
         xmlFileName = getValue(config, "xmlFileName", ParamUtils.NO_XML_FILE_SPECIFIED);
         super.configure(config);
-        super.setEnabled(programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME) && ocsswInfo.isOcsswServerUp() || ocsswInfo.isOCSSWExist());
+        //super.setEnabled(programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME) || ocsswInfo.isOCSSWExist());
     }
 
     public String getXmlFileName() {

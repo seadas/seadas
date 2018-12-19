@@ -44,6 +44,11 @@ public class L2genParfilePanel {
         parStringSpecifier = new L2genParStringSpecifier(l2genData, tabIndex);
         suiteComboBox = new L2genSuiteComboBox(l2genData);
 
+        if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
+            parStringSpecifier.setEditable(true);
+            parStringSpecifier.setToolTip("<html>This parameter text field is not editable for Aquarius.<br>" +
+                    "If you need custom files you can use the <b>Load Parameters</b> feature.</html>");
+        }
 
         createJPanel();
     }
@@ -56,44 +61,66 @@ public class L2genParfilePanel {
 
 
         final JPanel openButtonRetainPanel = new JPanel(new GridBagLayout());
-        openButtonRetainPanel.setBorder(BorderFactory.createEtchedBorder());
+
         openButtonRetainPanel.add(parfileImporter.getjButton(),
                 new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        openButtonRetainPanel.add(retainIfileSpecifier.getjCheckBox(),
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+        // todo Danny
+        if (l2genData.getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
+            openButtonRetainPanel.setBorder(BorderFactory.createEtchedBorder());
+
+            openButtonRetainPanel.add(retainIfileSpecifier.getjCheckBox(),
+                    new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+        }
 
 
         int subPanelGridx = 0;
         final JPanel subPanel = new JPanel(new GridBagLayout());
         subPanel.add(openButtonRetainPanel,
                 new GridBagConstraintsCustom(++subPanelGridx, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+        // todo Danny
+        if (l2genData.getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
+
 //        subPanel.add(getAncillaryFilesSpecifier.getjButton(),
 //                new GridBagConstraintsCustom(1, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-        if (l2genData.getMode() != L2genData.Mode.L3GEN) {
-        subPanel.add(getAncillarySplitButton.getAncillarySplitButton(),
-                new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+            if (l2genData.getMode() != L2genData.Mode.L3GEN) {
+                subPanel.add(getAncillarySplitButton.getAncillarySplitButton(),
+                        new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+            }
+
+
+            final JPanel defaultsPanel = new JPanel(new GridBagLayout());
+            defaultsPanel.setBorder(BorderFactory.createEtchedBorder());
+            defaultsPanel.add(showDefaultsSpecifier.getjCheckBox(),
+                    new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+
+
+            subPanel.add(defaultsPanel,
+                    new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+
+
+            final JPanel suitePanel = new JPanel(new GridBagLayout());
+            suitePanel.setBorder(BorderFactory.createEtchedBorder());
+            suitePanel.add(suiteComboBox.getjLabel(),
+                    new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+            suitePanel.add(suiteComboBox.getjComboBox(),
+                    new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
+
+
+            subPanel.add(suitePanel,
+                    new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+
+
         }
 
-        final JPanel defaultsPanel = new JPanel(new GridBagLayout());
-        defaultsPanel.setBorder(BorderFactory.createEtchedBorder());
-        defaultsPanel.add(showDefaultsSpecifier.getjCheckBox(),
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE));
+        // todo Danny
+        if (l2genData.getMode() == L2genData.Mode.L2GEN_AQUARIUS) {
+            subPanel.add(new JPanel(),
+                    new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL));
 
-
-        subPanel.add(defaultsPanel,
-                new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
-
-
-        final JPanel suitePanel = new JPanel(new GridBagLayout());
-        suitePanel.setBorder(BorderFactory.createEtchedBorder());
-        suitePanel.add(suiteComboBox.getjLabel(),
-                new GridBagConstraintsCustom(0, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-        suitePanel.add(suiteComboBox.getjComboBox(),
-                new GridBagConstraintsCustom(1, 0, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, 2));
-
-
-        subPanel.add(suitePanel,
-                new GridBagConstraintsCustom(++subPanelGridx, 0, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE));
+        }
 
 
         subPanel.add(parfileExporter.getjButton(),

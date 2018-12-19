@@ -129,7 +129,7 @@ public class SeadasFileUtils {
         for (String item : copyCommandArray) {
             sb.append(item + " ");
         }
-        out.println("command array content: " + sb.toString());
+        SeadasLogger.getLogger().info("command array content: " + sb.toString());
 
         ProcessBuilder processBuilder = new ProcessBuilder(copyCommandArray);
         Process process = null;

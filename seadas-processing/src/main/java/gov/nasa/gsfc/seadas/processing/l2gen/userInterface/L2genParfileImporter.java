@@ -44,7 +44,7 @@ public class L2genParfileImporter {
                     } else {
                         parFileDir = jFileChooser.getSelectedFile().getParentFile();
                     }
-                    l2genData.setParString(contents, l2genData.isRetainCurrentIfile(), false, parFileDir);
+                    l2genData.setParString(contents, l2genData.isRetainCurrentIfile(), false, false, parFileDir);
                 }
             });
         }

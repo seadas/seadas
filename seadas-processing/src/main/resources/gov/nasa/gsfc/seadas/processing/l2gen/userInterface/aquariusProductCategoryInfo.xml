@@ -1,13 +1,18 @@
 <categoryList>
 
     <category name="Ancillary">
-        <makeVisible>1</makeVisible>
+       <makeVisible>1</makeVisible>
         <product>anc_cwat</product>
         <product>anc_sm</product>
-        <product>anc_SSS</product>
+        <product>anc_SSS_argo</product>
+        <product>anc_SSS_hycom</product>
+        <product>anc_subsurf_temp</product>
         <product>anc_surface_pressure</product>
+        <product>anc_surface_temp_err</product>
         <product>anc_surface_temp</product>
+        <product>anc_surface_temp_SSS_sens</product>
         <product>anc_swe</product>
+        <product>anc_swh</product>
         <product>anc_Tb_dw</product>
         <product>anc_Tb_up</product>
         <product>anc_trans</product>
@@ -16,7 +21,7 @@
     </category>
 
     <category name="Scatterometer">
-        <makeVisible>0</makeVisible>
+        <makeVisible>1</makeVisible>
         <product>Kpc_HH_ant</product>
         <product>Kpc_HH_toa</product>
         <product>Kpc_HV_ant</product>
@@ -51,26 +56,43 @@
 
     <category name="Radiometer">
         <makeVisible>1</makeVisible>
+        <product>density</product>
+        <product>rad_dtb_sst_wspd_H</product>
+        <product>rad_dtb_sst_wspd_V</product>
+        <product>rad_exp_Ta3_hhh</product>
         <product>rad_exp_Ta3</product>
+        <product>rad_exp_TaH_hhh</product>
         <product>rad_exp_TaH</product>
+        <product>rad_exp_TaV_hhh</product>
         <product>rad_exp_TaV</product>
         <product>rad_exp_TbH0</product>
         <product>rad_exp_TbH</product>
         <product>rad_exp_TbV0</product>
         <product>rad_exp_TbV</product>
-        <product>rad_far_TaH</product>
+        <product>rad_far_rot_ang</product>
+        <product>rad_galact_dTa_H</product>
+        <product>rad_galact_dTa_V</product>
         <product>rad_galact_Ta_dir_3</product>
         <product>rad_galact_Ta_dir_H</product>
         <product>rad_galact_Ta_dir_V</product>
+        <product>rad_galact_Ta_err</product>
         <product>rad_galact_Ta_ref_3</product>
+        <product>rad_galact_Ta_ref_GO_H</product>
+        <product>rad_galact_Ta_ref_GO_V</product>
         <product>rad_galact_Ta_ref_H</product>
         <product>rad_galact_Ta_ref_V</product>
-        <product>rad_gice</product>
+        <product>rad_galact_Ta_SSS_sens</product>
+        <product>rad_geo_rot_ang</product>
+        <product>rad_hhh_wind_speed</product>
+        <product>rad_hh_wind_speed</product>
         <product>rad_ice_frac</product>
         <product>rad_land_frac</product>
+        <product>rad_moon_Ta_err</product>
         <product>rad_moon_Ta_ref_3</product>
         <product>rad_moon_Ta_ref_H</product>
         <product>rad_moon_Ta_ref_V</product>
+        <product>rad_moon_Ta_SSS_sens</product>
+        <product>rad_pol_rot_ang</product>
         <product>rad_solar_Ta_bak_3</product>
         <product>rad_solar_Ta_bak_H</product>
         <product>rad_solar_Ta_bak_V</product>
@@ -92,6 +114,10 @@
         <product>rad_TbH</product>
         <product>rad_TbH_rc_nolc</product>
         <product>rad_TbH_rc</product>
+        <product>rad_TbV_ice_contam_err</product>
+        <product>rad_TbV_ice_contam_SSS_sens</product>
+        <product>rad_TbV_land_contam_err</product>
+        <product>rad_TbV_land_contam_SSS_sens</product>
         <product>rad_TbV_nolc</product>
         <product>rad_TbV</product>
         <product>rad_TbV_rc_nolc</product>
@@ -109,34 +135,60 @@
         <product>rad_toi_3</product>
         <product>rad_toi_H</product>
         <product>rad_toi_V</product>
-        <product>SSS_error_nolc</product>
-        <product>SSS_error</product>
-        <product>SSS_nolc</product>
+        <product>rad_wind_dir_rand_err</product>
+        <product>rad_wind_dir_rand_SSS_sens</product>
+        <product>rad_wind_speed_rand_err</product>
+        <product>rad_wind_speed_rand_SSS_sens</product>
+        <product>rad_wind_speed_syst_err</product>
+        <product>rad_wind_speed_syst_SSS_sens</product>
+        <product>spiciness</product>
         <product>SSS</product>
-
-    </category>
-
-
-    <!--ancillary-->
-    <!--    anc_-->
-    <!--scatterometer-->
-    <!--    scat_-->
-    <!--    Kpc_-->
-    <!--    wind_uncertainty-->
-    <!--radiometer-->
-    <!--    SSS_-->
-    <!--    rad_-->
-
-
-    <category name="Hidden Stuff">
-        <makeVisible>0</makeVisible>
+        <product>SSS_matchup</product>
+        <product>SSS_nolc</product>
+        <product>SSS_unc_EIA</product>
+        <product>SSS_unc_galact_Ta</product>
+        <product>SSS_unc_IU_coupling</product>
+        <product>SSS_unc_moon_Ta</product>
+        <product>SSS_unc_NEDT_3</product>
+        <product>SSS_unc_NEDT_H</product>
+        <product>SSS_unc_NEDT_V</product>
+        <product>SSS_unc</product>
+        <product>SSS_unc_ran</product>
+        <product>SSS_unc_RFI_level</product>
+        <product>SSS_unc_surface_temp</product>
+        <product>SSS_unc_sys</product>
+        <product>SSS_unc_TbV_ice_contam</product>
+        <product>SSS_unc_TbV_land_contam</product>
+        <product>SSS_unc_wind_dir_rand</product>
+        <product>SSS_unc_wind_speed_rand</product>
+        <product>SSS_unc_wind_speed_syst</product>
     </category>
 
 
     <category name="Miscellaneous">
         <makeVisible>1</makeVisible>
         <defaultBucket>1</defaultBucket>
+        <product>EIA_err</product>
+        <product>EIA_SSS_sens</product>
+        <product>IU_coupling_err</product>
+        <product>IU_coupling_SSS_sens</product>
+        <product>NEDT_3_err</product>
+        <product>NEDT_3_SSS_sens</product>
+        <product>NEDT_H_err</product>
+        <product>NEDT_H_SSS_sens</product>
+        <product>NEDT_V_err</product>
+        <product>NEDT_V_SSS_sens</product>
+        <product>RFI_level_err</product>
+        <product>RFI_level_SSS_sens</product>
+        <product>rim_anom1</product>
+        <product>rim_anom3</product>
+        <product>rim_anom5</product>
+        <product>rim_anom</product>
+        <product>rim_bf_irr</product>
+        <product>rim_irr</product>
+        <product>rim_pss</product>
+        <product>rim_sss</product>
     </category>
 
-</categoryList>
 
+</categoryList>

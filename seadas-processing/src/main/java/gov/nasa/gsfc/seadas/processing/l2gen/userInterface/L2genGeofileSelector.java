@@ -28,6 +28,8 @@ public class L2genGeofileSelector {
         this.seaDASProcessorModel = seaDASProcessorModel;
 
         fileSelector = new FileSelector(VisatApp.getApp(), ParamInfo.Type.IFILE, L2genData.GEOFILE);
+        fileSelector.setEnabled(false);
+        fileSelector.setVisible(false);
         addControlListeners();
         addEventListeners();
     }

@@ -60,5 +60,30 @@
             <source>default</source>
             <description>radiometer xray ancillary file 2</description>
         </option>
+        <option type="ifile">
+            <name>l2_uncertainties_file</name>
+            <value/>
+            <source>default</source>
+            <description>l2_uncertainties_file</description>
+        </option>
+        <option type="ifile">
+            <name>rim_file</name>
+            <value/>
+            <source>default</source>
+            <description>rim_file</description>
+        </option>
+        <option type="ifile">
+            <name>sif_file</name>
+            <value/>
+            <source>default</source>
+            <description>sif_file</description>
+        </option>
+        <option type="ifile">
+            <name>sss_matchup_file</name>
+            <value/>
+            <source>default</source>
+            <description>sss_matchup_file</description>
+        </option>
+
     </options>
 </paramInfo>

@@ -7,7 +7,7 @@
     <parent>
         <groupId>gov.nasa.gsfc.seadas</groupId>
         <artifactId>seadas</artifactId>
-        <version>7.5</version>
+        <version>7.5.1</version>
     </parent>
 
     <groupId>gov.nasa.gsfc.seadas</groupId>
@@ -42,6 +42,10 @@
         <dependency>
             <artifactId>seadas-processing</artifactId>
             <groupId>gov.nasa.gsfc.seadas</groupId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nasa.gsfc.seadas</groupId>
+            <artifactId>seadas-app</artifactId>
         </dependency>
     </dependencies>
 

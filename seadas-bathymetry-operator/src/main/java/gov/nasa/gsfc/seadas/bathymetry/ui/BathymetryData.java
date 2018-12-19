@@ -6,7 +6,6 @@ import gov.nasa.gsfc.seadas.bathymetry.operator.BathymetryOp;
 import gov.nasa.gsfc.seadas.bathymetry.util.ResourceInstallationUtils;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 
-
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;

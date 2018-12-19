@@ -122,25 +122,11 @@
             <p>
                 Once this IFILE has been specified, the mission and data level are obtained from this file.
                 If the
-                IFILE data level matches the expected input data level of l2gen_aquarius, the GUI will then use this
-                file to run
-                l2gen_aquarius in the background in order to obtain and populate all the parameters
-                and defaults of l2gen_aquarius GUI.
+                IFILE data level matches the expected input data level of l2gen_aquarius, the GUI will then
+                retrieve all the needed ancillary files.
+
 
             <p>
-                One thing very important to note is that since this GUI is built from the IFILE, a
-                subsequent selection
-                of a different IFILE will cause the GUI to be rebuilt with all the fields set to the
-                defaults. If you
-                have
-                parameters already specified and wish to save these, then the best route would be to save
-                them in a
-                parfile,
-                select a new IFILE, then reload the parfile.
-
-            <p>
-
-
                 <b>Selecting the OFILE </b> <br>
                 A default OFILE is determined based on the
                 specified
@@ -151,35 +137,13 @@
                 directory
                 as the IFILE. You need not use these defaults and are free to choose your own OFILE name.
 
-            <p>
-
-                <b>Get Ancillary Files</b><br>
-                This button invokes a web-based utility which retrieves all the ancillary files names needed
-                by l2gen_aquarius
-                for the selected IFILE.
-
-            <p>
-
-
-                <b>Show Defaults</b> <br>
-                Checking this checkbox causes all the parameters (including those set to default values) to
-                be displayed
-                within the Parfile textarea. They are commented out to prevent them being used when running
-                l2gen_aquarius. This
-                feature is useful to understand not only what are the defaults but also to be able to view
-                all the
-                possible l2gen_aquarius parameters in a single textarea.
 
             <p>
 
                 <b>Parfile Textarea</b><br>
                 This textarea contains all of the currently selected parameters which are not the l2gen_aquarius
                 default value.
-                You can either export this to a file or import an external file. When importing an external
-                parfile, the
-                "Retain Selected IFILE" checkbox can be used to ignore any IFILE parameter contained within
-                the external
-                parfile.
+                You can either export this to a file or import an external file.
 
             <p>
                 It's useful to note that when you are editing text in the parfile textarea you can click
@@ -232,11 +196,12 @@
     <tr>
         <td>
             <p>
-                The l2gen_aquarius product parameter L2PROD is initially set to the default value. At any time L2PROD
+                The l2gen_aquarius product parameter L2PROD is initially set to the default value (l2prod=''). At any time L2PROD
                 can be
                 restored to the default value by clicking 'Restore Defaults' at the bottom of this tab. L2PROD can be
                 specified in a multitude of ways. Note that a change within any of
-                one these product specifier controls will automatically update the others.
+                one these product specifier controls will automatically update the others.  Note that the default value
+                l2prod='' is currently all the products.
 
 
             <p>
@@ -267,32 +232,41 @@
 <p>
 
 
-<p>
-    <a name="PROCESSING_OPTIONS_TAB"> </a>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <h4>THE PROCESSING OPTIONS TAB</h4>
-        </td>
-    </tr>
-</table>
-<table bgcolor="#99eeee" border="0">
-    <tr>
-        <td>
-            <p>
-                <a href="ProcessL2gen.html#PROCESSING_OPTIONS_TAB"><img src="images/L2gen_aquarius_proc_opt_tab.png"
-                                                                        border=0></a>
-        </td>
-    </tr>
-</table>
-<p>
 
 
 <p>
 
 <hr>
 
+
+
 <a name="COMMAND_LINE_HELP"></a>
+
+
+<h3>Command line example</h3>
+
+<p><pre>1. Run getanc_aquarius.py:
+% getanc_aquarius.py Q2014006082500.L1A_SCI
+
+
+
+2. Copy step 1 output params to parfile called "l2gen.par":
+l2_uncertainties_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/PERT_L2_2014006_13843_V5.0.dat
+rim_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/RIM_CFRSL_20140106_06_CMORPH_V1.2.h5
+sif_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/SIF2014006082500.L2.h5
+sss_matchup_file=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/N2014006082500_L2_MATCHUP_V2.h5
+suite=V5.0.0
+xrayfile1=/seadas/installations/7.5.1/ocssw/var/anc/2014/006/N201400600_XRAY_GOES_24h.h5
+yancfile1=y2014010606.h5
+yancfile2=y2014010612.h5
+
+
+3. Run l2gen_aquarius (via ocssw_runner):
+% ocssw_runner l2gen_aquarius ifile=Q2014006082500.L1A_SCI ofile=Q2014006081500.L2_SCI_V5.0.0 par=l2gen.par
+
+</pre></p>
+
+<hr>
 
 <h3>l2gen_aquarius Help (Command Line Version)</h3>
 

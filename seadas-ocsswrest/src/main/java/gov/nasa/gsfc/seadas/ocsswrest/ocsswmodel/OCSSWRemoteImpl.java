@@ -285,7 +285,7 @@ public class OCSSWRemoteImpl {
                     debug("mlp file: " + value);
                     isOdirdefined = false;
                     try {
-                        if(isTextFile(value)) {
+                        if (isTextFile(value)) {
                             debug("File is a text file. Need to upload the content.");
                             updateFileListFileContent(value, mlpDir);
                         }
@@ -530,7 +530,7 @@ public class OCSSWRemoteImpl {
 
                 if (filename.startsWith(prefix) && filename.endsWith(".par")) {
                     String suiteName = filename.substring(prefix.length(), filename.length() - 4);
-                    if(!suites.contains(suiteName)) {
+                    if (!suites.contains(suiteName)) {
                         suites.add(suiteName);
                         debug("mission suite name: " + suiteName);
                     }
@@ -556,7 +556,7 @@ public class OCSSWRemoteImpl {
         // look in subsensor dir
         addSuites(suitesArrayList, missionInfo.getSubsensorDirectory(), prefix);
 
-        if(suitesArrayList.size() > 0) {
+        if (suitesArrayList.size() > 0) {
 
             final String[] suitesArray = new String[suitesArrayList.size()];
 
@@ -576,7 +576,7 @@ public class OCSSWRemoteImpl {
     }
 
 
-   public String getOfileName(String jobId, String ifileName, String programName) {
+    public String getOfileName(String jobId, String ifileName, String programName) {
 
         if (ifileName == null || programName == null) {
             return null;
@@ -700,10 +700,10 @@ public class OCSSWRemoteImpl {
         if (missionInfo != null) {
             // determine the filename which contains the wavelength
             File dir = missionInfo.getSubsensorDirectory();
-            if(dir == null) {
+            if (dir == null) {
                 dir = missionInfo.getDirectory();
             }
-            if(dir != null) {
+            if (dir != null) {
                 File filename = new File(dir.getAbsolutePath(), "msl12_sensor_info.dat");
                 return filename;
             }
@@ -771,6 +771,7 @@ public class OCSSWRemoteImpl {
             return false;
         }
     }
+
     private String getOfileName(String[] commandArray) {
 
         Process process = executeSimple(commandArray);
@@ -778,20 +779,13 @@ public class OCSSWRemoteImpl {
         if (process == null) {
             return null;
         }
-
-        //wait for process to exit
+        int exitCode = 100;
         try {
-            Field field = process.getClass().getDeclaredField("hasExited");
-            field.setAccessible(true);
-            while (!(Boolean) field.get(process)) {
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+            exitCode = process.waitFor();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        int exitCode = process.exitValue();
+        debug("Finding ofile name; process exit value =   '" + exitCode);
         InputStream is;
         if (exitCode == 0) {
             is = process.getInputStream();
