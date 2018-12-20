@@ -1305,7 +1305,7 @@ public class L2genData implements SeaDASProcessorModel {
 
 
 
-            if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS || iFileInfo.getMissionId() == MissionInfo.Id.VIIRS) {
+            if (iFileInfo.getMissionId() == MissionInfo.Id.AQUARIUS || iFileInfo.getMissionId() == MissionInfo.Id.VIIRSN || iFileInfo.getMissionId() == MissionInfo.Id.VIIRSJ1) {
                 updateLuts(iFileInfo.getMissionName());
             }
 
