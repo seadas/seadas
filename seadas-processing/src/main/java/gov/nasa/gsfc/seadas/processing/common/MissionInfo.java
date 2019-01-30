@@ -43,10 +43,10 @@ public class MissionInfo {
     public final static String[] MODIST_NAMES = {"MODIS Terra", "TERRA", "MODIST"};
     public final static String MODIST_DIRECTORY = "modis/terra";
 
-    public final static String[] VIIRSN_NAMES = {"VIIRSN", "VIIRS"};
+    public final static String[] VIIRSN_NAMES = {"VIIRS NPP", "VIIRSN", "VIIRS"};
     public final static String VIIRSN_DIRECTORY = "viirs/npp";
 
-    public final static String[] VIIRSJ1_NAMES = {"VIIRSJ1"};
+    public final static String[] VIIRSJ1_NAMES = {"VIIRS J1", "VIIRSJ1"};
     public final static String VIIRSJ1_DIRECTORY = "viirs/j1";
 
     public final static String[] MERIS_NAMES = {"MERIS"};
@@ -85,7 +85,7 @@ public class MissionInfo {
     public final static String[] OLI_NAMES = {"OLI"};
     public final static String OLI_DIRECTORY = "oli";
 
-    public final static String[] OLCI_NAMES = {"OLCI"};
+    public final static String[] OLCI_NAMES = {"OLCI S3A", "OLCI"};
     public final static String OLCI_DIRECTORY = "olci";
 
     private final HashMap<Id, String[]> names = new HashMap<>();
