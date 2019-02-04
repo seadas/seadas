@@ -191,5 +191,13 @@
             <description>clean install</description>
             <order>22</order>
         </option>
+        <option type="boolean">
+            <name>--viirsdem</name>
+            <value>false</value>
+            <default>false</default>
+            <usedAs>flag</usedAs>
+            <description>install VIIRS DEM files needed for geolocation</description>
+            <order>23</order>
+        </option>
     </options>
 </paramInfo>
