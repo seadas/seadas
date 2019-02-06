@@ -7,20 +7,15 @@ import gov.nasa.gsfc.seadas.ocsswrest.utilities.*;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRECTORY_PROPERTY;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.ANC_FILE_LIST_FILE_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.FILE_TYPE_VAR_NAME;
-import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MISSION_NAME_VAR_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.*;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_INPUT_STREAM_FILE_NAME;
 
@@ -44,14 +39,6 @@ public class OCSSWServices {
     final static String CLIENT_SERVER_SHARED_DIR_PROPERTY = "clientServerSharedDir";
 
     private HashMap<String, Boolean> missionDataStatus;
-
-    @GET
-    @Path("/installDir")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getOCSSWInstallDir() {
-        System.out.println("ocssw install dir: " + OCSSWServerModelOld.OCSSW_INSTALL_DIR);
-        return OCSSWServerModelOld.OCSSW_INSTALL_DIR;
-    }
 
     /**
      * This service empties client working directory on the server for each new connection from seadas application, then
@@ -228,8 +215,7 @@ public class OCSSWServices {
     @PUT
     @Path("executeOcsswProgram/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response executeOcsswProgram(@PathParam("jobId") String jobId, JsonObject jsonObject)
-            throws IOException {
+    public Response executeOcsswProgram(@PathParam("jobId") String jobId, JsonObject jsonObject) {
         Response.Status respStatus = Response.Status.OK;
         Process process = null;
         if (jsonObject == null) {
@@ -247,8 +233,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeOcsswProgramOnDemand(@PathParam("jobId") String jobId,
                                                 @PathParam("programName") String programName,
-                                                JsonObject jsonObject)
-            throws IOException {
+                                                JsonObject jsonObject) {
         SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
         Response.Status respStatus = Response.Status.OK;
         if (jsonObject == null) {
@@ -270,7 +255,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeOcsswProgramAndGetStdout(@PathParam("jobId") String jobId,
                                                     @PathParam("programName") String programName,
-                                                    JsonObject jsonObject) throws IOException {
+                                                    JsonObject jsonObject) {
 
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         if (jsonObject == null) {
@@ -291,8 +276,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeOcsswProgramSimple(@PathParam("jobId") String jobId,
                                               @PathParam("programName") String programName,
-                                              JsonObject jsonObject)
-            throws IOException {
+                                              JsonObject jsonObject) {
         Response.Status respStatus = Response.Status.OK;
         if (jsonObject == null) {
             respStatus = Response.Status.BAD_REQUEST;
@@ -309,8 +293,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response convertLonLat2Pixels(@PathParam("jobId") String jobId,
                                          @PathParam("programName") String programName,
-                                         JsonObject jsonObject)
-            throws IOException {
+                                         JsonObject jsonObject) {
         Response.Status respStatus = Response.Status.OK;
         HashMap<String, String> pixels = new HashMap();
         JsonObject pixelsJson = null;
@@ -332,8 +315,7 @@ public class OCSSWServices {
     @GET
     @Path("getConvertedPixels/{jobId}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public JsonObject getConvertedPixels(@PathParam("jobId") String jobId)
-            throws IOException {
+    public JsonObject getConvertedPixels(@PathParam("jobId") String jobId) {
         try {
             JsonObject pixelsJsonObject = Json.createObjectBuilder()
                     .add(SQLiteJDBC.LonLatTableFields.SLINE_FIELD_NAME.getValue(), SQLiteJDBC.retrieveItem(SQLiteJDBC.LONLAT_TABLE_NAME, jobId, SQLiteJDBC.LonLatTableFields.SLINE_FIELD_NAME.getValue()))
@@ -366,8 +348,7 @@ public class OCSSWServices {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public Response uploadMLPParFile(@PathParam("jobId") String jobId,
                                      @PathParam("programName") String programName,
-                                     File parFile)
-            throws IOException {
+                                     File parFile) {
         Response.Status respStatus = Response.Status.OK;
         System.out.println("par file path: " + parFile.getAbsolutePath());
         if (parFile == null) {
@@ -413,13 +394,6 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("retrieveMissionDirName")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getMissionSuitesArray() {
-        return OCSSWServerModelOld.missionDataDir;
-    }
-
-    @GET
     @Path("isMissionDirExist/{missionName}")
     @Produces(MediaType.TEXT_PLAIN)
     public Boolean isMissionDirExist(@PathParam("missionName") String missionName) {
@@ -461,27 +435,19 @@ public class OCSSWServices {
     }
 
     @GET
-    @Path("downloadInstaller")
-    @Produces(MediaType.TEXT_XML)
-    public boolean getOCSSWInstallerDownloadStatus() {
-        return OCSSWServerModelOld.downloadOCSSWInstaller();
-    }
-
-
-    @GET
-    @Path("/evalDirInfo")
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject getOCSSWEvalDirInfo() {
-        JsonObject evalDirStatus = Json.createObjectBuilder().add("eval", new File(OCSSWServerModelOld.missionDataDir + "eval").exists()).build();
-        return evalDirStatus;
-    }
-
-    @GET
     @Path("/srcDirInfo")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public JsonObject getOCSSWSrcDirInfo() {
-        JsonObject srcDirStatus = Json.createObjectBuilder().add("build", new File(OCSSWServerModelOld.missionDataDir + "build").exists()).build();
+        JsonObject srcDirStatus = Json.createObjectBuilder().add("ocssw-src", new File(OCSSWServerModel.getOcsswSrcDirPath()).exists()).build();
         return srcDirStatus;
+    }
+
+    @GET
+    @Path("/viirsDemInfo")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public JsonObject getOCSSWViirsDemInfo() {
+        JsonObject viirsDemStatus = Json.createObjectBuilder().add("viirs-dem", new File(OCSSWServerModel.getOcsswViirsDemPath()).exists()).build();
+        return viirsDemStatus;
     }
 
     @GET
@@ -498,14 +464,6 @@ public class OCSSWServices {
     public String getSharedFileDirName() {
         System.out.println("Shared dir name:" + OCSSWServerPropertyValues.getServerSharedDirName());
         return OCSSWServerPropertyValues.getServerSharedDirName();
-    }
-
-    @POST
-    @Path("/updateProgressMonitorFlag/{progressMonitorFlag}")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public void updateProgressMonitorFlag(@PathParam("progressMonitorFlag") String progressMonitorFlag) {
-        System.out.println("Shared dir name:" + OCSSWServerPropertyValues.getServerSharedDirName());
-        OCSSWServerModelOld.setProgressMonitorFlag(progressMonitorFlag);
     }
 
     @POST
