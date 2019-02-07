@@ -65,6 +65,7 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
             "OCTS Level-2 Data",
             "SeaWiFS Level-2 Data",
             "VIIRSN Level-2 Data",
+            "VIIRSJ1 Level-2 Data",
             "OCM2 Level-2 Data",
             "OCM Level-2 Data",
             "HICO Level-2 Data",
@@ -104,18 +105,35 @@ public class L2ProductReaderPlugIn implements ProductReaderPlugIn {
                 Attribute titleAttribute = ncfile.findGlobalAttributeIgnoreCase(titleattr);
 
                 if (titleAttribute != null) {
-
-                    final String title = titleAttribute.getStringValue();
-                    if (title != null) {
-                        if (supportedProductTypeSet.contains(title.trim())) {
+                    Attribute instrumentAttribute = ncfile.findGlobalAttribute("instrument");
+                    Attribute platformAttribute = ncfile.findGlobalAttribute("platform");
+                    Attribute levelAttribute = ncfile.findGlobalAttribute("processing_level");
+                    if(instrumentAttribute != null && platformAttribute != null  && levelAttribute != null) {
+                        final String level = levelAttribute.getStringValue();
+                        if(level.equals("L2")) {
                             if (DEBUG) {
                                 System.out.println(file);
                             }
                             ncfile.close();
                             return DecodeQualification.INTENDED;
                         } else {
-                            if (DEBUG) {
-                                System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
+                            ncfile.close();
+                            return DecodeQualification.UNABLE;
+                        }
+
+                    } else {
+                        final String title = titleAttribute.getStringValue();
+                        if (title != null) {
+                            if (supportedProductTypeSet.contains(title.trim())) {
+                                if (DEBUG) {
+                                    System.out.println(file);
+                                }
+                                ncfile.close();
+                                return DecodeQualification.INTENDED;
+                            } else {
+                                if (DEBUG) {
+                                    System.out.println("# Unrecognized attribute Title=[" + title + "]: " + file);
+                                }
                             }
                         }
                     }

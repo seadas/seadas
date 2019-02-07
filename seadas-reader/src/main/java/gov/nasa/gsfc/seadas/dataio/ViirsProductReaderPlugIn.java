@@ -70,7 +70,7 @@ public class ViirsProductReaderPlugIn implements ProductReaderPlugIn {
                 Attribute platformShortName = ncfile.findGlobalAttribute("Platform_Short_Name");
                 if (platformShortName != null) {
                     String platformName = platformShortName.getStringValue();
-                    if (platformName.equals("NPP")) {
+                    if (platformName.equals("NPP") || platformName.equals("J01")) {
                         Group dataProduct = ncfile.findGroup("Data_Products");
                         String dataProductList0 = dataProduct.getGroups().get(0).getShortName();
                         if (dataProductList0.matches("VIIRS.*DR")
