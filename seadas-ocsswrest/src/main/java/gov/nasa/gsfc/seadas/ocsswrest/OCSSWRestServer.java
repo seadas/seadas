@@ -73,9 +73,8 @@ public class OCSSWRestServer extends ResourceConfig {
      * Main method.
      *
      * @param args
-     * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         String fileName = args[0];
         System.out.println("argument: " + fileName);
         OCSSWConfig ocsswConfig = new OCSSWConfig(fileName);

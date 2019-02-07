@@ -12,28 +12,28 @@ import static org.junit.Assert.*;
  */
 public class OCSSWServicesTest {
     @Test
-    public void getOCSSWInstallDir() throws Exception {
+    public void getOCSSWInstallDir() {
 
 
     }
 
     @Test
-    public void getOcsswInstallStatus() throws Exception {
+    public void getOcsswInstallStatus() {
 
     }
 
     @Test
-    public void setOCSSWProgramName() throws Exception {
+    public void setOCSSWProgramName() {
 
     }
 
     @Test
-    public void getMissionDataStatus() throws Exception {
+    public void getMissionDataStatus() {
 
     }
 
     @Test
-    public void getMissionSuites() throws Exception {
+    public void getMissionSuites() {
         String missionName = "MODIS Aqua";
         System.out.println("missionName = " + missionName);
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();

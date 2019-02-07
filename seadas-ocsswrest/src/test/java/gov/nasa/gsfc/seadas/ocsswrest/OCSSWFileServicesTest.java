@@ -34,19 +34,19 @@ public class OCSSWFileServicesTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 //        OCSSWConfig ocsswConfig = new OCSSWConfig();
 //        ocsswConfig.readProperties();
 //        OCSSWServerModel.initiliaze();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
 
     }
 
     @Test
-    public void downloadFile() throws Exception {
+    public void downloadFile() {
 
         OCSSWFileServices ocsswFileServices = new OCSSWFileServices();
         ocsswFileServices.downloadFile("e3111428287d67a772eeb58946ae1bee");

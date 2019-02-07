@@ -33,7 +33,7 @@ public class OCSSWServerPropertyValues {
         }
     }
 
-    public String getPropValues(String propertyName) throws IOException {
+    public String getPropValues(String propertyName) {
         return properties.getProperty(propertyName);
     }
 

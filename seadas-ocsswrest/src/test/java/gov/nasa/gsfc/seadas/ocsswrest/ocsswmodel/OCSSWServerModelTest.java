@@ -9,28 +9,28 @@ import static org.junit.Assert.*;
  */
 public class OCSSWServerModelTest {
     @Test
-    public void initiliaze() throws Exception {
+    public void initiliaze() {
                   OCSSWServerModel ocsswServerModel = new OCSSWServerModel();
-                  System.out.println(ocsswServerModel.isOCSSWExist());
+                  System.out.println(OCSSWServerModel.isOCSSWExist());
     }
 
     @Test
-    public void isOCSSWExist() throws Exception {
-
-    }
-
-    @Test
-    public void getFileType() throws Exception {
+    public void isOCSSWExist() {
 
     }
 
     @Test
-    public void setProgramName() throws Exception {
+    public void getFileType() {
 
     }
 
     @Test
-    public void setCommandArrayPrefix() throws Exception {
+    public void setProgramName() {
+
+    }
+
+    @Test
+    public void setCommandArrayPrefix() {
 
     }
 

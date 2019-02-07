@@ -6,17 +6,13 @@ package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 
+import javax.ws.rs.ApplicationPath;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 
 @ApplicationPath("ocssw")
 public class OCSSWConfig {
@@ -69,7 +65,7 @@ public class OCSSWConfig {
 }
 
 interface ResourceLoader {
-    public InputStream getInputStream();
+    InputStream getInputStream();
 }
 
 class ClassResourceLoader implements ResourceLoader {

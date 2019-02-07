@@ -300,7 +300,7 @@ public class TemplateReader extends FilterReader {
 
     /////////////////////////////////////////////////////////////////////////////
 
-    public static interface Resolver {
+    public interface Resolver {
 
         Object resolve(String reference);
     }

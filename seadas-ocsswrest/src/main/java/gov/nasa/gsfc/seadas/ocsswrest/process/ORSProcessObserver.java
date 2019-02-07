@@ -85,7 +85,7 @@ public class ORSProcessObserver {
             }
         }
 
-        private void read() throws IOException {
+        private void read() {
 
             InputStream inputStream = type.equals("stdout") ? process.getInputStream() : process.getErrorStream();
             writeProcessStreamToSocket(inputStream, type.equals("stdout") ? processInputStreamPortNumber : processErrorStreamPortNumber);
@@ -99,7 +99,7 @@ public class ORSProcessObserver {
                     Socket clientSocket = serverSocket.accept();
                     PrintWriter out =
                             new PrintWriter(clientSocket.getOutputStream(), true);
-                    final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
             ) {
                 String inputLine;
                 while ((inputLine = reader.readLine()) != null) {

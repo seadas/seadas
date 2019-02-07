@@ -13,7 +13,7 @@ import java.util.Iterator;
  */
 public class MissionInfo {
 
-    public static enum Id {
+    public enum Id {
         AQUARIUS,
         AVHRR,
         CZCS,
@@ -176,11 +176,7 @@ public class MissionInfo {
     }
 
     public boolean isId(Id id) {
-        if (id == getId()) {
-            return true;
-        } else {
-            return false;
-        }
+        return id == getId();
     }
 
     public void setName(String nameString) {
@@ -278,10 +274,7 @@ public class MissionInfo {
         if (id == null) {
             return false;
         }
-        if(id == Id.UNKNOWN) {
-            return false;
-        }
-        return true;
+        return id != Id.UNKNOWN;
     }
 
 }

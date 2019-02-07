@@ -20,15 +20,15 @@ import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.MLP_PROG
  */
 public class OCSSWRemoteTest {
     @Test
-    public void executeMLP() throws Exception {
+    public void executeMLP() {
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         ocsswRemote.executeMLP("65c5712c21bb142bdeaa174920669eff", new File("/accounts/aabduraz/aynur/65c5712c21bb142bdeaa174920669eff/multilevel_processor_parFile.txt"));
     }
 
     @Test
-    public void execute() throws Exception {
+    public void execute() {
         String parFileLocation = "/accounts/aabduraz/aynur/65c5712c21bb142bdeaa174920669eff/multilevel_processor_parFile.txt";
-        String[] commandArray = {MLP_PROGRAM_NAME,  parFileLocation};;
+        String[] commandArray = {MLP_PROGRAM_NAME,  parFileLocation};
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         final long startTime = System.nanoTime();
         ocsswRemote.execute(ServerSideFileUtilities.concatAll(ocsswRemote.getCommandArrayPrefix(MLP_PROGRAM_NAME), commandArray), new File(parFileLocation).getParent(), "1234");
@@ -49,26 +49,26 @@ public class OCSSWRemoteTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         String configFilePath = "/accounts/aabduraz/TestDir/ocsswrestserver.config";
         OCSSWConfig ocsswConfig = new OCSSWConfig(configFilePath);
         OCSSWServerModel.initiliaze();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
 
     }
 
     @Test
-    public void getOfileName() throws Exception {
+    public void getOfileName() {
 
     }
 
 
 
     @Test
-    public void extractFileInfo() throws Exception {
+    public void extractFileInfo() {
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
 
         ocsswRemote.extractFileInfo("/accounts/aabduraz/Downloads/A2011199230500.L1A_LAC", "1");
@@ -76,7 +76,7 @@ public class OCSSWRemoteTest {
     }
 
     @Test
-    public void executeProgram() throws Exception {
+    public void executeProgram() {
         OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
         JsonObject jsonObject = Json.createObjectBuilder().add("file_IFILE", "/accounts/aabduraz/test.dir/A2011199230500.L1A_LAC")
                 .add("--output_OFILE","--output=/accounts/aabduraz/test.dir/A2011199230500.GEO")

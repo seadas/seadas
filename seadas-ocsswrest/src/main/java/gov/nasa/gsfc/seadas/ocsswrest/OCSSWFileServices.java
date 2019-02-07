@@ -142,7 +142,7 @@ public class OCSSWFileServices {
         String ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getFieldName());
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
-            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+            public void write(OutputStream outputStream) throws WebApplicationException {
                 try {
                     java.nio.file.Path path = Paths.get(ofileName);
                     byte[] data = Files.readAllBytes(path);
@@ -162,14 +162,13 @@ public class OCSSWFileServices {
     @GET
     @Path("downloadAncFileList/{jobId}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response downloadAncFileList(@PathParam("jobId") String jobId)
-            throws IOException {
+    public Response downloadAncFileList(@PathParam("jobId") String jobId) {
 
         String serverWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getFieldName());
         String fileToDownload = serverWorkingDir + File.separator + OCSSWRemoteImpl.ANC_FILE_LIST_FILE_NAME;
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
-            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+            public void write(OutputStream outputStream) throws WebApplicationException {
                 try {
                     System.out.println("anc file name = " + fileToDownload);
                     java.nio.file.Path path = Paths.get(fileToDownload);
@@ -208,7 +207,7 @@ public class OCSSWFileServices {
         String finalProcessStdoutFileName = processStdoutFileName;
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
-            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+            public void write(OutputStream outputStream) throws WebApplicationException {
                 try {
                     java.nio.file.Path path = Paths.get(finalProcessStdoutFileName);
                     byte[] data = Files.readAllBytes(path);
@@ -237,7 +236,7 @@ public class OCSSWFileServices {
         if (file.exists()) {
             StreamingOutput fileStream = new StreamingOutput() {
                 @Override
-                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                public void write(OutputStream outputStream) throws WebApplicationException {
                     try {
                         java.nio.file.Path path = Paths.get(ofileName);
                         byte[] data = Files.readAllBytes(path);
@@ -270,7 +269,7 @@ public class OCSSWFileServices {
         String ofileName = workingFileDir + File.separator + clientOfileName;
         StreamingOutput fileStream = new StreamingOutput() {
             @Override
-            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+            public void write(OutputStream outputStream) throws WebApplicationException {
                 try {
                     java.nio.file.Path path = Paths.get(ofileName);
                     byte[] data = Files.readAllBytes(path);
@@ -301,7 +300,7 @@ public class OCSSWFileServices {
         //return "Got it! \n";
         System.out.println("getting ocssw shared server name");
         OCSSWServerPropertyValues propertyValues = new OCSSWServerPropertyValues();
-        return propertyValues.getServerSharedDirName();
+        return OCSSWServerPropertyValues.getServerSharedDirName();
     }
 
 

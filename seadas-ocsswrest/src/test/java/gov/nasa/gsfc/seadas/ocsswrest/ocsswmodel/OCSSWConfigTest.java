@@ -10,13 +10,13 @@ import static org.junit.Assert.*;
  */
 public class OCSSWConfigTest {
     @Before
-public void setUp() throws Exception {
+public void setUp() {
 
 
 }
 
     @Test
-    public void readProperties() throws Exception {
+    public void readProperties() {
 
         String configFilePath = "/accounts/aabduraz/SeaDAS/dev/seadas-7.4/seadas/seadas-ocsswrest/config/ocsswservertest.config";
         OCSSWConfig ocsswConfig = new OCSSWConfig(configFilePath);

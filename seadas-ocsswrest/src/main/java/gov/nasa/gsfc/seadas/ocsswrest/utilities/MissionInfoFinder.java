@@ -35,7 +35,7 @@ public class MissionInfoFinder {
             AQUARIUS_PROGRAM_NAME = "l2gen_aquarius",
             L3GEN_PROGRAM_NAME = "l3gen";
 
-    public static enum MissionNames {
+    public enum MissionNames {
         AQUARIUS("AQUARIUS"),
         AVHRR("AVHRR"),
         CZCS("CZCS"),
@@ -69,7 +69,7 @@ public class MissionInfoFinder {
 
     }
 
-    public static enum MissionDirs {
+    public enum MissionDirs {
         AQUARIUS("aquarius"),
         AVHRR("avhrr"),
         CZCS("czcs"),
@@ -227,7 +227,7 @@ public class MissionInfoFinder {
         return missionId.name();
     }
 
-    public static enum Id {
+    public enum Id {
 
         AQUARIUS,
         CZCS,
@@ -400,11 +400,7 @@ public class MissionInfoFinder {
     }
 
     public boolean isId(Id id) {
-        if (id == getId()) {
-            return true;
-        } else {
-            return false;
-        }
+        return id == getId();
     }
 
     public void setName(String nameString) {

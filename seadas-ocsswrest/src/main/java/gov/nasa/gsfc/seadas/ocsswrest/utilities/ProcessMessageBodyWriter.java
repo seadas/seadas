@@ -8,7 +8,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -40,7 +39,7 @@ public class ProcessMessageBodyWriter implements MessageBodyWriter<Process> {
                         MediaType mediaType,
                         MultivaluedMap<String, Object> httpHeaders,
                         OutputStream entityStream)
-            throws IOException, WebApplicationException {
+            throws WebApplicationException {
 
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Process.class);

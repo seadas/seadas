@@ -415,7 +415,7 @@ public final class OCSSWRuntimeConfig {
         }
     }
 
-    private void initClasspathPaths() throws RuntimeConfigException {
+    private void initClasspathPaths() {
         mainClassPath = getProperty(classpathKey, null);
     }
 

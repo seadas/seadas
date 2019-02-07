@@ -120,7 +120,7 @@ public class OCSSWRemoteImpl {
 
         debug(" programName = " + programName);
 
-        Object[] array = (Object[]) commandArrayKeys.toArray();
+        Object[] array = commandArrayKeys.toArray();
         int i = 0;
 
         String[] commandArray;
@@ -455,7 +455,7 @@ public class OCSSWRemoteImpl {
         SwingWorker swingWorker = new SwingWorker() {
 
             @Override
-            protected Object doInBackground() throws Exception {
+            protected Object doInBackground() {
 
                 StringBuilder sb = new StringBuilder();
                 for (String item : commandArray) {
@@ -615,7 +615,7 @@ public class OCSSWRemoteImpl {
             String[] additionalOptions = new String[st.countTokens()];
 
             while (st.hasMoreTokens()) {
-                additionalOptions[i++] = (String) st.nextToken();
+                additionalOptions[i++] = st.nextToken();
             }
 
             String[] commandArrayParams = {NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME, ifileNameWithFullPath, programName};
@@ -636,7 +636,7 @@ public class OCSSWRemoteImpl {
 
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
 
-        Process process = executeSimple((String[]) ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
+        Process process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
 
         try {
 
@@ -646,8 +646,8 @@ public class OCSSWRemoteImpl {
             if (line != null) {
                 String splitLine[] = line.split(":");
                 if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
+                    String missionName = splitLine[1].trim();
+                    String fileType = splitLine[2].trim();
                     debug("mission name : " + missionName);
                     debug("file type : " + fileType);
                     if (fileType.length() > 0) {
@@ -685,7 +685,6 @@ public class OCSSWRemoteImpl {
                 jsonObjectBuilder.add("sensorInfo" + i++, lineData);
             }
         } catch (IOException e) {
-            ;
         } finally {
             try {
                 moFile.close();
@@ -715,15 +714,15 @@ public class OCSSWRemoteImpl {
 
         HashMap<String, String> fileInfoMap = new HashMap<>();
         String[] fileTypeCommandArrayParams = {GET_OBPG_FILE_TYPE_PROGRAM_NAME, ifileName};
-        Process process = executeSimple((String[]) ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
+        Process process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(GET_OBPG_FILE_TYPE_PROGRAM_NAME), fileTypeCommandArrayParams));
         try {
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = stdInput.readLine();
             if (line != null) {
                 String splitLine[] = line.split(":");
                 if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
+                    String missionName = splitLine[1].trim();
+                    String fileType = splitLine[2].trim();
                     if (fileType.length() > 0) {
                         fileInfoMap.put(FILE_TYPE_VAR_NAME, fileType);
                     }
@@ -765,11 +764,7 @@ public class OCSSWRemoteImpl {
         String charSet = getFileCharset(fileName);
         debug("file type is: " + charSet);
 
-        if (charSet.trim().equals(US_ASCII_CHAR_SET)) {
-            return true;
-        } else {
-            return false;
-        }
+        return charSet.trim().equals(US_ASCII_CHAR_SET);
     }
 
     private String getOfileName(String[] commandArray) {
