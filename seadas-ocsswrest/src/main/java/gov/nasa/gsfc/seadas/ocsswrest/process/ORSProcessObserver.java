@@ -6,7 +6,6 @@ import gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWConfig;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Created by aabduraz on 3/22/16.
@@ -80,7 +79,7 @@ public class ORSProcessObserver {
         public void run() {
             try {
                 read();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
