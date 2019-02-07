@@ -1,17 +1,16 @@
 package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 
-import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfoFinder;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
-import java.io.*;
-import java.lang.reflect.Field;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.Arrays;
 
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.OCSSW_INSTALLER_URL;
 import static gov.nasa.gsfc.seadas.ocsswrest.utilities.OCSSWInfo.TMP_OCSSW_INSTALLER;
@@ -31,6 +30,8 @@ public class OCSSWServerModel {
     public static final String OCSSW_SCRIPTS_DIR_SUFFIX = "scripts";
     public static final String OCSSW_DATA_DIR_SUFFIX = "share";
     public static final String OCSSW_BIN_DIR_SUFFIX = "bin";
+    public static final String OCSSW_SRC_DIR_SUFFIX = "ocssw-src";
+    public static final String OCSSW_VIIRS_DEM_SUFFIX = "share" + File.separator + "viirs" + File.separator + "dem";
 
     public static String OCSSW_INSTALLER_PROGRAM = "install_ocssw.py";
     public static String OCSSW_RUNNER_SCRIPT = "ocssw_runner";
@@ -57,6 +58,14 @@ public class OCSSWServerModel {
 
     public static String getOcsswBinDirPath() {
         return ocsswBinDirPath;
+    }
+
+    public static String getOcsswSrcDirPath() {
+        return ocsswSrcDirPath;
+    }
+
+    public static String getOcsswViirsDemPath() {
+        return ocsswViirsDemPath;
     }
 
     public static String getSeadasVersion() {
@@ -100,7 +109,8 @@ public class OCSSWServerModel {
     private static String ocsswInstallerScriptPath;
     private static String ocsswRunnerScriptPath;
     private static String ocsswBinDirPath;
-
+    private static String ocsswSrcDirPath;
+    private static String ocsswViirsDemPath;
 
     private static String seadasVersion;
 
@@ -119,17 +129,15 @@ public class OCSSWServerModel {
         if (ocsswRootPath != null) {
             final File dir = new File(ocsswRootPath + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX);
             System.out.println("server ocssw root path: " + dir.getAbsoluteFile());
-            if (dir.isDirectory()) {
-                ocsswExist = true;
-            } else {
-                ocsswExist = false;
-            }
+            ocsswExist = dir.isDirectory();
             ocsswRoot = ocsswRootPath;
             ocsswScriptsDirPath = ocsswRoot + File.separator + OCSSW_SCRIPTS_DIR_SUFFIX;
             ocsswDataDirPath = ocsswRoot + File.separator + OCSSW_DATA_DIR_SUFFIX;
             ocsswBinDirPath = ocsswRoot + File.separator + OCSSW_BIN_DIR_SUFFIX;
+            ocsswSrcDirPath = ocsswRoot + File.separator + OCSSW_SRC_DIR_SUFFIX;
             ocsswInstallerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_INSTALLER_PROGRAM;
             ocsswRunnerScriptPath = ocsswScriptsDirPath + File.separator + OCSSW_RUNNER_SCRIPT;
+            ocsswViirsDemPath = ocsswRoot + File.separator + OCSSW_VIIRS_DEM_SUFFIX;
             downloadOCSSWInstaller();
         }
     }
