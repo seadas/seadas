@@ -1334,6 +1334,9 @@ public abstract class SeadasFileReader {
             if (timeString.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
                 // ISO
                 return ProductData.UTC.parse(timeString, "yyyy-MM-dd'T'HH:mm:ss'Z'");
+            } else if (timeString.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
+                    // ISO without the Z
+                    return ProductData.UTC.parse(timeString, "yyyy-MM-dd'T'HH:mm:ss");
             } else if (timeString.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z")) {
                 // ISO with micros
                 timeString = timeString.substring(0, timeString.length() - 1);

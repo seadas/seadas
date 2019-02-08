@@ -27,7 +27,7 @@
 
     <artifactId>seadas-reader</artifactId>
     <name>SeaDAS OBPG Ocean Color Product Reader</name>
-    <version>1.7.2</version>
+    <version>1.7.3</version>
     <description>A reader for NASA Ocean Color (OBPG) Data Products</description>
 
 

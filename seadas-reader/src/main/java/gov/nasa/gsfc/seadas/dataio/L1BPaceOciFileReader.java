@@ -24,21 +24,11 @@ import ucar.nc2.Attribute;
 import ucar.nc2.Group;
 import ucar.nc2.Variable;
 
-import java.awt.*;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: seadas
- * Date: 11/14/11
- * Time: 2:23 PM
-  */
 public class L1BPaceOciFileReader extends SeadasFileReader {
 
     L1BPaceOciFileReader(SeadasProductReader productReader) {
@@ -49,7 +39,7 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
         RED("red_wavelengths"),
         BLUE("blue_wavelengths"),
         SWIR("swir_wavelenghts");
-        
+
         private String name;
 
         private WvlType(String nm) {
@@ -60,21 +50,18 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
             return name;
         }
     }
-    
+
     Array blue_wavlengths = null;
     Array red_wavlengths = null;
     Array swir_wavlengths = null;
-    
-    
 
 
     @Override
     public Product createProduct() throws ProductIOException {
-    
 
-        int[] dims = ncFile.findVariable("observation_data/Lt_blue").getShape();
-        int sceneWidth = dims[1];
-        int sceneHeight = dims[0];
+        int sceneHeight = ncFile.findDimension("number_of_scans").getLength();
+        int sceneWidth = ncFile.findDimension("ccd_pixels").getLength();
+
         String productName;
 
         try {
@@ -89,13 +76,20 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
         try {
             blue_wavlengths = blueWvl.read();
             red_wavlengths = redWvl.read();
-            swir_wavlengths = swirWvl.read();
-        }
-        catch (IOException e) {
+            //swir_wavlengths = swirWvl.read();
+
+
+            // somehow there are duplicate bands in the test file.
+            // fixme
+            swir_wavlengths = Array.factory(new float[]{940, 1038, 1250, 1251, 1378, 1615, 1616, 2130, 2260});
+
+
+
+        } catch (IOException e) {
             throw new ProductIOException(e.getMessage(), e);
         }
         mustFlipX = mustFlipY = getDefaultFlip();
-        
+
         SeadasProductReader.ProductType productType = productReader.getProductType();
 
         Product product = new Product(productName, productType.toString(), sceneWidth, sceneHeight);
@@ -112,7 +106,7 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
         if (utcEnd == null) {
             utcEnd = getUTCAttribute("time_coverage_stop");
         }
-        
+
         product.setFileLocation(productReader.getInputFile());
         product.setProductReader(productReader);
 
@@ -130,7 +124,7 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
 
 
     public void addMetadata(Product product, String groupname, String meta_element) throws ProductIOException {
-        Group group =  ncFile.findGroup(groupname);
+        Group group = ncFile.findGroup(groupname);
 
         if (group != null) {
             final MetadataElement bandAttributes = new MetadataElement(meta_element);
@@ -162,14 +156,14 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
         Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
         int spectralBandIndex = 0;
         for (Variable variable : variables) {
-            if ((variable.getShortName().equals("latitudes")) || (variable.getShortName().equals("longitudes"))
-                    || (variable.getShortName().equals("true_color")))
+            if (variable.getParentGroup().equals("sensor_band_parameters") || variable.getParentGroup().equals("scan_line_attributes"))
+                continue;
+            if ((variable.getShortName().equals("latitude")) || (variable.getShortName().equals("longitude")))
                 continue;
             int variableRank = variable.getRank();
 
-            if (variableRank == 3) {
+            if (variableRank == 2) {
                 final int[] dimensions = variable.getShape();
-                final int bands = dimensions[2];
                 final int height = dimensions[0];
                 final int width = dimensions[1];
 
@@ -177,10 +171,49 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
                     // final List<Attribute> list = variable.getAttributes();
 
                     String units = variable.getUnitsString();
+                    String name = variable.getShortName();
+                    final int dataType = getProductDataType(variable);
+                    band = new Band(name, dataType, width, height);
+                    product.addBand(band);
+
+                    final List<Attribute> list = variable.getAttributes();
+                    for (Attribute hdfAttribute : list) {
+                        final String attribName = hdfAttribute.getShortName();
+                        if ("units".equals(attribName)) {
+                            band.setUnit(hdfAttribute.getStringValue());
+                        } else if ("long_name".equals(attribName)) {
+                            band.setDescription(hdfAttribute.getStringValue());
+                        } else if ("slope".equals(attribName)) {
+                            band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
+                        } else if ("intercept".equals(attribName)) {
+                            band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                        } else if ("scale_factor".equals(attribName)) {
+                            band.setScalingFactor(hdfAttribute.getNumericValue(0).doubleValue());
+                        } else if ("add_offset".equals(attribName)) {
+                            band.setScalingOffset(hdfAttribute.getNumericValue(0).doubleValue());
+                        } else if ("bad_value_scaled".equals(attribName)) {
+                            band.setNoDataValue(hdfAttribute.getNumericValue(0).doubleValue());
+                            band.setNoDataValueUsed(true);
+                        }
+                    }
+                    bandToVariableMap.put(band, variable);
+                    band.setUnit(units);
+                    band.setDescription(variable.getDescription());
+                }
+            } else if (variableRank == 3) {
+                final int[] dimensions = variable.getShape();
+                final int bands = dimensions[0];
+                final int height = dimensions[1];
+                final int width = dimensions[2];
+
+                if (height == sceneRasterHeight && width == sceneRasterWidth) {
+                    // final List<Attribute> list = variable.getAttributes();
+
+                    String units = variable.getUnitsString();
                     String description = variable.getShortName();
-                    
+
                     for (int i = 0; i < bands; i++) {
-                        final float wavelength = getOciWvl(i,getWvlType(variable.getShortName()));
+                        final float wavelength = getOciWvl(i, getWvlType(variable.getShortName()));
                         StringBuilder longname = new StringBuilder(description);
                         longname.append("_");
                         longname.append(wavelength);
@@ -194,7 +227,7 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
 
                         Variable sliced = null;
                         try {
-                            sliced = variable.slice(2, i);
+                            sliced = variable.slice(0, i);
                         } catch (InvalidRangeException e) {
                             e.printStackTrace();  //Todo change body of catch statement.
                         }
@@ -226,6 +259,8 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
                     }
                 }
             }
+
+
         }
         return bandToVariableMap;
     }
@@ -233,23 +268,23 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
     private WvlType getWvlType(String productName) {
         WvlType wvltype = null;
         if (productName.equals("Lt_blue")) {
-            wvltype =  WvlType.BLUE;
+            wvltype = WvlType.BLUE;
         } else if (productName.equals("Lt_red")) {
-            wvltype =  WvlType.RED;
-        } else if (productName.equals("Lt_swir")) {
-            wvltype =  WvlType.SWIR;
+            wvltype = WvlType.RED;
+        } else if (productName.equals("Lt_SWIR")) {
+            wvltype = WvlType.SWIR;
         }
         return wvltype;
     }
-    
+
     private float getOciWvl(int index, WvlType wvlEnum) {
         float wvl;
         switch (wvlEnum) {
             case RED:
-                wvl= red_wavlengths.getFloat(index);
+                wvl = red_wavlengths.getFloat(index);
                 break;
             case BLUE:
-                wvl =  blue_wavlengths.getFloat(index);
+                wvl = blue_wavlengths.getFloat(index);
                 break;
             case SWIR:
                 wvl = swir_wavlengths.getFloat(index);
@@ -273,18 +308,18 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
         return ProductData.createInstance(dataType, storage);
     }
 
-   public void addGeocoding(final Product product) throws ProductIOException {
-        final String longitude = "longitudes";
-        final String latitude = "latitudes";
-        String navGroup = "navigation";
+    public void addGeocoding(final Product product) throws ProductIOException {
+        final String longitude = "longitude";
+        final String latitude = "latitude";
+        String navGroup = "geolocation_data";
 
         Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
         Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
 
-        if (latVar != null && lonVar != null ) {
+        if (latVar != null && lonVar != null) {
             final ProductData lonRawData;
             final ProductData latRawData;
-            if(mustFlipY) {
+            if (mustFlipY) {
                 lonRawData = readDataFlip(lonVar);
                 latRawData = readDataFlip(latVar);
             } else {
@@ -302,7 +337,7 @@ public class L1BPaceOciFileReader extends SeadasFileReader {
             lonBand.setData(lonRawData);
 
             product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
-            
+
         }
     }
 }
