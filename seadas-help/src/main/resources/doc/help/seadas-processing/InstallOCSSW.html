@@ -183,6 +183,13 @@
         <td>false</td>
     </tr>
     <tr>
+        <td><b>viirsj1</b></td>
+        <td> boolean</td>
+        <td>install VIIRSJ1 files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
         <td><b>Source Code</b></td>
         <td> boolean</td>
         <td>install source code</td>
@@ -193,6 +200,13 @@
         <td><b>Evaluation Data Files</b></td>
         <td> boolean</td>
         <td>install evaluation sensor files</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>VIIRS DEM Files</b></td>
+        <td> boolean</td>
+        <td>install VIIRS DEM files needed for geolocation</td>
         <td>Optional</td>
         <td>false</td>
     </tr>
@@ -249,39 +263,56 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-    Usage: install_ocssw.py [options]
+Usage: install_ocssw.py [options]
 
-    Options:
-      --version             show program's version number and exit
-      -h, --help            show this help message and exit
-      -v, --verbose         Print more information whle running
-      -i INSTALL_DIR, --install-dir=INSTALL_DIR
-                            destination directory for install. Defaults to
-                            $OCSSWROOT or "$HOME/ocssw" if neither are given.
-      -g GIT_BASE, --git-base=GIT_BASE
-                            Web location for the git repositories
-      -a ARCH, --arch=ARCH  set system architecture (linux, linux_64,
-                            macosx_intel)
-      -s, --src             install source code
-      --aquarius            install Aquarius files
-      --avhrr               install AVHRR files
-      --czcs                install CZCS files
-      --goci                install GOCI files
-      --hico                install HICO files
-      --meris               install MERIS files
-      --aqua                install MODIS Aqua files
-      --terra               install MODIS Terra files
-      --mos                 install MOS files
-      --ocm1                install OCM1 files
-      --ocm2                install OCM2 files
-      --ocrvc               install ocrvc files
-      --octs                install OCTS files
-      --osmi                install OSMI files
-      --seawifs             install SeaWiFS files
-      --viirsn              install VIIRSN files
-      --direct-broadcast    install direct broadcast files
-      --eval                install evaluation sensor files
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -v, --verbose         Print more information while running
+  -i INSTALL_DIR, --install-dir=INSTALL_DIR
+                        destination directory for install. Defaults to
+                        $OCSSWROOT or "$HOME/ocssw" if neither are given.
+  -g GIT_BASE, --git-base=GIT_BASE
+                        web location for the git repositories
+  -b GIT_BRANCH, --git-branch=GIT_BRANCH
+                        branch in the git repositories to checkout
+  -a ARCH, --arch=ARCH  set system architecture (linux, linux_64,
+                        macosx_intel)
+  -s, --src             install source code
+  -l LOCAL, --local=LOCAL
+                        local directory containing previously downloaded
+                        bundles
+  -c, --clean           Do a clean install by deleting the install directory
+                        first, if it exists
+  --curl                use curl for download instead of wget
+  --no-update           do not update the git repositories or luts
+  --save-dir=SAVE_DIR   destination directory to save all of the install
+                        files.
+  --aquarius            install Aquarius files
+  --avhrr               install AVHRR files
+  --czcs                install CZCS files
+  --goci                install GOCI files
+  --hico                install HICO files
+  --meris               install MERIS files
+  --aqua                install MODIS Aqua files
+  --terra               install MODIS Terra files
+  --mos                 install MOS files
+  --msis2a              install MSI S2A files
+  --msis2b              install MSI S2B files
+  --ocm1                install OCM1 files
+  --ocm2                install OCM2 files
+  --octs                install OCTS files
+  --olcis3a             install OLCI Sentinel 3A files
+  --oli                 install Landsat 8 OLI files
+  --osmi                install OSMI files
+  --seawifs             install SeaWiFS files
+  --viirsn              install VIIRS NPP files
+  --viirsj1             install VIIRS JPSS1 files
+  --viirsdem            install VIIRS digital elevation map (DEM) files
+  --direct-broadcast    install direct broadcast files
 </pre>
+
+
 
 <hr>
 </body>

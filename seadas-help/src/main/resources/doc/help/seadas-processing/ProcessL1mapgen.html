@@ -37,29 +37,19 @@
 <a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>l1mapgen</b> creates a Level 1 mapped image. The following image shows the default GUI for l1mapgen.
+    <b>l1mapgen</b> creates a Level 1 mapped image.
 
 <p></p>
 <hr>
-<center>
-    <table class="image">
-        <caption align="top"><b>l1mapgen GUI without GEOFILE</b></caption>
-        <tr>
-            <td><img src="images/l1mapgen_without_geofile.png"></td>
-        </tr>
-    </table>
-</center>
-<p></p>
-<hr>
 
-When l1mapgen requires a geofile to create a level 1 mapped image, such as in the case of modis data,
-the geofile gui element is dynamically added, as shown in the image below.
 
 <center>
+
     <table class="image">
-        <caption align="top"><b>l1mapgen GUI with GEOFILE</b></caption>
+        <caption align="top"><b>l2mapgen GUI</b></caption>
+
         <tr>
-            <td><img src="images/l1mapgen_with_geofile.png"></td>
+            <td><img src="images/l1mapgen.png"></td>
         </tr>
     </table>
 </center>
@@ -79,7 +69,7 @@ the geofile gui element is dynamically added, as shown in the image below.
     <tr>
         <td><b>ifile</b></td>
         <td>Text Field</td>
-        <td>Input Level-1A data product.
+        <td>Input Level 1 data product.
         </td>
         <td>Required</td>
         <td></td>
@@ -94,16 +84,9 @@ the geofile gui element is dynamically added, as shown in the image below.
     <tr>
         <td><b>ofile</b></td>
         <td> Text Field</td>
-        <td>Output filename for generated Level-1B data product.
+        <td>Output image filename for generated map.
         </td>
         <td>Required</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><b>ofile[#]</b></td>
-        <td> Text Field</td>
-        <td>additional output L2 file name</td>
-        <td>Optional</td>
         <td></td>
     </tr>
     <tr>
@@ -135,18 +118,30 @@ the geofile gui element is dynamically added, as shown in the image below.
         <td>OC</td>
     </tr>
     <tr>
-        <td><b>north</b></td>
+        <td><b>datamin</b></td>
         <td> float</td>
-        <td>north boundary</td>
+        <td>minimum reflectance for scaling</td>
         <td>Optional</td>
-        <td>-999</td>
+        <td>0.01</td>
     </tr>
     <tr>
-        <td><b>south</b></td>
+        <td><b>datamax</b></td>
         <td> float</td>
-        <td>south bounday</td>
+        <td>maximum reflectance for scaling</td>
         <td>Optional</td>
-        <td>-999</td>
+        <td>0.9</td>
+    </tr>
+    <tr>
+        <td><b>stype</b></td>
+        <td> int</td>
+        <td>scaling type:
+            <pre>
+        0: log
+        1: linear
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>0</td>
     </tr>
     <tr>
         <td><b>east</b></td>
@@ -162,6 +157,21 @@ the geofile gui element is dynamically added, as shown in the image below.
         <td>Optional</td>
         <td>-999</td>
     </tr>
+    <tr>
+        <td><b>north</b></td>
+        <td> float</td>
+        <td>north boundary</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>south</b></td>
+        <td> float</td>
+        <td>south bounday</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+
     <tr>
         <td><b>width</b></td>
         <td> int</td>
@@ -183,40 +193,15 @@ the geofile gui element is dynamically added, as shown in the image below.
         <td>Optional</td>
         <td>[1,1,1]</td>
     </tr>
+
     <tr>
-        <td><b>datamin</b></td>
-        <td> float</td>
-        <td>minimum reflectance for scaling</td>
-        <td>Optional</td>
-        <td>0.01</td>
-    </tr>
-    <tr>
-        <td><b>datamax</b></td>
-        <td> float</td>
-        <td>maximum reflectance for scaling</td>
-        <td>Optional</td>
-        <td>0.9</td>
-    </tr>
-    <tr>
-        <td><b>stype</b></td>
-        <td> int</td>
-        <td>scaling type:
-    <pre>
-        0: log
-        1: linear
-    </pre>
-        </td>
-        <td>Optional</td>
-        <td>0</td>
-    </tr>
-    <tr>
-        <td><b>outmode</b></td>
+        <td><b>oformat</b></td>
         <td> int</td>
         <td>defines output format:
     <pre>
-        0: PPM
-        1: PNG
-        2: GeoTIFF
+        0: ppm
+        1: png
+        2: tiff
     </pre>
         </td>
         <td>Optional</td>
@@ -300,54 +285,98 @@ the geofile gui element is dynamically added, as shown in the image below.
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-    Usage: l1mapgen argument-list
+l1mapgen 9.3.0-seadas-v7.5.2.1 (Dec  3 2018 15:37:25)
+Usage: l1mapgen argument-list
 
-      The argument-list is a set of keyword=value pairs. The arguments can
-      be specified on the commandline, or put into a parameter file, or the
-      two methods can be used together, with commandline over-riding.
+  The argument-list is a set of keyword=value pairs. The arguments can
+  be specified on the commandline, or put into a parameter file, or the
+  two methods can be used together, with commandline over-riding.
 
-    The list of valid keywords follows:
+  return value: 0=OK, 1=error, 110=north,south,east,west does not intersect
+  file data.
 
-       -help (boolean) (alias=-h,--help) (default=false) = print usage information
-       -version (boolean) (alias=--version) (default=false) = print the version
-            information
-       -dump_options (boolean) (alias=--dump_options) (default=false) = print
-            information about each option
-       -dump_options_paramfile (ofile) (alias=--dump_options_paramfile) = print
-            information about each option to paramfile
-       -dump_options_xmlfile (ofile) (alias=--dump_options_xmlfile) = print
-            information about each option to XML file
-       par (ifile) = input parameter file
-       pversion (string) (default=Unspecified) = processing version string
-       suite (string) (default=OC) = product suite string for loading
-            suite-specific defaults
-       ifile (ifile) (alias=ifile1) = input L1 file name
-       geofile (ifile) = input L1 geolocation file name (MODIS only)
-       resolution (int) (default=-1) = processing resolution (MODIS only)
-           -1: standard ocean 1km processing
-         1000: 1km resolution including aggregated 250 and 500m land bands
-          500: 500m resolution including aggregated 250 land bands and
-               replication for lower resolution bands
-          250: 250m resolution with replication for lower resolution bands
-       ofile (ofile) (alias=ofile1) (default=output) = output L2 file #1 name, output vicarious L1B
-            for inverse mode
-       ofile[#] = additional output L2 file name
-       north (float) (default=-999) = north boundary
-       south (float) (default=-999) = south boundary
-       east (float) (default=-999) = east boundary
-       west (float) (default=-999) = west boundary
-       width (int) (default=600) = width of output image
-       threshold (float) (default=0.1) = threshold for the number of good pixels before an image is produced
-       rgb (int) (default=[1,1,1]) = bands to use for red, green and blue
-       datamin (float) (default=0.01) = minimum reflectance for scaling
-       datamax (float) (default=0.9) = maximum reflectance for scaling
-       stype (int) (default=0) = scaling type
-            0: log
-            1: linear
-       outmode (int) (default=0) = defines output format
-            0: PPM
-            1: PNG
-            2: GeoTIFF
+The list of valid keywords follows:
+
+   help (boolean) (alias=h) (default=false) = print usage information
+   version (boolean) (default=false) = print the version
+        information
+   dump_options (boolean) (default=false) = print
+        information about each option
+   dump_options_paramfile (ofile) = print
+        information about each option to paramfile
+   dump_options_xmlfile (ofile) = print
+        information about each option to XML file
+   par (ifile) = input parameter file
+   pversion (string) (default=Unspecified) = processing version string
+   suite (string) (default=OC) = product suite string for loading
+        suite-specific defaults
+   ifile (ifile) (alias=ifile1) = input L1 file name
+   geofile (ifile) = input L1 geolocation file name (MODIS/VIIRS only)
+   resolution (int) (default=-1) = processing resolution (MODIS only)
+       -1: standard ocean 1km processing
+     1000: 1km resolution including aggregated 250 and 500m land bands
+      500: 500m resolution including aggregated 250 land bands and
+           replication for lower resolution bands
+      250: 250m resolution with replication for lower resolution bands
+   ofile (ofile) (alias=ofile1) (default=output) = output file name
+   oformat (string) (default=ppm) = output file format
+        ppm:  output a netPBM PPM file
+        png:  output a PNG file
+        tiff: output a geoTIFF file
+   north (float) (default=-999) = north boundary
+   south (float) (default=-999) = south boundary
+   east (float) (default=-999) = east boundary
+   west (float) (default=-999) = west boundary
+   width (int) (default=600) = width of output image
+   threshold (float) (default=0.1) = threshold for the number of good pixels
+        before an image is produced
+   rgb (int) (default=[1,1,1]) = bands to use for red, green and blue
+   atmocor (boolean) (default=on) = toggle atmospheric correction
+   datamin (float) (default=0.01) = minimum reflectance for scaling
+   datamax (float) (default=0.9) = maximum reflectance for scaling
+   stype (int) (default=0) = scaling type
+        0: log
+        1: linear
+
+This program produces a PPM-formatted output image rendered in a Plate Carree
+projection.
+
+The default band combination produces a "true-color" image. Other combinations
+may be chosen with the "rgb=" option.  The expected argument to this option is
+a comma separated string of wavelengths that specifies the desired bands in
+red-green-blue order.  For example, to produce a false color SeaWiFS output
+image using 865, 670 and 555 nm as the red, green, and blue values
+respectively, the option would be specified as "rgb=865,670,555".
+
+   cirrus_opt (boolean) (default=false) = cirrus cloud reflectance correction option
+   atrem_opt (int) (default=0) = ATREM gaseous transmittance bitmask selector
+        0: H2O only
+        1: Ozone
+        2: CO2
+        4: NO2
+        8: CO
+       16: CH4
+       32: O2
+       64: N2O
+   atrem_full (int) (default=0) = ATREM gaseous transmittance calculation option
+        0: Calculate transmittance using k-distribution method (fast)
+        1: Calculate transmittance using full method (slow)
+   atrem_geom (int) (default=0) = ATREM gaseous transmittance geometry option
+        0: Only recalculate geometry when error threshold reached (fast)
+        1: Recalculate geometry every pixel (slow)
+   atrem_model (int) (default=0) = ATREM gaseous transmittance Atm. model selection
+        0: Use pixel's latitude and date to determine model
+        1: tropical
+        2: mid latitude summer
+        3: mid latitude winter
+        4: subarctic summer
+        5: subarctic winter
+        6: US standard 1962
+   atrem_splitpaths (int) (default=0) = ATREM gaseous transmittance split paths between solar and sensor (turns atrem_full on)
+        0: Calculates transmittance over total path length (default)
+        1: Calculates transmittance over separate solar and sensor paths (slow)
+
+
 </pre>
 <hr>
 </body>
