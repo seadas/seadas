@@ -62,28 +62,28 @@
     </tr>
     <tr>
         <td><b>infile</b></td>
-        <td>Text Field</td>
+        <td> ifile</td>
         <td>listfile of input binfiles</td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
         <td><b>ofile</b></td>
-        <td> Text Field</td>
+        <td> ofile</td>
         <td>output bin filename</td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
         <td><b>out_parm</b></td>
-        <td> text</td>
+        <td> string</td>
         <td>data products list</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>reduce_fac</b></td>
-        <td> text</td>
+        <td> string</td>
         <td>scale reduction factor (power of 2)</td>
         <td>Optional</td>
         <td></td>
@@ -116,13 +116,7 @@
         <td>Optional</td>
         <td>-90</td>
     </tr>
-    <tr>
-        <td><b>noext</b></td>
-        <td> boolean</td>
-        <td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>
-        <td>Optional</td>
-        <td>false</td>
-    </tr>
+
     <!--<tr>-->
     <!--<td><b>verbose</b></td>-->
     <!--<td> boolean</td>-->
@@ -135,7 +129,25 @@
         <td> Text Field</td>
         <td>processing version</td>
         <td>Optional</td>
-        <td></td>
+        <td>unspecified</td>
+    </tr>
+    <tr>
+    <td><b>oformat</b></td>
+    <td>string</td>
+    <td>defines output format:
+        <pre>
+        hdf4
+        netcdf4
+    </pre>
+    <td>Optional</td>
+    <td>netcdf4</td>
+    </tr>
+    <tr>
+        <td><b>noext</b></td>
+        <td> boolean</td>
+        <td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>
+        <td>Optional</td>
+        <td>false</td>
     </tr>
 </table>
 

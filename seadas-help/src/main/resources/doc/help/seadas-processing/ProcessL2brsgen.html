@@ -66,36 +66,36 @@
     </tr>
     <tr>
         <td><b>ifile</b></td>
-        <td>Text Field</td>
+        <td> ifile</td>
         <td>Input L2 file name. Please provide the full path name when manually enter the file name.
         </td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
+        <td><b>ofile</b></td>
+        <td> ofile</td>
+        <td>Output image filename for generated browse file. Please provide the full path name when manually enter the file
+            name.
+        </td>
+        <td>Required</td>
+        <td></td>
+    </tr><tr>
         <td><b>product_table</b></td>
-        <td>input file</td>
+        <td> ifile</td>
         <td>product table</td>
         <td>Optional</td>
         <td>$OCDATAROOT/common/l2brsgen_product_table.dat</td>
     </tr>
     <tr>
         <td><b>prod</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>level 2 product
         </td>
         <td>Required</td>
-        <td></td>
+        <td>chlor_a</td>
     </tr>
-    <tr>
-        <td><b>ofile</b></td>
-        <td> Text Field</td>
-        <td>Output image filename for generated browse file. Please provide the full path name when manually enter the file
-            name.
-        </td>
-        <td>Required</td>
-        <td></td>
-    </tr>
+
     <tr>
         <td><b>quality</b></td>
         <td> int</td>
@@ -105,28 +105,28 @@
     </tr>
     <tr>
         <td><b>rflag</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>replacement flag</td>
         <td>Optional</td>
         <td>ORIGINAL</td>
     </tr>
     <tr>
         <td><b>flaguse</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>Flags used to mask data</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>chl_flags</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>Flags used to mask data for chl product if flaguse not set</td>
         <td>Optional</td>
         <td>ATMFAIL,HILT,STRAYLIGHT,CLDICE,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,NAVFAIL,FILTER,HIGLINT</td>
     </tr>
     <tr>
         <td><b>sst_flags</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>Flags used to mask data for sst product if flaguse not set</td>
         <td>Optional</td>
         <td>SSTFAIL</td>
@@ -176,7 +176,7 @@
 
     <tr>
         <td><b>palfile</b></td>
-        <td>input file</td>
+        <td> ifile</td>
         <td>palette filename. "default" means the palette is chosen using the product table file. The value of this
             field is used when apply_pal is checked.
         </td>
@@ -185,7 +185,7 @@
     </tr>
     <tr>
         <td><b>palette_dir</b></td>
-        <td>input file</td>
+        <td> ifile</td>
         <td>directory containing the palette files</td>
         <td>Optional</td>
         <td>$OCDATAROOT/common/palette</td>
@@ -220,16 +220,16 @@
     </tr>
     <tr>
         <td><b>oformat</b></td>
-        <td> int</td>
+        <td> string</td>
         <td>defines output format:
     <pre>
-        0: HDF4
-        1: PNG
-        2: PPM
+        HDF4
+        PNG
+        PPM
     </pre>
         </td>
         <td>Optional</td>
-        <td>0</td>
+        <td>HDF4</td>
     </tr>
     <tr>
         <td><b>apply_pal</b></td>

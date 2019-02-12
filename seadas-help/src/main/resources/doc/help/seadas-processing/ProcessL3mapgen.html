@@ -48,7 +48,7 @@
     <table class="image">
         <caption align="top"><b>l3mapgen GUI</b></caption>
         <tr>
-            <td><img src="../images/l3mapgen.png"></td>
+            <td><img src="images/l3mapgen.png"></td>
         </tr>
     </table>
 </center>
@@ -68,7 +68,7 @@
 </tr>
 <tr>
     <td><b>ifile</b></td>
-    <td>Text Field</td>
+    <td> ifile</td>
     <td>Input Level 3 bin file name.
     </td>
     <td>Required</td>
@@ -76,25 +76,11 @@
 </tr>
 <tr>
     <td><b>ofile</b></td>
-    <td> Text Field</td>
+    <td> ofile</td>
     <td>Output filename for generated level 3 image file.
     </td>
     <td>Required</td>
     <td></td>
-</tr>
-<tr>
-    <td><b>palfile</b></td>
-    <td> Text Field</td>
-    <td>palette file name</td>
-    <td>Optional</td>
-    <td>the palette is chosen using the product.xml file</td>
-</tr>
-<tr>
-    <td><b>palette_dir</b></td>
-    <td> Text Field</td>
-    <td>palette directory</td>
-    <td>Optional</td>
-    <td>$OCDATAROOT/common/palette</td>
 </tr>
 <tr>
     <td><b>product</b></td>
@@ -102,6 +88,28 @@
     <td>product(s) to map</td>
     <td>Required</td>
     <td></td>
+</tr>
+<tr>
+    <td><b>projection</b></td>
+    <td>string</td>
+    <td> One of the following predefined (proj4) projections may be selected:
+        <pre>
+     albersconic: "+proj=aea +lon_0={central_meridian}"
+     ease2: "+proj=cea +lat_ts=30.0 +lon_0={central_meridian}"
+     lambertconformal: "+proj=lcc +lon_0={central_meridian}"
+     mercator: "+proj=merc +lon_0={central_meridian}"
+     mollweide: "+proj=moll +lon_0={central_meridian}"
+     platecaree:"+proj=eqc +lon_0={central_meridian}"
+     raw: raw dump of the bin file
+     smi: "+proj=eqc +lon_0={central_meridian}"
+
+     Proj4 strings can also be directly entered.
+     (See below for a listing of common proj4 formatted strings.)
+
+ </pre>
+    </td>
+    <td>Optional</td>
+    <td>platecarree</td>
 </tr>
 <tr>
     <td><b>resolution</b></td>
@@ -128,7 +136,56 @@
     <td>Optional</td>
     <td>9km</td>
 </tr>
-
+<tr>
+    <td><b>interp</b></td>
+    <td>string</td>
+    <td>interpolation method:
+        <pre>
+     nearest: Nearest Neighbor
+     bin:     bin all of the pixels that intersect the
+                area of the output pixel
+     area:    bin weighted by area all of the pixels that
+                intersect the area of the output pixel
+ </pre>
+    </td>
+    <td>Optional</td>
+    <td>nearest</td>
+</tr>
+<tr>
+    <td><b>pversion</b></td>
+    <td> string</td>
+    <td>Processing version string</td>
+    <td>Optional</td>
+    <td></td>
+</tr>
+<tr>
+    <td><b>north</b></td>
+    <td>float</td>
+    <td>Northern most Latitude</td>
+    <td>Optional</td>
+    <td>-999</td>
+</tr>
+<tr>
+    <td><b>south</b></td>
+    <td>float</td>
+    <td>Southern most Latitude</td>
+    <td>Optional</td>
+    <td>-999</td>
+</tr>
+<tr>
+    <td><b>east</b></td>
+    <td>float</td>
+    <td>Eastern most Longitude</td>
+    <td>Optional</td>
+    <td>-999</td>
+</tr>
+<tr>
+    <td><b>west</b></td>
+    <td>float</td>
+    <td>Western most Longitude</td>
+    <td>Optional</td>
+    <td>-999</td>
+</tr>
 <tr>
     <td><b>oformat</b></td>
     <td>string</td>
@@ -142,32 +199,15 @@
             </pre>
     </td>
     <td>Optional</td>
-    <td>netCDF</td>
+    <td>netCDF4</td>
 </tr>
-
 <tr>
-    <td><b>projection</b></td>
-    <td>string</td>
-    <td> One of the following predefined (proj4) projections may be selected:
- <pre>
-     albersconic: "+proj=aea +lon_0={central_meridian}"
-     ease2: "+proj=cea +lat_ts=30.0 +lon_0={central_meridian}"
-     lambertconformal: "+proj=lcc +lon_0={central_meridian}"
-     mercator: "+proj=merc +lon_0={central_meridian}"
-     mollweide: "+proj=moll +lon_0={central_meridian}"
-     platecaree:"+proj=eqc +lon_0={central_meridian}"
-     raw: raw dump of the bin file
-     smi: "+proj=eqc +lon_0={central_meridian}"
-
-     Proj4 strings can also be directly entered.
-     (See below for a listing of common proj4 formatted strings.)
-
- </pre>
-    </td>
+    <td><b>deflate</b></td>
+    <td>int</td>
+    <td>deflation level</td>
     <td>Optional</td>
-    <td>smi</td>
+    <td>4</td>
 </tr>
-
 <tr>
     <td><b>central_meridian</b></td>
     <td>float</td>
@@ -177,61 +217,19 @@
     <td>0</td>
 </tr>
 <tr>
-    <td><b>interp</b></td>
-    <td>string</td>
-    <td>interpolation method:
- <pre>
-     nearest: Nearest Neighbor
-     bin:     bin all of the pixels that intersect the
-                area of the output pixel
-     area:    bin weighted by area all of the pixels that
-                intersect the area of the output pixel
- </pre>
-    </td>
+    <td><b>palfile</b></td>
+    <td> ifile</td>
+    <td>palette file name</td>
     <td>Optional</td>
-    <td>nearest</td>
+    <td>the palette is chosen using the product.xml file</td>
 </tr>
 <tr>
-    <td><b>north</b></td>
-    <td>float</td>
-    <td>Northern most Latitude</td>
+    <td><b>palette_dir</b></td>
+    <td> ifile</td>
+    <td>palette directory</td>
     <td>Optional</td>
-    <td>90.0</td>
+    <td>$OCDATAROOT/common/palette</td>
 </tr>
-<tr>
-    <td><b>south</b></td>
-    <td>float</td>
-    <td>Southern most Latitude</td>
-    <td>Optional</td>
-    <td>-90.0</td>
-</tr>
-<tr>
-    <td><b>east</b></td>
-    <td>float</td>
-    <td>Eastern most Longitude</td>
-    <td>Optional</td>
-    <td>180.0</td>
-</tr>
-<tr>
-    <td><b>west</b></td>
-    <td>float</td>
-    <td>Western most Longitude</td>
-    <td>Optional</td>
-    <td>-180.0</td>
-</tr>
-<tr>
-    <td><b>apply_pal</b></td>
-    <td>boolean</td>
-    <td>apply color palette:
-        <pre>
-            yes: color image
-            no: grayscale image
-        </pre>
-    </td>
-    <td>Optional</td>
-    <td>yes</td>
-</tr>
-
 <tr>
     <td><b>datamin</b></td>
     <td> float</td>
@@ -250,35 +248,65 @@
     <td><b>scale_type</b></td>
     <td> string</td>
     <td>data scaling type:
-    <pre>
+        <pre>
         linear:   linear scaling
         log:      logarithmic scaling
+        arctan:   arc tangent scaling
     </pre>
     </td>
     <td>Optional</td>
     <td>default from product.xml</td>
 </tr>
+<tr>
+    <td><b>Product_rgb</b></td>
+    <td> string</td>
+    <td>Three products to use for RGB.
+        Default is sensor-specific</td>
+    <td>Optional</td>
+    <td>rhos_670,rhos_555,rhos_412</td>
+</tr>
+<tr>
+    <td><b>fudge</b></td>
+    <td> float</td>
+    <td>fudge factor used to modify size of L3 pixels</td>
+    <td>Optional</td>
+    <td>1.0</td>
+</tr>
+<tr>
+    <td><b>threshold</b></td>
+    <td> float</td>
+    <td>minimum percentage of filled pixels before
+        an image is generated</td>
+    <td>Optional</td>
+    <td>0</td>
+</tr>
 
 <tr>
-    <td><b>pversion</b></td>
-    <td> string</td>
-    <td>Processing version string</td>
-    <td>Optional</td>
-    <td></td>
-</tr>
-<tr>
-    <td><b>deflate</b></td>
-    <td>int</td>
-    <td>deflation level</td>
-    <td>Optional</td>
-    <td>4</td>
-</tr>
-<tr>
-    <td><b>quiet</b></td>
+    <td><b>apply_pal</b></td>
     <td>boolean</td>
-    <td>stop the status printing</td>
+    <td>apply color palette:
+        <pre>
+            yes: color image
+            no: grayscale image
+        </pre>
+    </td>
     <td>Optional</td>
-    <td>false</td>
+    <td>yes</td>
+</tr>
+<tr>
+    <td><b>use_quality</b></td>
+    <td>boolean</td>
+    <td>should we do quality factor processing</td>
+    <td>Optional</td>
+    <td>yes</td>
+</tr>
+<tr>
+    <td><b>use_rgb</b></td>
+    <td>boolean</td>
+    <td>should we use product_rgb to make a
+        pseudo-true color image</td>
+    <td>Optional</td>
+    <td>no</td>
 </tr>
 
 </table>

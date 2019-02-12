@@ -24,27 +24,21 @@
     Creates a Level 3 bin file from one or more Level 2 input files.
 </p>
 
-<p>
-    <a href="#location">Location</a> <br/>
-    <a href="#details">Details</a> <br/>
-    <a href="#cl">Command Line Usage</a> <br/>
-</p>
-
-<a name="location"><h4>Location</h4></a>
-
+<h5>Location</h5>
 <p>Tools -> OCSSW -> l2bin</p>
 
 
-<<a name="details"><h4>Details</h4></a>
-
 <p>
-    <b>l2bin</b> performs spatial/temporal binning of OBPG Level-2 data files.
+    <a href="#gui">GUI Usage</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
 
-<p></p>
+
+
 <hr>
+<a name="gui"><h4>GUI Usage</h4></a>
 <center>
     <table class="image">
-        <caption align="top"><b>l2bin GUI</b></caption>
         <tr>
             <td><img src="images/l2bin.png"></td>
         </tr>
@@ -106,7 +100,7 @@
     </pre>
         </td>
         <td>Optional</td>
-        <td>9</td>
+        <td>H</td>
     </tr>
 
     <tr>
@@ -149,14 +143,7 @@
         <td> string</td>
         <td>production version</td>
         <td>Optional</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><b>noext</b></td>
-        <td> boolean</td>
-        <td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>
-        <td>Optional</td>
-        <td>false</td>
+        <td>unspecified</td>
     </tr>
     <tr>
         <td><b>rowgroup</b></td>
@@ -164,13 +151,6 @@
         <td>number of bin rows to process at once</td>
         <td>Optional</td>
         <td>-1</td>
-    </tr>
-    <tr>
-        <td><b>night</b></td>
-        <td> boolean</td>
-        <td>Check for SST night processing</td>
-        <td>Optional</td>
-        <td>false</td>
     </tr>
     <tr>
         <td><b>qual_prod</b></td>
@@ -196,6 +176,20 @@
     </pre>
         <td>Optional</td>
         <td>netcdf4</td>
+    </tr>
+    <tr>
+        <td><b>noext</b></td>
+        <td> boolean</td>
+        <td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td><b>night</b></td>
+        <td> boolean</td>
+        <td>Check for SST night processing</td>
+        <td>Optional</td>
+        <td>false</td>
     </tr>
     <!--<tr>-->
     <!--<td><b>verbose</b></td>-->

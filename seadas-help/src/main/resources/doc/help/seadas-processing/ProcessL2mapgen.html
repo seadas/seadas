@@ -67,7 +67,7 @@
     </tr>
     <tr>
         <td><b>ifile</b></td>
-        <td>Text Field</td>
+        <td> ifile</td>
         <td>Input Level 2 data product.
         </td>
         <td>Required</td>
@@ -75,44 +75,43 @@
     </tr>
     <tr>
         <td><b>ofile</b></td>
-        <td> Text Field</td>
+        <td> ofile</td>
         <td>Output filename for generated level 2 image file.
         </td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
+        <td><b>product_table</b></td>
+        <td> ifile</td>
+        <td>product table</td>
+        <td>Optional</td>
+        <td>$OCDATAROOT/common/smigen_product_table.dat</td>
+    </tr>
+    <tr>
+        <td><b>prod</b></td>
+        <td> string</td>
+        <td>product name</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
         <td><b>palfile</b></td>
-        <td> Text Field</td>
+        <td> ifle</td>
         <td>palette file name</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>palette_dir</b></td>
-        <td> Text Field</td>
+        <td> ifile</td>
         <td>palette directory</td>
         <td>Optional</td>
         <td>$OCDATAROOT/common/palette</td>
     </tr>
     <tr>
-        <td><b>product_table</b></td>
-        <td> Text Field</td>
-        <td>product table</td>
-        <td>Optional</td>
-        <td>$OCDATAROOT/common/smigen_product_table.dat</td>
-    </tr>
-
-    <tr>
-        <td><b>prod</b></td>
-        <td>Text Field</td>
-        <td>product name</td>
-        <td>Optional</td>
-        <td></td>
-    </tr>
-    <tr>
         <td><b>flaguse</b></td>
-        <td>Text Field</td>
+        <td> string</td>
         <td>flags to be masked</td>
         <td>Optional</td>
         <td></td>
@@ -196,7 +195,7 @@
 
     <tr>
         <td><b>outmode</b></td>
-        <td>Text Field (String)</td>
+        <td> string</td>
         <td>format of the output file :
             <pre>
                 ppm: PPM or PGM image file (alias 1)

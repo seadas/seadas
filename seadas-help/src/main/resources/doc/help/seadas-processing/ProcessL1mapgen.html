@@ -68,7 +68,7 @@
     </tr>
     <tr>
         <td><b>ifile</b></td>
-        <td>Text Field</td>
+        <td> ifile</td>
         <td>Input Level 1 data product.
         </td>
         <td>Required</td>
@@ -76,14 +76,14 @@
     </tr>
     <tr>
         <td><b>geofile</b></td>
-        <td> Text Field</td>
+        <td> ifile</td>
         <td>input L1 geolocation file name</td>
         <td>Conditional - MODIS only</td>
         <td></td>
     </tr>
     <tr>
         <td><b>ofile</b></td>
-        <td> Text Field</td>
+        <td> ofile</td>
         <td>Output image filename for generated map.
         </td>
         <td>Required</td>
@@ -105,14 +105,14 @@
     </tr>
     <tr>
         <td><b>pversion</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>processing version string</td>
         <td>Optional</td>
         <td>Unspecified</td>
     </tr>
     <tr>
         <td><b>suite</b></td>
-        <td> Text Field</td>
+        <td> sring</td>
         <td>product suite string for loading suite-specific defaults</td>
         <td>Optional</td>
         <td>OC</td>
@@ -196,12 +196,12 @@
 
     <tr>
         <td><b>oformat</b></td>
-        <td> int</td>
+        <td> string</td>
         <td>defines output format:
     <pre>
-        0: ppm
-        1: png
-        2: tiff
+        ppm
+        png
+        tiff
     </pre>
         </td>
         <td>Optional</td>
