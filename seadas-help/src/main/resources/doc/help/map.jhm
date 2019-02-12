@@ -173,6 +173,8 @@
     <mapID target="l2bin" url="seadas-processing/ProcessL2bin.html"/>
     <mapID target="l2bin_aquarius" url="seadas-processing/ProcessL2binAquarius.html"/>
     <mapID target="l3bin" url="seadas-processing/ProcessL3bin.html"/>
+    <mapID target="l3gen" url="seadas-processing/ProcessL3gen.html"/>
+    <mapID target="l3bindump" url="seadas-processing/ProcessL3bindump.html"/>
     <mapID target="l3mapgen" url="seadas-processing/ProcessL3mapgen.html"/>
     <mapID target="smigen" url="seadas-processing/ProcessSmigen.html"/>
     <mapID target="multilevel_processor.py" url="seadas-processing/ProcessMultilevel_processor.py.html"/>

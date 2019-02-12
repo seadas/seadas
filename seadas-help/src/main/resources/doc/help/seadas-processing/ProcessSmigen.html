@@ -297,31 +297,35 @@
 </table>
 
 
-<a name="cl"><h4>Command Line Usage</h4></a><pre>
-    Usage: smigen ifile ofile prod-name
-       par        = parameter filename
-       ifile      = input bin filename
-       ofile      = output map filename
-       prod       = product name
-       precision  = output map precision: 'B' (default), 'I', 'F'
-       palfile    = palette filename
-       pversion   = processing version (default is Unspecified)
-       datamin    = minumum value for data scaling (default is prod-specific)
-       datamax    = maximum value for data scaling (default is prod-specific)
-       stype      = scaling type,1=LINEAR,2=LOG (default is prod-specific)
-       meas       = measurement to map, 1=mean, 2=var, 3=stdev, 4=pixels, 5=scenes (default=1)
-       loneast    = Easternmost longitude (default=+180)
-       lonwest    = Westernmost longitude (default=-180)
-       latnorth   = Northernmost latitude (default=+90)
-       latsouth   = Southernmost latitude (default=-90)
-       projection = SIN | RECT (default=RECT)
-       resolution = 36km | 9km | 4km | 2km | 1km
-                    1deg (one deg) | 10deg (0.1 deg) (default=9km)
-       seam_lon   = Longitude of Left Edge of Map (default=-180)
-       proddesc   = Product Description
-       units      = Product Units
+<a name="cl"><h4>Command Line Usage</h4></a>
 
+<pre>
+Usage: smigen ifile ofile prod-name
+   par        = parameter filename
+   ifile      = input bin filename
+   ofile      = output map filename
+   oformat    = output format: 1 (HDF4 [default]), 2 (netCDF4), 3 (HDF5)
+   deflate    = apply internal compression for netCDF output
+   prod       = product name
+   precision  = output map precision: 'B' (default), 'I', 'F'
+   palfile    = palette filename
+   pversion   = processing version (default is Unspecified)
+   datamin    = minumum value for data scaling (default is prod-specific)
+   datamax    = maximum value for data scaling (default is prod-specific)
+   stype      = scaling type,1=LINEAR,2=LOG (default is prod-specific)
+   meas       = measurement to map, 1=mean, 2=var, 3=stdev, 4=pixels, 5=scenes (default=1)
+   loneast    = Easternmost longitude (default=+180)
+   lonwest    = Westernmost longitude (default=-180)
+   latnorth   = Northernmost latitude (default=+90)
+   latsouth   = Southernmost latitude (default=-90)
+   projection = SIN | RECT (default=RECT)
+   resolution = 36km | 18km | 9km | 4km | 2km | 1km | hkm | qkm
+                1deg (one deg) | hdeg (0.5 deg) | qdeg (0.25 deg)
+                10deg (0.1 deg) |udeg-#.# (#.# deg)| ukm-#.# (#.# km) (default=9km)
+   seam_lon   = Longitude of Left Edge of Map (default=-180)
+   proddesc   = Product Description
+   units      = Product Units
 </pre>
 <hr>
 </body>
-</html>
+</html>smigen 5.20 (Nov 30 2018 09:53:07)
