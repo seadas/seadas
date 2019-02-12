@@ -353,10 +353,6 @@
                     <value>netCDF4</value>
                     <description>netCDF4</description>
                 </validValue>
-                <validValue>
-                    <value>HDF5</value>
-                    <description>HDF5</description>
-                </validValue>
             </validValues>
             <description>color file format; default is the same format as input file(s)</description>
             <usedAs>option</usedAs>

@@ -32,13 +32,13 @@
 
 <a name="location"><h4>Location</h4></a>
 
-<p>Tools -> OCSSW Processing -> l2bin</p>
+<p>Tools -> OCSSW -> l2bin</p>
 
 
 <<a name="details"><h4>Details</h4></a>
 
 <p>
-    <b>l2bin</b> performs spatial/temporal binning of SeaWiFs, MODIS, and OCTS Level-2 data files.
+    <b>l2bin</b> performs spatial/temporal binning of OBPG Level-2 data files.
 
 <p></p>
 <hr>
@@ -66,21 +66,21 @@
     </tr>
     <tr>
         <td><b>infile</b></td>
-        <td>Text Field</td>
+        <td>ifile</td>
         <td>input filename/filelist</td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
         <td><b>ofile</b></td>
-        <td> Text Field</td>
+        <td> ofile</td>
         <td>output bin filename</td>
         <td>Required</td>
         <td></td>
     </tr>
     <tr>
         <td><b>sday</b></td>
-        <td> text</td>
+        <td> int</td>
         <td>start datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
         <td>Optional</td>
         <td></td>
@@ -94,14 +94,14 @@
     </tr>
     <tr>
         <td><b>resolve</b></td>
-        <td>text</td>
-        <td>bin resolution (H,1,2,4,9,36)
+        <td>string</td>
+        <td>bin resolution
     <pre>
-        H  - 500m
-        1  - 1km
-        2  - 2km
-        4  - 4km
-        9  - 9km
+        H  - 0.5km
+        1  - 1.1km
+        2  - 2.3km
+        4  - 4.6km
+        9  - 9.2km
         36 - 36km
     </pre>
         </td>
@@ -111,7 +111,7 @@
 
     <tr>
         <td><b>suite</b></td>
-        <td> text</td>
+        <td> string</td>
         <td></td>
         <td>Optional</td>
         <td></td>
@@ -119,14 +119,14 @@
 
     <tr>
         <td><b>flaguse</b></td>
-        <td> text</td>
+        <td> string</td>
         <td>flags masked</td>
         <td>Optional</td>
         <td>[see /SENSOR/l2bin_defaults.par]</td>
     </tr>
     <tr>
         <td><b>l3bprod</b></td>
-        <td> text</td>
+        <td> string</td>
         <td>bin products
     <pre>
         Set to "ALL" or "all" for all L2 products in 1st input file.
@@ -139,14 +139,14 @@
     </tr>
     <tr>
         <td><b>prodtype</b></td>
-        <td>text</td>
+        <td>string</td>
         <td>product type (Set to "regional" to bin all scans.)</td>
         <td>Optional</td>
         <td>day</td>
     </tr>
     <tr>
         <td><b>pversion</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>production version</td>
         <td>Optional</td>
         <td></td>
@@ -163,7 +163,7 @@
         <td>int</td>
         <td>number of bin rows to process at once</td>
         <td>Optional</td>
-        <td></td>
+        <td>-1</td>
     </tr>
     <tr>
         <td><b>night</b></td>
@@ -174,7 +174,7 @@
     </tr>
     <tr>
         <td><b>qual_prod</b></td>
-        <td> Text Field</td>
+        <td>string</td>
         <td>quality product field name</td>
         <td>Optional</td>
         <td></td>
@@ -185,6 +185,17 @@
         <td>maximum acceptable quality</td>
         <td>Optional</td>
         <td>2</td>
+    </tr>
+    <tr>
+        <td><b>oformat</b></td>
+        <td>string</td>
+        <td>defines output format:
+            <pre>
+        hdf4
+        netcdf4
+    </pre>
+        <td>Optional</td>
+        <td>netcdf4</td>
     </tr>
     <!--<tr>-->
     <!--<td><b>verbose</b></td>-->
@@ -248,7 +259,7 @@
     </tr>
     <tr>
         <td><b>Open in SeaDAS</b></td>
-        <td> Checkbox</td>
+        <td>Checkbox</td>
         <td>If selected, the ofile will be added to the open products list right after its generation.
         </td>
     </tr>
@@ -264,34 +275,70 @@
 <a name="cl"><h4>Command Line Usage</h4></a>
 
 <pre>
-    Usage: l2bin parfile=parfile or
-                infile=infile ofile=ofile [sday=sday] [eday=eday]
-                resolve=resolve [flaguse=flaguse] [l3bprod=l3bprod]
-                [prodtype=prodtype] [noext=noext] [verbose=verbose
-                [rowgroup=rowgroup] [night=night] [pversion=pversion]
+l2bin 5.0.0 (Nov 30 2018 09:52:58)
+5.0.0
+Usage: l2bin argument-list
 
-       parfile   = parameter filename
-       infile    = input filename/filelist
-       ofile     = output bin filename
-       sday      = start datadate (YYYYDDD) [ignored for "regional" prodtype]
-       eday      = end datadate   (YYYYDDD) [ignored for "regional" prodtype]
-       resolve   = bin resolution (H,1,2,4,9,36)
-       flaguse   = flags masked [see /SENSOR/l2bin_defaults.par]
-       l3bprod   = bin products [default=all products]
-                   Set to "ALL" or "all" for all L2 products in 1st input file.
-                   Use ':' or ',' or ' ' as delimiters.
-                   Use ';' or '=' to delineate minimum values.
-       prodtype  = product type (Set to "regional" to bin all scans.) [default=day]
-       pversion  = production version [default=Unspecified]
-       noext     = set to 1 to suppress generation of external files
-                   [default=0, (1 for "regional" prodtype)]
-       rowgroup  = # of bin rows to process at once.
-       night     = set to 1 for SST night processing [default=0]
-       qual_prod = quality product field name
-       qual_max  = maximum acceptable quality [default=2]
-       verbose   = Allow more verbose screen messages [default=0]
+The argument-list is a set of keyword=value pairs. The arguments can
+be specified on the commandline, or put into a parameter file, or the
+two methods can be used together, with commandline over-riding.
+
+return value: 0=OK, 1=error, 110=north,south,east,west does not intersect
+file data.
+
+The list of valid keywords follows:
+
+help (boolean) (alias=h) (default=false) = print usage information
+version (boolean) (default=false) = print the version
+information
+dump_options (boolean) (default=false) = print
+information about each option
+dump_options_paramfile (ofile) = print
+information about each option to paramfile
+dump_options_xmlfile (ofile) = print
+information about each option to XML file
+par (ifile) (alias=parfile) = input parameter file
+ifile (ifile) (alias=infile) = input L2 file name
+ofile (ofile) (default=output) = output file name
+fileuse (ifile) = input L2 file name
+oformat (string) (default=netcdf4) = output file format
+hdf4: output a HDF4 file
+netcdf4: output a netCDF4 file
+
+eday (int) (default=2038018) = end datadate (YYYYDDD) [ignored for "regional" prodtype]
+sday (int) (default=1970001) = start datadate (YYYYDDD) [ignored for "regional" prodtype]
+latnorth (float) (default=90) = northern most latitude
+latsouth (float) (default=-90) = southern most latitude
+loneast (float) (default=0) = eastern most longitude
+lonwest (float) (default=0) = western most longitude
+resolution (string) (alias=resolve) (default=H) = bin resolution (H = 0.5km,  Q=250m, HQ=100m, HH=50m,
+1 = 1.1km, 2 = 2.3km, 4 = 4.6km,
+9 = 9.2km, 18 = 18.5km, QD = 0.25 degree,
+36 = 36km, HD = 0.5 degree, 1D = 1 degree)
+
+rowgroup (int) (default=-1) = # of bin rows to process at once.
+flaguse (string) (default=ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLFAIL,CHLWARN,NAVWARN,ABSAER,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER) = flags masked [see /SENSOR/l2bin_defaults.par]
+l3bprod (string) (default=ALL) = l3bprod = bin products [default=all products]
+Set to "ALL" or "all" for all L2 products in 1st input file.
+Use ':' or ',' or ' ' as delimiters.
+Use ';' or '=' to delineate minimum values.
+
+prodtype (string) (default=day) = product type (Set to "regional" to bin all scans.)
+pversion (string) (default=unspecified) = production version
+suite (string) = suite for default parameters
+average (string) = averaging scheme
+night (boolean) (default=off) = set to 1 for SST night processing
+verbose (boolean) (default=off) = Allow more verbose screen messages
+minobs (float) (default=0) = minimum observation to use.
+deflate (int) (default=5) = deflation level.  0=off or 1=low through 9=high
+qual_prod (string) = quality product field name
+composite_prod (string) = composite product fieldname
+composite_scheme (string) = composite scheme (min/max)
+qual_max (int) (default=2) = maximum acceptable quality
 </pre>
+
 
 <hr>
 </body>
 </html>
+

@@ -293,8 +293,8 @@
 
 
 <a name="cl"><h4>Command Line Usage</h4></a>
-
 <pre>
+l2mapgen 1.0 (Nov 17 2018 15:45:01)
 Usage: l2mapgen argument-list
 
   This program takes a product from a L2 file, maps it using a Plate
@@ -307,16 +307,16 @@ Usage: l2mapgen argument-list
 
 The list of valid keywords follows:
 
-   -help (boolean) (alias=-h,--help) (default=false) = print usage information
-   -version (boolean) (alias=--version) (default=false) = print the version
+   help (boolean) (alias=h) (default=false) = print usage information
+   version (boolean) (default=false) = print the version
         information
-   -dump_options (boolean) (alias=--dump_options) (default=false) = print
+   dump_options (boolean) (default=false) = print
         information about each option
-   -dump_options_paramfile (ofile) (alias=--dump_options_paramfile) = print
+   dump_options_paramfile (ofile) = print
         information about each option to paramfile
-   -dump_options_xmlfile (ofile) (alias=--dump_options_xmlfile) = print
+   dump_options_xmlfile (ofile) = print
         information about each option to XML file
-   par (string) = input parameter file
+   par (ifile) = input parameter file
    ifile (ifile) = input L2 file name or file with a list of files names
    ofile (ofile) = output map filename (NULL=STDOUT)
    prod (string) = product name
@@ -329,11 +329,12 @@ The list of valid keywords follows:
         only for SST  and only if qual_sst or qual_sst4 SDS exist
    mask (boolean) (default=no) = apply mask to land, cloud and glint (see below)
    datamin (float) (default=0.0) = minimum value for data scaling
-        (default: see SMI product table)
+        (default see SMI product table)
    datamax (float) (default=0.0) = maximum value for data scaling
-        (default: see SMI product table)
-   stype (int) (default=0) = scaling type: 1=LINEAR; 2=LOG;
-        (default: see SMI product table)
+        (default see SMI product table)
+   stype (int) (default=0) = scaling type (default see SMI product table)
+        1: LINEAR
+        2: LOG
    east (float) (default=0.0) = Map East longitude
         (default=scene(s) Easternmost Longitude)
    west (float) (default=0.0) = Map West longitude
@@ -345,10 +346,10 @@ The list of valid keywords follows:
    width (int) (default=800) = width of the output image
    threshold (float) (default=5) = minimum percentage of the area of interest
         that must receive valid pixel data before an image is generated
-   outmode (int) (default=1) = format of the output file
-        1: PPM or PGM image file
-        2: PNG color or grayscale image file
-        3: TIFF color or grayscale geo tiff image file
+   outmode (string) (default=ppm) = format of the output file
+        ppm: PPM or PGM image file (alias 1)
+        png: PNG color or grayscale image file (alias 2)
+        tiff: TIFF color or grayscale geo tiff image file (alias 3)
 
 
    If the "mask" option is set, the output PGM image will be masked for
@@ -373,3 +374,4 @@ The list of valid keywords follows:
 <hr>
 </body>
 </html>
+
