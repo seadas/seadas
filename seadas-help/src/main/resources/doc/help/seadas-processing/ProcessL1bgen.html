@@ -68,7 +68,7 @@
     </tr>
     <tr>
         <td><b>ifile</b></td>
-        <td>Text Field</td>
+        <td> ifile</td>
         <td>Input Level-1A data product.
         </td>
         <td>Required</td>
@@ -76,7 +76,7 @@
     </tr>
     <tr>
         <td><b>ofile</b></td>
-        <td> Text Field</td>
+        <td> ofile</td>
         <td>Output filename for generated Level-1B data product.
         </td>
         <td>Required</td>
@@ -84,42 +84,42 @@
     </tr>
     <tr>
         <td><b>calfile</b></td>
-        <td> Text Field</td>
+        <td> ifile</td>
         <td>system calibration file</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>xcalfile</b></td>
-        <td> Text Field</td>
+        <td> ifile</td>
         <td>cross-calibration file</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>spixl</b></td>
-        <td> Text Field</td>
+        <td> int</td>
         <td>Starting pixel number to be processed.</td>
         <td>Optional</td>
         <td>1</td>
     </tr>
     <tr>
         <td><b>epixl</b></td>
-        <td> Text Field</td>
+        <td> int</td>
         <td>Ending pixel number to be processed. (-1=the last pixel).</td>
         <td>Optional</td>
         <td>-1</td>
     </tr>
     <tr>
         <td><b>sline</b></td>
-        <td> Text Field</td>
+        <td> int</td>
         <td>start line number</td>
         <td>Optional</td>
         <td>1</td>
     </tr>
     <tr>
         <td><b>eline</b></td>
-        <td> Text Field</td>
+        <td> int</td>
         <td>end line number (-1=the last line)</td>
         <td>Optional</td>
         <td>-1</td>
@@ -127,42 +127,42 @@
 
     <tr>
         <td><b>gain</b></td>
-        <td> Text Field</td>
+        <td> float</td>
         <td>calibration gain multiplier</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>offset</b></td>
-        <td> Text Field</td>
+        <td> float</td>
         <td>calibration offset adjustment</td>
         <td>Optional</td>
         <td></td>
     </tr>
     <tr>
         <td><b>sl_pixl</b></td>
-        <td> Text Field</td>
+        <td> int</td>
         <td>SeaWiFS only, number of LAC pixels for straylight flagging.</td>
         <td>Conditional</td>
         <td>-1</td>
     </tr>
     <tr>
         <td><b>sl_frac</b></td>
-        <td> Text Field</td>
+        <td> float</td>
         <td>SeaWiFS only, straylight fractional threshold on Ltypical.</td>
         <td>Conditional</td>
         <td>0.25</td>
     </tr>
     <tr>
         <td><b>pversion</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>Processing version string</td>
         <td>Optional</td>
         <td>Unspecified</td>
     </tr>
     <tr>
         <td><b>suite</b></td>
-        <td> Text Field</td>
+        <td> string</td>
         <td>product suite string for loading suite-specific defaults</td>
         <td>Optional</td>
         <td>OC</td>
