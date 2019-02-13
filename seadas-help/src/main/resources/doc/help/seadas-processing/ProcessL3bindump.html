@@ -1,0 +1,108 @@
+<html>
+<head>
+    <title>SeaDAS Help - Data Processing Tools - l3bindump</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<table class="header">
+    <tr class="header">
+        <td class="header">&nbsp;
+            l3bindump
+        </td>
+        <td class="header" align="right"><a href="../visat/index.html"><img src="images/SeaDASHeader.png"
+                                                                            border=0></a></td>
+    </tr>
+</table>
+
+
+<h3>l3bindump</h3>
+
+<p>
+    Extracts bin information from a level 3 bin file
+</p>
+
+<h5>Location</h5>
+<p>Tools -> OCSSW -> l3bindump</p>
+
+
+<p>
+    <a href="#gui">GUI Usage</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+
+
+
+<hr>
+<a name="gui"><h4>GUI Usage</h4></a>
+
+
+<center>
+    <table class="image">
+        <tr>
+            <td><img src="images/l3bindump.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<pre>
+l3bindump 3.1.1-seadas-v7.5.2.1 (Nov 17 2018 15:44:29)
+Usage: l3bindump argument-list
+
+  The argument-list is a set of keyword=value pairs. The arguments can
+  be specified on the command line, or put into a parameter file, or the
+  two methods can be used together, with command line overriding.
+
+  return value: 0=OK, 1=error, 110=requested bin(s) not found
+  file data.
+
+  There are 3 use cases:
+  	1) bin_number
+  	2) region defined by lat, lon, and radius (in km)
+  	3) region defined by north, south, west, east
+The list of valid keywords follows:
+
+   help (boolean) (alias=h) (default=false) = print usage information
+   version (boolean) (default=false) = print the version
+        information
+   dump_options (boolean) (default=false) = print
+        information about each option
+   dump_options_paramfile (ofile) = print
+        information about each option to paramfile
+   dump_options_xmlfile (ofile) = print
+        information about each option to XML file
+   par (ifile) = input parameter file
+   ifile (ifile) = input L1 file name
+   ofile (ofile) = output file name
+   oformat (string) (default=txt) = output file format
+        txt:  plain text columnar format
+    seabass:  SeaBASS format
+   l3bprod (string) (default=Unspecified) = binned product to extract
+   bin_number (unknownType) (default=-1) = bin number
+   north (float) (default=-999) = north boundary
+   south (float) (default=-999) = south boundary
+   east (float) (default=-999) = east boundary
+   west (float) (default=-999) = west boundary
+   lat (float) (default=-999) = latitude
+   lon (float) (default=-999) = longitude
+   radius (float) (default=-999) = radius in km
+   verbose (boolean) (default=0) = verbose output
+</pre>
+
+
+<hr>
+</body>
+</html>
+
+
+
+
+
