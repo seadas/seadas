@@ -196,6 +196,8 @@ public class ParamUtils {
                     type = ParamInfo.Type.DIR;
                 } else if (tmpType.toLowerCase().equals("flags")) {
                     type = ParamInfo.Type.FLAGS;
+                } else if (tmpType.toLowerCase().equals("button")) {
+                    type = ParamInfo.Type.BUTTON;
                 }
             }
 

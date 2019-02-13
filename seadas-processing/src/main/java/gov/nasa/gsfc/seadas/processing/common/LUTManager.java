@@ -26,7 +26,7 @@ public class LUTManager {
         this.ocssw = ocssw;
         lutButton = new JButton();
         lutButton.setEnabled(false);
-        lutButton.setName("update luts");
+        lutButton.setName("Update Luts");
         lutButton.setText("Update LUTS");
         lutButton.setToolTipText("Click to update Look Up Tables");
         lutButton.addActionListener(new ActionListener() {
@@ -57,11 +57,11 @@ public class LUTManager {
 
     protected void enableLUTButton(String missionName) {
         this.missionName = missionName;
-        enableUpdateLuts = true;
+        lutButton.setEnabled(true);
     }
 
     protected void disableLUTButton() {
-        enableUpdateLuts = false;
+        lutButton.setEnabled(false);
     }
 
     public String getMissionName() {

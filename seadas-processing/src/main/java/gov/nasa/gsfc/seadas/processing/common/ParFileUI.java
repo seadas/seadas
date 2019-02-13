@@ -58,7 +58,9 @@ public class ParFileUI {
     private void createParStringButtonPanel() {
 
         final JButton saveParameterFileButton = new JButton("Save Parameters...");
+        saveParameterFileButton.setName("saveParameters");
         final JButton loadParameterButton = new JButton("Load Parameters...");
+        loadParameterButton.setName("loadParameters");
 
         //The above two buttons are only active if an ocssw processor accepts par file.
         if (processorModel.acceptsParFile()) {
