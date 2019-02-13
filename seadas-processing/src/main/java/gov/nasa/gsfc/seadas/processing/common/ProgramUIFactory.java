@@ -129,10 +129,10 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
         add(ioPanel,
                 new GridBagConstraintsCustom(0, 0, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
         add(paramPanel,
-                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 3));
+                new GridBagConstraintsCustom(0, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         add(parFilePanel,
-                new GridBagConstraintsCustom(0, 2, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
+                new GridBagConstraintsCustom(0, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, 3));
 
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());

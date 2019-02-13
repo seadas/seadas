@@ -5,7 +5,6 @@ import com.bc.ceres.binding.PropertyContainer;
 import com.bc.ceres.binding.PropertySet;
 import com.bc.ceres.swing.TableLayout;
 import com.bc.ceres.swing.binding.BindingContext;
-import com.sun.electric.tool.generator.layout.fill.G;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.visat.VisatApp;
@@ -41,14 +40,9 @@ public class ParamUIFactory {
 
     public JPanel createParamPanel() {
         //final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
+        final JScrollPane textScrollPane = new JScrollPane(createParamPanel(processorModel));
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraintsCustom(0, 0, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, 10);
-        panel.add(createParamPanel(processorModel), gbc);
-
-        final JScrollPane textScrollPane = new JScrollPane(panel);
-
-//        textScrollPane.setPreferredSize(new Dimension(700, 400));
+        textScrollPane.setPreferredSize(new Dimension(700, 400));
 
         final JPanel parameterComponent = new JPanel(new BorderLayout());
 
@@ -94,7 +88,6 @@ public class ParamUIFactory {
 
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
         TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
-        textFieldPanelLayout.setTablePadding(5,5);
         textFieldPanel.setLayout(textFieldPanelLayout);
 
         Iterator itr = paramList.iterator();
