@@ -20,6 +20,7 @@ public class LUTManager {
     private String missionName;
     private JButton lutButton;
     OCSSW ocssw;
+    boolean enableUpdateLuts;
 
     public LUTManager(OCSSW ocssw) {
         this.ocssw = ocssw;
@@ -34,6 +35,7 @@ public class LUTManager {
                 updateLUT();
             }
         });
+        enableUpdateLuts = false;
     }
 
     protected JButton getLUTButton() {
@@ -55,11 +57,11 @@ public class LUTManager {
 
     protected void enableLUTButton(String missionName) {
         this.missionName = missionName;
-        lutButton.setEnabled(true);
+        enableUpdateLuts = true;
     }
 
     protected void disableLUTButton() {
-        lutButton.setEnabled(false);
+        enableUpdateLuts = false;
     }
 
     public String getMissionName() {
@@ -74,6 +76,7 @@ public class LUTManager {
     protected JPanel getLUTPanel() {
         JPanel lutPanel = new JPanel();
         lutPanel.setLayout(new TableLayout(1));
+        lutButton.setEnabled(enableUpdateLuts);
         lutPanel.add(lutButton);
         return lutPanel;
     }

@@ -19,10 +19,12 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
 
     HashMap<String, String> validLutMissionNameMap;
     OCSSW ocssw;
+    final LUTManager lutManager;
 
     public ModisGEO_L1B_UI(String programName, String xmlFileName, OCSSW ocssw) {
         super(programName, xmlFileName, ocssw);
         this.ocssw = ocssw;
+        lutManager = new LUTManager(ocssw);
     }
 
     private void initMissionNameMap() {
@@ -32,7 +34,7 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
     @Override
     public JPanel getParamPanel() {
         initMissionNameMap();
-        final LUTManager lutManager = new LUTManager(ocssw);
+
         processorModel.addPropertyChangeListener(processorModel.getPrimaryInputFileOptionName(), new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -46,7 +48,9 @@ public class ModisGEO_L1B_UI extends ProgramUIFactory {
         });
         JPanel paramPanel = super.getParamPanel();
         JScrollPane scrollPane = (JScrollPane) paramPanel.getComponent(0);
-        ((JPanel) findJPanel(scrollPane, paramPanel.getName())).add(lutManager.getLUTPanel());
+        if (lutManager != null) {
+            ((JPanel) findJPanel(scrollPane, paramPanel.getName())).add(lutManager.getLUTPanel());
+        }
         return paramPanel;
     }
 
