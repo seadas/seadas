@@ -59,7 +59,7 @@
         <td><b>Default Value</b></td>
     </tr>
     <tr>
-        <td><b>infile</b></td>
+        <td><b>ifile</b></td>
         <td>ifile</td>
         <td>input filename/filelist</td>
         <td>Required</td>
@@ -72,57 +72,12 @@
         <td>Required</td>
         <td></td>
     </tr>
-    <tr>
-        <td><b>sday</b></td>
-        <td> int</td>
-        <td>start datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
-        <td>Optional</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><b>eday</b></td>
-        <td> int</td>
-        <td>end datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
-        <td>Optional</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><b>resolve</b></td>
-        <td>string</td>
-        <td>bin resolution
-    <pre>
-        H  - 0.5km
-        1  - 1.1km
-        2  - 2.3km
-        4  - 4.6km
-        9  - 9.2km
-        36 - 36km
-    </pre>
-        </td>
-        <td>Optional</td>
-        <td>H</td>
-    </tr>
 
-    <tr>
-        <td><b>suite</b></td>
-        <td> string</td>
-        <td></td>
-        <td>Optional</td>
-        <td></td>
-    </tr>
-
-    <tr>
-        <td><b>flaguse</b></td>
-        <td> string</td>
-        <td>flags masked</td>
-        <td>Optional</td>
-        <td>[see /SENSOR/l2bin_defaults.par]</td>
-    </tr>
     <tr>
         <td><b>l3bprod</b></td>
         <td> string</td>
         <td>bin products
-    <pre>
+            <pre>
         Set to "ALL" or "all" for all L2 products in 1st input file.
         Use ':' or ',' or ' ' as delimiters.
         Use ';' or '=' to delineate minimum values.
@@ -138,6 +93,61 @@
         <td>Optional</td>
         <td>day</td>
     </tr>
+    <tr>
+        <td><b>resolution</b></td>
+        <td>string</td>
+        <td>bin resolution
+    <pre>
+        HH - 50m
+        HQ - 100 m
+        Q - 250m
+        H  - 0.5km
+        1  - 1.1km
+        2  - 2.3km
+        4  - 4.6km
+        9  - 9.2km
+        18 - 18.5km
+        36 - 36km
+        HD - 0.5 degree
+        1D - 1 degree
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>H</td>
+    </tr>
+
+
+    <tr>
+        <td><b>flaguse</b></td>
+        <td> string</td>
+        <td>flags masked</td>
+        <td>Optional</td>
+        <td>[see /SENSOR/l2bin_defaults.par]</td>
+    </tr>
+
+
+    <tr>
+        <td><b>sday</b></td>
+        <td> int</td>
+        <td>start datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>eday</b></td>
+        <td> int</td>
+        <td>end datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>suite</b></td>
+        <td> string</td>
+        <td></td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+
     <tr>
         <td><b>pversion</b></td>
         <td> string</td>
@@ -177,13 +187,13 @@
         <td>Optional</td>
         <td>netcdf4</td>
     </tr>
-    <tr>
-        <td><b>noext</b></td>
-        <td> boolean</td>
-        <td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>
-        <td>Optional</td>
-        <td>false</td>
-    </tr>
+    <!--<tr>-->
+        <!--<td><b>noext</b></td>-->
+        <!--<td> boolean</td>-->
+        <!--<td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>-->
+        <!--<td>Optional</td>-->
+        <!--<td>false</td>-->
+    <!--</tr>-->
     <tr>
         <td><b>night</b></td>
         <td> boolean</td>

@@ -7,13 +7,13 @@
             <!--krow:   810 out of   2160  (-22.50 to   0.00) Tue Jun 26 16:14:55 2012-->
             <progressRegex>krow: +(\d+) out of +(\d+)</progressRegex>
             <primaryOptions>
-                <primaryOption>infile</primaryOption>
+                <primaryOption>ifile</primaryOption>
                 <primaryOption>ofile</primaryOption>
             </primaryOptions>
         </programMetaData>
     <options>
         <option type="ifile">
-            <name>infile</name>
+            <name>ifile</name>
             <value></value>
             <default></default>
             <description>input L1 file name</description>
@@ -35,64 +35,114 @@
             <order>1</order>
         </option>
         <option type="string">
-            <name>sday</name>
+            <name>l3bprod</name>
             <value></value>
             <default></default>
-            <description>start datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
+            <description>bin products [default=all products]
+                Set to "ALL" or "all" for all L2 products in 1st input file.
+                Use ':' or ',' or ' ' as delimiters.
+                Use ';' or '=' to delineate minimum values.
+            </description>
             <usedAs>option</usedAs>
-            <order>2</order>
+            <order>7</order>
         </option>
         <option type="string">
-            <name>eday</name>
+            <name>prodtype</name>
             <value></value>
-            <default></default>
-            <description>end datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
+            <default>day</default>
+            <description>product type (Set to "regional" to bin all scans.) [default=day]</description>
+            <validValue>
+                <value>regional</value>
+                <description>Regional</description>
+            </validValue>
+            <validValue>
+                <value>day</value>
+                <description>Day</description>
+            </validValue>
+            <validValue>
+                <value>8-day</value>
+                <description>8-day</description>
+            </validValue>
+            <validValue>
+                <value>month</value>
+                <description>Month</description>
+            </validValue>
+            <validValue>
+                <value>season</value>
+                <description>Season</description>
+            </validValue>
+            <validValue>
+                <value>year</value>
+                <description>Year</description>
+            </validValue>
+            <validValue>
+                <value>cumulative</value>
+                <description>Cumulative</description>
+            </validValue>
             <usedAs>option</usedAs>
-            <order>3</order>
+            <order>8</order>
         </option>
+
         <option type="int">
-            <name>resolve</name>
+            <name>resolution</name>
             <value></value>
             <type>int</type>
             <default>9</default>
-            <description>bin resolution (H,1,2,4,9,36)
+            <description>bin resolution
             </description>
             <source>default</source>
             <validValue>
+                <value>HH</value>
+                <description>50m</description>
+            </validValue>
+            <validValue>
+                <value>HQ</value>
+                <description>100m</description>
+            </validValue>
+            <validValue>
+                <value>Q</value>
+                <description>250m</description>
+            </validValue>
+            <validValue>
                 <value>H</value>
-                <description>500m</description>
+                <description>500km</description>
             </validValue>
             <validValue>
                 <value>1</value>
-                <description>1km</description>
+                <description>1.1km</description>
             </validValue>
             <validValue>
                 <value>2</value>
-                <description>2km</description>
+                <description>2.3km</description>
             </validValue>
             <validValue>
                 <value>4</value>
-                <description>4km</description>
+                <description>4.6km</description>
             </validValue>
             <validValue>
                 <value>9</value>
-                <description>9km</description>
+                <description>9.2km</description>
+            </validValue>
+            <validValue>
+                <value>18</value>
+                <description>18.5km</description>
             </validValue>
             <validValue>
                 <value>36</value>
                 <description>36km</description>
             </validValue>
+            <validValue>
+                <value>HD</value>
+                <description>0.5 degree</description>
+            </validValue>
+            <validValue>
+                <value>1D</value>
+                <description>1.0 degree</description>
+            </validValue>
             <usedAs>option</usedAs>
             <order>4</order>
         </option>
-        <option type="string">
-            <name>suite</name>
-            <value></value>
-            <default></default>
-            <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
-            <usedAs>option</usedAs>
-            <order>5</order>
-        </option>
+
         <option type="flags">
             <name>flaguse</name>
             <value></value>
@@ -234,52 +284,28 @@
             <order>6</order>
         </option>
         <option type="string">
-            <name>l3bprod</name>
+            <name>sday</name>
             <value></value>
             <default></default>
-            <description>bin products [default=all products]
-                Set to "ALL" or "all" for all L2 products in 1st input file.
-                Use ':' or ',' or ' ' as delimiters.
-                Use ';' or '=' to delineate minimum values.
-            </description>
+            <description>start datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
             <usedAs>option</usedAs>
-            <order>7</order>
+            <order>2</order>
         </option>
         <option type="string">
-            <name>prodtype</name>
+            <name>eday</name>
             <value></value>
-            <default>day</default>
-            <description>product type (Set to "regional" to bin all scans.) [default=day]</description>
-            <validValue>
-                <value>regional</value>
-                <description>Regional</description>
-            </validValue>
-            <validValue>
-                <value>day</value>
-                <description>Day</description>
-            </validValue>
-            <validValue>
-                <value>8-day</value>
-                <description>8-day</description>
-            </validValue>
-            <validValue>
-                <value>month</value>
-                <description>Month</description>
-            </validValue>
-            <validValue>
-                <value>season</value>
-                <description>Season</description>
-            </validValue>
-            <validValue>
-                <value>year</value>
-                <description>Year</description>
-            </validValue>
-            <validValue>
-                <value>cumulative</value>
-                <description>Cumulative</description>
-            </validValue>
+            <default></default>
+            <description>end datadate (YYYYDDD) [ignored for "regional" prodtype]</description>
             <usedAs>option</usedAs>
-            <order>8</order>
+            <order>3</order>
+        </option>
+        <option type="string">
+            <name>suite</name>
+            <value></value>
+            <default></default>
+            <description>flags masked [see /SENSOR/l2bin_defaults.par]</description>
+            <usedAs>option</usedAs>
+            <order>5</order>
         </option>
         <option type="string">
             <name>pversion</name>
@@ -289,15 +315,15 @@
             <usedAs>option</usedAs>
             <order>9</order>
         </option>
-        <option type="boolean">
-            <name>noext</name>
-            <value>true</value>
-            <default>true</default>
-            <description>set to 1 to suppress generation of external files [default=1, (1 for "regional" prodtype)]
-            </description>
-            <usedAs>option</usedAs>
-            <order>10</order>
-        </option>
+        <!--<option type="boolean">-->
+            <!--<name>noext</name>-->
+            <!--<value>true</value>-->
+            <!--<default>true</default>-->
+            <!--<description>set to 1 to suppress generation of external files [default=1, (1 for "regional" prodtype)]-->
+            <!--</description>-->
+            <!--<usedAs>option</usedAs>-->
+            <!--<order>10</order>-->
+        <!--</option>-->
 
         <option type="int">
             <name>rowgroup</name>
