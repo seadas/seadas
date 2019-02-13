@@ -33,8 +33,6 @@
     <a href="#cl">Command Line Usage</a> <br/>
 </p>
 
-
-
 <hr>
 <a name="gui"><h4>GUI Usage</h4></a>
 
@@ -49,6 +47,98 @@
 <p></p>
 <hr>
 
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td> ifile</td>
+        <td>input L1 file name</td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>oformat</b></td>
+        <td> string</td>
+        <td>defines output format:
+        <pre>
+        txt:     plain text columnar format
+        seabass: SeaBASS format
+        </pre>
+        <td>Optional</td>
+        <td>txt</td>
+    </tr>
+    <tr>
+        <td><b>l3bprod</b></td>
+        <td> string</td>
+        <td>binned product to extract</td>
+        <td>Required</td>
+        <td>Unspecified</td>
+    </tr>
+    <tr>
+        <td><b>bin_number</b></td>
+        <td> unknownType</td>
+        <td>bin number</td>
+        <td>Optional</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td><b>north</b></td>
+        <td>float</td>
+        <td>north boundary</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>south</b></td>
+        <td>float</td>
+        <td>south boundary</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>east</b></td>
+        <td>float</td>
+        <td>east boundarye</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>west</b></td>
+        <td>float</td>
+        <td>west boundary</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>lat</b></td>
+        <td>float</td>
+        <td>latitude</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>lon</b></td>
+        <td>float</td>
+        <td>longitude</td>
+        <td>Optional</td>
+        <td>-999</td>
+    </tr>
+    <tr>
+        <td><b>radius</b></td>
+        <td>float</td>
+        <td>radius in km</td>
+        <td>Optional</td>
+        <td>-999</td>
+</table>
 
 
 <a name="cl"><h4>Command Line Usage</h4></a>
