@@ -15,10 +15,12 @@ import org.esa.beam.visat.VisatApp;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
-import static java.lang.System.getProperty;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -191,7 +193,9 @@ public class OCSSWLocal extends OCSSW {
 
     @Override
     public Process execute(String programName, String[] commandArrayParams) {
-        return null;
+        String[] programNameArray = {programName};
+        commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, commandArrayParams, commandArraySuffix);
+        return execute(commandArray);
     }
 
     @Override
