@@ -51,7 +51,7 @@ public class LUTManager {
         process = ocssw.execute(UPDATE_LUTS_PROCESSOR_NAME, lutCmdArrayParams);
         try {
             int exitValue = process.waitFor();
-            VisatApp.getApp().showMessageDialog("", "LUTs updated", ModalDialog.ID_OK, null);
+            VisatApp.getApp().showMessageDialog("update_luts.py", "LUTs updated", ModalDialog.ID_OK, null);
 
         } catch (Exception e) {
             SeadasLogger.getLogger().severe("Execution exception 0 : " + e.getMessage());
