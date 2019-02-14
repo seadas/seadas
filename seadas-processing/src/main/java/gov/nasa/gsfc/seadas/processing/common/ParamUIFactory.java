@@ -40,9 +40,10 @@ public class ParamUIFactory {
 
     public JPanel createParamPanel() {
         //final JScrollPane textScrollPane = new JScrollPane(parameterTextArea);
+
         final JScrollPane textScrollPane = new JScrollPane(createParamPanel(processorModel));
 
-        textScrollPane.setPreferredSize(new Dimension(700, 400));
+//        textScrollPane.setPreferredSize(new Dimension(700, 400));
 
         final JPanel parameterComponent = new JPanel(new BorderLayout());
 
@@ -90,6 +91,7 @@ public class ParamUIFactory {
 
         int numberOfOptionsPerLine = paramList.size() % 4 < paramList.size() % 5 ? 4 : 5;
         TableLayout textFieldPanelLayout = new TableLayout(numberOfOptionsPerLine);
+        textFieldPanelLayout.setTablePadding(5,5);
         textFieldPanel.setLayout(textFieldPanelLayout);
 
         Iterator itr = paramList.iterator();
