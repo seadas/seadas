@@ -2,9 +2,9 @@ package gov.nasa.gsfc.seadas.processing.core;
 
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ProcessorTypeInfo;
+import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.ocssw.OCSSWClient;
 import gov.nasa.gsfc.seadas.processing.common.*;
-import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.visat.VisatApp;
 import ucar.nc2.NetcdfFile;
@@ -19,7 +19,6 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.lang.Boolean;
 
 import static gov.nasa.gsfc.seadas.processing.common.ExtractorUI.*;
 import static gov.nasa.gsfc.seadas.processing.common.FilenamePatterns.getGeoFileInfo;
@@ -862,6 +861,35 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             return ofileNameList.toString();
         }
     }
+
+//    private static class Modis_GEO_Processor extends ProcessorModel {
+//        private final String UPDATE_LUTS_PROCESSOR_NAME = "update_luts.py";
+//        Modis_GEO_Processor(String programName, String xmlFileName, OCSSW ocssw) {
+//            super(programName, xmlFileName, ocssw);
+//        }
+//
+//        public ActionListener getActionListener(){
+//            return new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent actionEvent) {
+//                    updateLUT();
+//                }
+//            };
+//        }
+//
+//        private void updateLUT() {
+//            String[] lutCmdArray = {OCSSWInfo.getInstance().getOcsswRunnerScriptPath(), UPDATE_LUTS_PROCESSOR_NAME, missionName};
+//            String[] lutCmdArrayParams = {missionName};
+//            Process process = ocssw.execute(lutCmdArray);
+//            process = ocssw.execute(UPDATE_LUTS_PROCESSOR_NAME, lutCmdArrayParams);
+//            try {
+//                int exitValue = process.waitFor();
+//            } catch (Exception e) {
+//                SeadasLogger.getLogger().severe("Execution exception 0 : " + e.getMessage());
+//            }
+//            //System.out.println("update_luts exit value = " + process.exitValue());
+//        }
+//    }
 
     private static class LonLat2Pixels_Processor extends ProcessorModel {
         static final String _SWlon = "SWlon";

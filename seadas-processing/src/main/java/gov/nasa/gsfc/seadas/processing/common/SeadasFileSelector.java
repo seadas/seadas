@@ -13,8 +13,6 @@ import org.esa.beam.util.SystemUtils;
 import org.esa.beam.util.io.BeamFileChooser;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
@@ -25,7 +23,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,7 +63,9 @@ public class SeadasFileSelector {
         fileListModel = new DefaultComboBoxModel();
         fileNameLabel = new JLabel(labelText);
         productFileChooserButton = new JButton(new FileChooserAction());
+        productFileChooserButton.setName("productFileChooserButton");
         fileChooserButton = new JButton(new FileChooserAction());
+        fileChooserButton.setName("fileChooserButton");
         fileNameComboBox = new JComboBox(fileListModel);
         fileNameComboBox.setPrototypeDisplayValue("[1] 123456789 123456789 123456789 123456789 123456789");
         fileNameComboBox.setRenderer(new ProductListCellRenderer());

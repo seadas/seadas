@@ -36,7 +36,7 @@ public class ParamInfo implements Comparable, Cloneable {
     public static final String[] FILE_COMPRESSION_SUFFIXES = {"bz2", "bzip2", "gz", "gzip", "zip", "tar", "tgz", "z"};
 
     public static enum Type {
-        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP, DIR, FLAGS
+        BOOLEAN, STRING, INT, FLOAT, IFILE, OFILE, HELP, DIR, FLAGS, BUTTON
     }
 
     private String name = NULL_STRING;
