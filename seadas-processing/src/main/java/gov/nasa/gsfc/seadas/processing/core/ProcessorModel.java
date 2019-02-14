@@ -1108,7 +1108,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         L3Bin_Processor(String programName, String xmlFileName, OCSSW ocssw) {
             super(programName, xmlFileName, ocssw);
             setMultipleInputFiles(true);
-            addPropertyChangeListener("out_parm", new PropertyChangeListener() {
+            addPropertyChangeListener("prod", new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                     String oldProdValue = (String) propertyChangeEvent.getOldValue();
@@ -1125,9 +1125,6 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         }
 
         public String getOfileName() {
-            if (!(getParamValue("noext").equals("1"))) {
-                return getParamValue(getPrimaryOutputFileOptionName()) + ".main";
-            }
             return getParamValue(getPrimaryOutputFileOptionName());
         }
     }
