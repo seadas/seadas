@@ -5,6 +5,7 @@ import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.beam.visat.VisatApp;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -689,9 +690,12 @@ public class OCSSWRemote extends OCSSW {
                         ofileFullPathName = param;
                     }
                     ofileName = ofileFullPathName.substring(ofileFullPathName.lastIndexOf(File.separator) + 1);
+                    SeadasLogger.getLogger().info("file name to be downloaded: " + ofileName);
+                    SeadasLogger.getLogger().info("file name path to be downloaded: " + ofileFullPathName);
                     Response response = target.path("fileServices").path("downloadFile").path(jobId).path(ofileName).request().get(Response.class);
                     InputStream responceStream = (InputStream) response.getEntity();
                     SeadasFileUtils.writeToFile(responceStream, ofileDir + File.separator + ofileFullPathName);
+                    SeadasLogger.getLogger().info("file destination path: " + ofileFullPathName);
 
                 }
             }
@@ -1031,7 +1035,10 @@ public class OCSSWRemote extends OCSSW {
 
     @Override
     public Process execute(String programName, String[] commandArrayParams) {
-        return null;
+
+        String[] programNameArray = {programName};
+        commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, commandArrayParams, commandArraySuffix);
+        return execute(commandArray);
     }
 
     @Override
