@@ -8,6 +8,7 @@ import gov.nasa.gsfc.seadas.processing.common.*;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
 import gov.nasa.gsfc.seadas.processing.l2gen.productData.*;
 import gov.nasa.gsfc.seadas.processing.l2gen.userInterface.*;
+import org.esa.beam.framework.ui.ModalDialog;
 import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.util.StringUtils;
 import org.esa.beam.util.SystemUtils;
@@ -1668,6 +1669,8 @@ public class L2genData implements SeaDASProcessorModel {
                     boolean downloadSuccessful = ocssw.getIntermediateOutputFiles(processorModel);
 
                     if (!xmlFile.exists()) {
+                        SeadasLogger.getLogger().severe("l2gen can't find productInfo.xml file!");
+                        VisatApp.getApp().showMessageDialog("", "SEVERE: productInfo.xml not found!", ModalDialog.ID_OK, null);
                         return null;
                     }
 
@@ -1743,6 +1746,8 @@ public class L2genData implements SeaDASProcessorModel {
             }
 
             if (!xmlFile.exists()) {
+                SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+                VisatApp.getApp().showMessageDialog("", "SEVERE: paramInfo.xml not found!", ModalDialog.ID_OK, null);
                 return null;
             }
 
