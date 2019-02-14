@@ -50,28 +50,28 @@
             <value></value>
             <default>+180</default>
             <description>Easternmost longitude (default=+180)</description>
-            <order>4</order>
+            <order>3</order>
         </option>
         <option type="float">
             <name>lonwest</name>
             <value></value>
             <default>-180</default>
             <description>Westernmost longitude (default=-180)</description>
-            <order>5</order>
+            <order>4</order>
         </option>
         <option type="float">
             <name>latnorth</name>
             <value></value>
             <default>+90</default>
             <description>Northernmost latitude (default=+90)</description>
-            <order>6</order>
+            <order>5</order>
         </option>
         <option type="float">
             <name>latsouth</name>
             <value></value>
             <default>-90</default>
             <description>Southernmost latitude (default=-90)</description>
-            <order>7</order>
+            <order>6</order>
         </option>
         <!--<option type="boolean">-->
             <!--<name>noext</name>-->
@@ -87,14 +87,14 @@
             <value>true</value>
             <default>false</default>
             <description>Allow more verbose screen messages [default=0]</description>
-            <order>9</order>
+            <order>7</order>
         </option>
         <option type="string">
             <name>pversion</name>
             <value></value>
             <default></default>
             <description>production version [default=Unspecified]</description>
-            <order>10</order>
+            <order>8</order>
         </option>
         <option type="string">
             <name>oformat</name>
