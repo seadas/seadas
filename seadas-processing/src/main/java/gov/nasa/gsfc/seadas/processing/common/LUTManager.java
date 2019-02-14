@@ -3,6 +3,8 @@ package gov.nasa.gsfc.seadas.processing.common;
 import com.bc.ceres.swing.TableLayout;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import org.esa.beam.framework.ui.ModalDialog;
+import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -49,8 +51,12 @@ public class LUTManager {
         process = ocssw.execute(UPDATE_LUTS_PROCESSOR_NAME, lutCmdArrayParams);
         try {
             int exitValue = process.waitFor();
+            VisatApp.getApp().showMessageDialog("", "LUTs updated", ModalDialog.ID_OK, null);
+
         } catch (Exception e) {
             SeadasLogger.getLogger().severe("Execution exception 0 : " + e.getMessage());
+            VisatApp.getApp().showMessageDialog("", "WARNING: LUTs update failed", ModalDialog.ID_OK, null);
+
         }
         //System.out.println("update_luts exit value = " + process.exitValue());
     }
