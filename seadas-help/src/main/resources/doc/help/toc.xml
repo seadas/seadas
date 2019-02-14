@@ -246,12 +246,12 @@
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
             <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
             <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
-            <tocitem text="Product Extractors">
-                <tocitem text="Introduction" target="extractor"/>
-                <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
-                <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
-                <tocitem text="l2extract" target="l2extract"/>
-            </tocitem>
+            <!--<tocitem text="Product Extractors">-->
+                <tocitem text="Extractors" target="extractor"/>
+                <!--<tocitem text="l1aextract_modis" target="l1aextract_modis"/>-->
+                <!--<tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>-->
+                <!--<tocitem text="l2extract" target="l2extract"/>-->
+            <!--</tocitem>-->
 
 
         </tocitem>
