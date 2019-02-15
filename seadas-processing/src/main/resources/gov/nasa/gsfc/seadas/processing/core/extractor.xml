@@ -6,7 +6,7 @@
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
             <primaryOption>infile</primaryOption>
-            <primaryOption>ofile</primaryOption>
+            <primaryOption>outfile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
@@ -71,7 +71,7 @@
             <order>6</order>
         </option>
         <option type="ofile">
-            <name>ofile</name>
+            <name>outfile</name>
             <value></value>
             <default>output</default>
             <description>output L2 file name</description>

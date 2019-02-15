@@ -6,7 +6,7 @@
         <parFileOptionName>NO_PAR_FILE</parFileOptionName>
         <primaryOptions>
             <primaryOption>infile</primaryOption>
-            <primaryOption>ofile</primaryOption>
+            <primaryOption>outfile</primaryOption>
         </primaryOptions>
     </programMetaData>
     <options>
