@@ -18,39 +18,321 @@
 </table>
 
 
+
 <h3>Product Extractors</h3>
 
 <p>
     Creates an extracted data product.
 </p>
 
-<h4>Location</h4>
-
+<h5>Location</h5>
 <p>OCSSW -> extractor</p>
 
 
-<h4>Details</h4>
+<p>
+    <a href="#description">Description</a> <br/>
+    <a href="#gui">GUI Usage</a> <br/>
+    <a href="#cl">Command Line Usage</a> <br/>
+</p>
+<br>
 
+<hr>
+<a name="description"><h4>Description</h4></a>
 <p>
     The Extractor GUI serves as a front-end to several product extractors provided with SeaDAS:</p>
 <ul>
-    <li><a href="ProcessL1aextract_seawifs.html">l1aextract_seawifs</a></li>
-    <li><a href="ProcessL1aextract_modis.html">l1aextract_modis</a></li>
-    <li><a href="ProcessL2extract.html">l2extract</a></li>
+    <li>l1aextract_seawifs</a></li>
+    <li>l1aextract_modis</a></li>
+    <li>l2extract</a></li>
 </ul>
 <p>
-
-    You can access the extractor GUI from the <b>Tools/OCSSW Processing/extractor</b> menu.
     The extractor GUI initially displays a default window, as shown in the image below, to accept input
     parameters/options.
 
-<p>
-    <img src="images/extractor.png"></p>
-</p>
-
-<p>
-    Once an infile is selected, the program will decide which extractor to be used based on the input file type
+    Once an input file is selected, the program will decide which extractor to be used based on the input file type
     and display customized GUI for each specific extractor.
 </p>
+
+
+<hr>
+<a name="gui"><h4>GUI Usage</h4></a>
+<center>
+    <table class="image">
+        <tr>
+            <td><img src="images/extractor.png"></td>
+        </tr>
+    </table>
+</center>
+<p></p>
+<hr>
+
+<center><b>Arguments/Keywords</b></center>
+
+<table border WIDTH="100%" bgcolor="#EFFBEF">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+        <td><b>Required/Optional</b></td>
+        <td><b>Default Value</b></td>
+    </tr>
+    <tr>
+        <td><b>ifile</b></td>
+        <td>ifile</td>
+        <td>input filename/filelist</td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>ofile</b></td>
+        <td> ofile</td>
+        <td>output bin filename</td>
+        <td>Required</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td><b>l3bprod</b></td>
+        <td> string</td>
+        <td>bin products
+            <pre>
+        Set to "ALL" or "all" for all L2 products in 1st input file.
+        Use ':' or ',' or ' ' as delimiters.
+        Use ';' or '=' to delineate minimum values.
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>all products</td>
+    </tr>
+    <tr>
+        <td><b>prodtype</b></td>
+        <td>string</td>
+        <td>product type (Set to "regional" to bin all scans.)</td>
+        <td>Optional</td>
+        <td>day</td>
+    </tr>
+    <tr>
+        <td><b>resolution</b></td>
+        <td>string</td>
+        <td>bin resolution
+            <pre>
+        HH - 50m
+        HQ - 100 m
+        Q - 250m
+        H  - 0.5km
+        1  - 1.1km
+        2  - 2.3km
+        4  - 4.6km
+        9  - 9.2km
+        18 - 18.5km
+        36 - 36km
+        HD - 0.5 degree
+        1D - 1 degree
+    </pre>
+        </td>
+        <td>Optional</td>
+        <td>H</td>
+    </tr>
+
+
+    <tr>
+        <td><b>flaguse</b></td>
+        <td> string</td>
+        <td>flags masked</td>
+        <td>Optional</td>
+        <td>[see /SENSOR/l2bin_defaults.par]</td>
+    </tr>
+
+
+    <tr>
+        <td><b>sday</b></td>
+        <td> int</td>
+        <td>start datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>eday</b></td>
+        <td> int</td>
+        <td>end datadate (YYYYDDD) [ignored for "regional" prodtype]</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>suite</b></td>
+        <td> string</td>
+        <td></td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td><b>pversion</b></td>
+        <td> string</td>
+        <td>production version</td>
+        <td>Optional</td>
+        <td>unspecified</td>
+    </tr>
+    <tr>
+        <td><b>rowgroup</b></td>
+        <td>int</td>
+        <td>number of bin rows to process at once</td>
+        <td>Optional</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td><b>qual_prod</b></td>
+        <td>string</td>
+        <td>quality product field name</td>
+        <td>Optional</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><b>qual_max</b></td>
+        <td> int</td>
+        <td>maximum acceptable quality</td>
+        <td>Optional</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td><b>oformat</b></td>
+        <td>string</td>
+        <td>defines output format:
+            <pre>
+        hdf4
+        netcdf4
+    </pre>
+        <td>Optional</td>
+        <td>netcdf4</td>
+    </tr>
+    <!--<tr>-->
+    <!--<td><b>noext</b></td>-->
+    <!--<td> boolean</td>-->
+    <!--<td>Check to suppress generation of external files [default=0, (1 for "regional" prodtype)]</td>-->
+    <!--<td>Optional</td>-->
+    <!--<td>false</td>-->
+    <!--</tr>-->
+    <tr>
+        <td><b>night</b></td>
+        <td> boolean</td>
+        <td>Check for SST night processing</td>
+        <td>Optional</td>
+        <td>false</td>
+    </tr>
+    <!--<tr>-->
+    <!--<td><b>verbose</b></td>-->
+    <!--<td> boolean</td>-->
+    <!--<td>Allows more verbose screen messages when checked.</td>-->
+    <!--<td>Optional</td>-->
+    <!--<td>false</td>-->
+    <!--</tr>-->
+</table>
+
+
+<p></p>
+<hr>
+
+<center><b>Actions/Buttons</b></center>
+
+<table border WIDTH="100%" bgcolor="#E0F2F7">  <!-- #CEF6E3  #A9D0F5 EFF8FB-->
+
+    <tr>
+        <td><b>UI Element Name</b></td>
+        <td><b> Type</b></td>
+        <td><b> Description</b></td>
+
+    </tr>
+    <tr>
+        <td><b>Browser Button</b></td>
+        <td>Button</td>
+        <td>Selects infile/ofile
+        </td>
+    </tr>
+    <tr>
+        <td><b>Load Parameters ...</b></td>
+        <td> Button</td>
+        <td>Reads in previously saved parameters and populates the fields in
+            GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Store Parameters ...</b></td>
+        <td> Button</td>
+        <td>Saves the current arguments in GUI in a file.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Run</b></td>
+        <td> Button</td>
+        <td>Executes the l2bin command with arguments provided in the UI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Cancel</b></td>
+        <td> Button</td>
+        <td>Closes current processor GUI.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Apply</b></td>
+        <td> Button</td>
+        <td>Makes current arguments effective.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Open in SeaDAS</b></td>
+        <td>Checkbox</td>
+        <td>If selected, the ofile will be added to the open products list right after its generation.
+        </td>
+    </tr>
+    <tr>
+        <td><b>?</b></td>
+        <td> Button</td>
+        <td>Displays the help content of the current command.
+        </td>
+    </tr>
+</table>
+
+
+<a name="cl"><h4>Command Line Usage</h4></a>
+
+<h5>l1aextract_modis</h5>
+<pre>
+This is version 0.76 of l1aextract_modis (compiled on Nov 17 2018 15:44:30)
+
+Usage: l1aextract_modis infile spixl epixl sline eline outfile
+   where:
+   infile   - input MODIS L1A datafile
+   spixl    - start pixel number (1-based)
+   epixl    - end pixel number (1-based)
+   sline    - start line (1-based)
+   eline    - end line (1-based)
+   outfile  - output file name
+
+Note: Enter line number NOT scan number!
+</pre>
+
+<hr>
+<h5>l1aextract_seawifs</h5>
+<pre>
+Usage: <l1aextract_seawifs> infile spix epix sscan escan pix_sub sc_sub outfile
+   where:
+   infile   - input l1a data HDF file
+   spix     - start pixel number
+   epix     - end pixel number
+   sscan    - start scan line
+   escan    - end scan line
+   pix_sub  - pixel subsampling rate
+   sc_sub   - scan line subsampling rate
+   outfile  - output file name
+
+NOTE: Start and End pixel/scanline will be set to input file's nsamp
+    and nrec respectively, if the given values are out of range.
+
+</pre>
+
+
+<hr>
 </body>
 </html>

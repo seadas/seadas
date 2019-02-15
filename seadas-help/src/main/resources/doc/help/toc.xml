@@ -220,22 +220,23 @@
 
         <tocitem text="OCSSW">
 
-
             <tocitem text="Introduction" target="processOverview"/>
             <tocitem text="Cookbook" target="ocsswCookbook"/>
 
             <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
-            <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
-
-            <tocitem text="l1bgen" target="l1bgen"/>
+            <tocitem text="Extractors" target="extractor"/>
+            <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
+            <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
+            <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
             <tocitem text="geolocate_viirs" target="geolocate_viirs"/>
             <tocitem text="calibrate_viirs" target="calibrate_viirs"/>
-            <tocitem text="l1mapgen" target="l1mapgen"/>
+            <tocitem text="l1bgen" target="l1bgen"/>
             <tocitem text="l1brsgen" target="l1brsgen"/>
+            <tocitem text="l1mapgen" target="l1mapgen"/>
             <tocitem text="L2gen" target="l2gen"/>
             <tocitem text="L2gen_aquarius" target="l2gen_aquarius"/>
-            <tocitem text="l2mapgen" target="l2mapgen"/>
             <tocitem text="l2brsgen" target="l2brsgen"/>
+            <tocitem text="l2mapgen" target="l2mapgen"/>
             <tocitem text="l2bin" target="l2bin"/>
             <tocitem text="l2bin_aquarius" target="l2bin_aquarius"/>
             <tocitem text="l3bin" target="l3bin"/>
@@ -243,22 +244,15 @@
             <tocitem text="l3gen" target="l3gen"/>
             <tocitem text="l3mapgen" target="l3mapgen"/>
             <tocitem text="smigen" target="smigen"/>
-            <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
-            <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
-            <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
-            <tocitem text="Product Extractors">
-                <tocitem text="Introduction" target="extractor"/>
-                <tocitem text="l1aextract_modis" target="l1aextract_modis"/>
-                <tocitem text="l1aextract_seawifs" target="l1aextract_seawifs"/>
-                <tocitem text="l2extract" target="l2extract"/>
-            </tocitem>
 
+            <tocitem text="multilevel_processor.py" target="multilevel_processor.py"/>
 
         </tocitem>
 
 
 
         <tocitem text="Raster Band Processing">
+
             <tocitem text="ASAR NRCS Bands" target="createAsarNrcsBands"/>
             <tocitem text="DEM Bands" target="createDemRelatedBands"/>
             <tocitem text="Filtered Band" target="createFilteredBand"/>

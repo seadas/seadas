@@ -11,7 +11,6 @@
     <mapID target="doc" url="images/HelpDoc.jpg"/>
 
     <mapID target="gptCookbook" url="GptCookbook/gptCookbook.html"/>
-    <mapID target="ocsswCookbook" url="OcsswCookbook/ocsswCookbook.html"/>
     <mapID target="seadasOverview" url="general/SeaDASOverview.html"/>
     <mapID target="gbrPhoticDepthExampleTutorial" url="general/gbrPhoticDepthExampleTutorial.html"/>
     <mapID target="seadasWhatsNew" url="general/SeaDASWhatsNew.html"/>
@@ -151,12 +150,12 @@
 
     <mapID target="contourLines" url="seadas-contour-operator/ContourLines.html"/>
 
+
+
+    <mapID target="ocsswCookbook" url="OcsswCookbook/ocsswCookbook.html"/>
     <mapID target="processOverview" url="seadas-processing/ProcessOverview.html"/>
     <mapID target="install_ocssw.py" url="seadas-processing/InstallOCSSW.html"/>
     <mapID target="extractor" url="seadas-processing/ProcessExtractors.html"/>
-    <mapID target="l1aextract_modis" url="seadas-processing/ProcessL1aextract_modis.html"/>
-    <mapID target="l1aextract_seawifs" url="seadas-processing/ProcessL1aextract_seawifs.html"/>
-    <!--<mapID target="l1agen" url="visat/ProcessL1agen.html"/>-->
     <mapID target="modis_GEO.py" url="seadas-processing/ProcessModis_GEO.py.html"/>
     <mapID target="l1bgen" url="seadas-processing/ProcessL1bgen.html"/>
     <mapID target="modis_L1B.py" url="seadas-processing/ProcessModis_L1B.py.html"/>
@@ -165,7 +164,6 @@
     <mapID target="calibrate_viirs" url="seadas-processing/CalibrateViirs.html"/>
     <mapID target="l1mapgen" url="seadas-processing/ProcessL1mapgen.html"/>
     <mapID target="l1brsgen" url="seadas-processing/ProcessL1brsgen.html"/>
-    <mapID target="l2extract" url="seadas-processing/ProcessL2extract.html"/>
     <mapID target="l2gen" url="seadas-processing/ProcessL2gen.html"/>
     <mapID target="l2gen_aquarius" url="seadas-processing/ProcessL2genAquarius.html"/>
     <mapID target="l2mapgen" url="seadas-processing/ProcessL2mapgen.html"/>
@@ -178,6 +176,10 @@
     <mapID target="l3mapgen" url="seadas-processing/ProcessL3mapgen.html"/>
     <mapID target="smigen" url="seadas-processing/ProcessSmigen.html"/>
     <mapID target="multilevel_processor.py" url="seadas-processing/ProcessMultilevel_processor.py.html"/>
+
+
+
+
     <mapID target="importGeoTIFFProduct" url="beam-geotiff/ImportGeoTIFF.html"/>
     <mapID target="exportGeoTIFFProduct" url="beam-geotiff/ExportGeoTIFF.html"/>
 
