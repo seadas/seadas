@@ -229,7 +229,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
         Map<Band, Variable> bandToVariableMap = new HashMap<Band, Variable>();
         int spectralBandIndex = 0;
         for (Variable variable : variables) {
-            if ((variable.getShortName().equals("latitudes")) || (variable.getShortName().equals("longitudes"))
+            if ((variable.getShortName().contains("latitude")) || (variable.getShortName().contains("longitude"))
                     || (variable.getShortName().equals("true_color")))
                 continue;
             int variableRank = variable.getRank();
@@ -349,18 +349,20 @@ public class L1BHicoFileReader extends SeadasFileReader {
         return ProductData.createInstance(dataType, storage);
     }
 
-   public void addGeocoding(final Product product) throws ProductIOException {
-        final String longitude = "longitudes";
-        final String latitude = "latitudes";
-        String navGroup = "navigation";
+    public void addGeocoding(final Product product) throws ProductIOException {
+        Variable latVar = ncFile.findVariable("navigation/latitude");
+        if (latVar == null) {
+            latVar = ncFile.findVariable("navigation/latitudes");
+        }
+        Variable lonVar = ncFile.findVariable("navigation/longitude");
+        if (lonVar == null) {
+            lonVar = ncFile.findVariable("navigation/longitudes");
+        }
 
-        Variable latVar = ncFile.findVariable(navGroup + "/" + latitude);
-        Variable lonVar = ncFile.findVariable(navGroup + "/" + longitude);
-
-        if (latVar != null && lonVar != null ) {
+        if (latVar != null && lonVar != null) {
             final ProductData lonRawData;
             final ProductData latRawData;
-            if(mustFlipY) {
+            if (mustFlipY) {
                 lonRawData = readDataFlip(lonVar);
                 latRawData = readDataFlip(latVar);
             } else {
@@ -378,7 +380,7 @@ public class L1BHicoFileReader extends SeadasFileReader {
             lonBand.setData(lonRawData);
 
             product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
-            
+
         }
     }
 }
