@@ -1,7 +1,7 @@
 <module>
     <manifestVersion>1.0.0</manifestVersion>
     <symbolicName>seadas-reader</symbolicName>
-    <version>1.7.3</version>
+    <version>1.7.4</version>
     <name>NASA OBPG Ocean Color Product Reader</name>
     <description>A reader for Ocean Color Data Products supported the NASA Ocean Biology Processing Group</description>
 
@@ -14,6 +14,10 @@
 
     <changelog>
         <![CDATA[
+        Changes in 1.7.4
+        <br>
+        HICO L1B reader now looks for latitude/longitude and latitudes/longitudes
+        <br>
         Changes in 1.7.3
         <br>
         Added VIIRS J1 reading for OBPG and SDR files.
