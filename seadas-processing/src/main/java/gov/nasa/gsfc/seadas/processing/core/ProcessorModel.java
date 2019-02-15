@@ -46,7 +46,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
     private final String allparamInitializedPropertyName = "ALL_PARAMS_INITIALIZED";
     private final String l2prodProcessors = "l2mapgen l2brsgen l2bin l2bin_aquarius l3bin smigen";
 
-    final String L1AEXTRACT_MODIS = "l1aextract_modis",
+    final public String L1AEXTRACT_MODIS = "l1aextract_modis",
             L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
             L1AEXTRACT_SEAWIFS = "l1aextract_seawifs",
             L1AEXTRACT_SEAWIFS_XML_FILE = "l1aextract_seawifs.xml",
@@ -776,7 +776,7 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
             boolean isIfileValid = false;
             if (programName != null && verifyIFilePath(ifileName)) {
                 //ocssw.setIfileName(ifileName);
-                String ofileName = getOcssw().getOfileName(ifileName);
+                String ofileName = new File(ifileName).getParent() + File.separator + getOcssw().getOfileName(ifileName);
                 SeadasLogger.getLogger().info("ofile name from finding next level name: " + ofileName);
                 if (ofileName != null) {
                     //programName = getOcssw().getProgramName();
@@ -803,25 +803,28 @@ public class ProcessorModel implements SeaDASProcessorModel, Cloneable {
         void selectExtractorProgram() {
             String missionName = inputFileInfo.getMissionName();
             String fileType = inputFileInfo.getFileTypeName();
+            String xmlFileName = ocssw.getXmlFileName();
             if (missionName != null && fileType != null) {
                 if (missionName.indexOf("MODIS") != -1 && fileType.indexOf("1A") != -1) {
                     programName = L1AEXTRACT_MODIS;
-                    ocssw.setXmlFileName(L1AEXTRACT_MODIS_XML_FILE);
+                    xmlFileName = L1AEXTRACT_MODIS_XML_FILE;
                 } else if (missionName.indexOf("SeaWiFS") != -1 && fileType.indexOf("1A") != -1 || missionName.indexOf("CZCS") != -1) {
                     programName = L1AEXTRACT_SEAWIFS;
-                    ocssw.setXmlFileName(L1AEXTRACT_SEAWIFS_XML_FILE);
-                } else if ((missionName.indexOf("VIIRSN") != -1 || missionName.indexOf("VIIRSJ1") != -1) && fileType.indexOf("1A") != -1) {
+                    xmlFileName = L1AEXTRACT_SEAWIFS_XML_FILE;
+                } else if ((missionName.indexOf("VIIRS") != -1 || missionName.indexOf("VIIRSJ1") != -1) && fileType.indexOf("1A") != -1) {
                     programName = L1AEXTRACT_VIIRS;
-                    ocssw.setXmlFileName(L1AEXTRACT_VIIRS_XML_FILE);
+                    xmlFileName = L1AEXTRACT_VIIRS_XML_FILE;
                 } else if ((fileType.indexOf("L2") != -1 || fileType.indexOf("Level 2") != -1) ||
                         (missionName.indexOf("OCTS") != -1 && (fileType.indexOf("L1") != -1 || fileType.indexOf("Level 1") != -1))) {
                     programName = L2EXTRACT;
-                    ocssw.setXmlFileName(L2EXTRACT_XML_FILE);
+                    xmlFileName = L2EXTRACT_XML_FILE;
                 }
             }
             setProgramName(programName);
             ocssw.setProgramName(programName);
-        }
+            ocssw.setXmlFileName(xmlFileName);
+            setPrimaryOptions(ParamUtils.getPrimaryOptions(xmlFileName));
+            }
 
     }
 

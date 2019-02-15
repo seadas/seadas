@@ -1,14 +1,14 @@
 package gov.nasa.gsfc.seadas.processing.common;
 
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.visat.VisatApp;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -25,6 +25,10 @@ public class ExtractorUI extends ProgramUIFactory {
     public static final String START_PIXEL_PARAM_NAME = "spixl";
     public static final String END_PIXEL_PARAM_NAME = "epixl";
 
+    public static final String GEO_LOCATE_PROGRAM_NAME_VIIRS = "geolocate_viirs";
+    public static final String GEO_LOCATE_PROGRAM_NAME_MODIS = "modis_GEO.py";
+
+
     private ProcessorModel lonlat2pixline;
     private JPanel pixelPanel;
     private JPanel newsPanel;
@@ -40,7 +44,6 @@ public class ExtractorUI extends ProgramUIFactory {
         super(programName, xmlFileName, ocssw);
         paramCounter = new HashMap();
         initiliazed = true;
-        //this.ocssw = ocssw;
     }
 
     private void initLonLatProcessor() {
@@ -104,9 +107,10 @@ public class ExtractorUI extends ProgramUIFactory {
     private String getLonLattoPixelsIFileName(String ifileName, String programName) {
 
         if (programName.contains("l1aextract_modis") || programName.contains("l1aextract_viirs")) {
-            String geoFileName = (ifileName.substring(0, ifileName.lastIndexOf("."))).concat(".GEO");
+            String geoFileName = new File(ifileName).getParent() + File.separator + ocssw.getOfileName(ifileName, getGeoLocateProgramName(programName));
+                    //(ifileName.substring(0, ifileName.lastIndexOf("."))).concat(".GEO");
 
-            if (new File(geoFileName).exists()) {
+            if (new File( geoFileName).exists()) {
                 return geoFileName;
             } else {
                 VisatApp.getApp().showErrorDialog(ifileName + " requires a GEO file to be extracted. " + geoFileName + " does not exist.");
@@ -115,6 +119,19 @@ public class ExtractorUI extends ProgramUIFactory {
 
         }
         return ifileName;
+    }
+
+    private String getGeoLocateProgramName(String programName){
+
+        String geoLocateProgramName = null;
+
+        if(programName.contains("modis")) {
+           geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_MODIS;
+        } else if(programName.contains("viirs")) {
+           geoLocateProgramName = GEO_LOCATE_PROGRAM_NAME_VIIRS;
+
+        }
+        return geoLocateProgramName;
     }
 
     HashMap<String, Boolean> paramCounter;
