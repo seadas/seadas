@@ -117,6 +117,13 @@ public class SeadasFileUtils {
         }
     }
 
+    /**
+     *
+     * @param sourceFilePathName file to be copied
+     * @param targetFilePathName destination file name with full path
+     *                           This method executes command line (OS) copy command.
+     * @return
+     */
     public static Process cloFileCopy(String sourceFilePathName, String targetFilePathName) {
 
         String[] commandArrayParams = new String[2];
@@ -135,6 +142,7 @@ public class SeadasFileUtils {
         Process process = null;
         try {
             process = processBuilder.start();
+            process.waitFor();
         } catch (Exception e) {
             e.printStackTrace();
         }
