@@ -1,8 +1,7 @@
 package gov.nasa.gsfc.seadas.ocsswrest.database;
 
-import sun.misc.IOUtils;
-
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -126,7 +125,7 @@ public class SQLiteJDBC {
 
     public static void main(String args[]) {
         createTables();
-        System.out.println("Opened database successfully");
+        //System.out.println("Opened database successfully");
     }
 
     public static void createTables() {
@@ -348,7 +347,7 @@ public class SQLiteJDBC {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Tables created successfully");
+        //System.out.println("Tables created successfully");
 
     }
 
@@ -364,7 +363,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Opened database successfully");
+            //System.out.println("Opened database successfully");
 
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM MISSION_TABLE;");
@@ -405,7 +404,7 @@ public class SQLiteJDBC {
 
             connection.commit();
 
-            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " inserted into " + tableName + " table!");
+            //System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " inserted into " + tableName + " table!");
             preparedStatement.close();
             connection.close();
 
@@ -413,7 +412,7 @@ public class SQLiteJDBC {
             System.err.println(" in inserting item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
         }
-        System.out.println("Inserted " + itemName + " successfully");
+        //System.out.println("Inserted " + itemName + " successfully");
     }
 
     public static String updateItem(String tableName, String jobID, String itemName, String itemValue) {
@@ -426,7 +425,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName);
+            //System.out.println("Operating on table " + tableName);
 
             preparedStatement = connection.prepareStatement(commonUpdateString);
 
@@ -435,8 +434,8 @@ public class SQLiteJDBC {
             int exitCode = preparedStatement.executeUpdate();
             connection.commit();
 
-            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " + tableName + " table!");
-            System.out.println(itemName + " = "  + itemValue);
+            //System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " + tableName + " table!");
+            //System.out.println(itemName + " = "  + itemValue);
             preparedStatement.close();
             connection.close();
 
@@ -444,7 +443,7 @@ public class SQLiteJDBC {
             System.err.println(" in update item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
         }
-        System.out.println("Operation done successfully");
+        //System.out.println("Operation done successfully");
 
         return retrievedItem;
     }
@@ -467,7 +466,7 @@ public class SQLiteJDBC {
 
             connection.commit();
 
-            System.out.println(key1 + " is " + (exitCode == 1 ? "" : "not") + " inserted into " + tableName + " table!");
+            //System.out.println(key1 + " is " + (exitCode == 1 ? "" : "not") + " inserted into " + tableName + " table!");
             preparedStatement.close();
             connection.close();
 
@@ -475,7 +474,7 @@ public class SQLiteJDBC {
             System.err.println(" in inserting item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
         }
-        System.out.println("Inserted " + key1 + "and " + key2 + " successfully");
+        //System.out.println("Inserted " + key1 + "and " + key2 + " successfully");
     }
 
 
@@ -489,7 +488,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName);
+            //System.out.println("Operating on table " + tableName);
 
             preparedStatement = connection.prepareStatement(commonUpdateString);
 
@@ -499,8 +498,8 @@ public class SQLiteJDBC {
             int exitCode = preparedStatement.executeUpdate();
             connection.commit();
 
-            System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " + tableName + " table!");
-            System.out.println(itemName + " = "  + itemValue);
+            //System.out.println(itemName + " is " + (exitCode == 1 ? "" : "not") + " updated on " + tableName + " table!");
+            //System.out.println(itemName + " = "  + itemValue);
             preparedStatement.close();
             connection.close();
 
@@ -508,7 +507,7 @@ public class SQLiteJDBC {
             System.err.println(" in update item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
         }
-        System.out.println("Operation done successfully");
+        //System.out.println("Operation done successfully");
 
         return retrievedItem;
     }
@@ -524,13 +523,13 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME + "  jobID = " + jobId + "  searching for " + "fileName");
+            //System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME + "  jobID = " + jobId + "  searching for " + "fileName");
 
             preparedStatement = connection.prepareStatement(commonQueryString);
 
             //preparedStatement.setString(1, itemName);
             preparedStatement.setString(1, jobId);
-            System.out.println("sql string: " + preparedStatement);
+            //System.out.println("sql string: " + preparedStatement);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -545,7 +544,7 @@ public class SQLiteJDBC {
             System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
         }
-        System.out.println("Operation done successfully");
+        //System.out.println("Operation done successfully");
 
         return fileList;
     }
@@ -556,13 +555,13 @@ public class SQLiteJDBC {
 
         String commonUpdateString = "INSERT INTO " + INPUT_FILES_LIST_TABLE_NAME + " ( JOB_ID, FILENAME )  VALUES ( ? , ? );";
 
-        System.out.println(commonUpdateString);
+        //System.out.println(commonUpdateString);
 
         try {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME);
+            //System.out.println("Operating on table " + INPUT_FILES_LIST_TABLE_NAME);
 
             preparedStatement = connection.prepareStatement(commonUpdateString);
 
@@ -572,7 +571,7 @@ public class SQLiteJDBC {
             int exitCode = preparedStatement.executeUpdate();
             connection.commit();
 
-            System.out.println(newClientFileName + " is " + (exitCode == 1 ? "" : "not") + " added in " + INPUT_FILES_LIST_TABLE_NAME + " table!");
+            //System.out.println(newClientFileName + " is " + (exitCode == 1 ? "" : "not") + " added in " + INPUT_FILES_LIST_TABLE_NAME + " table!");
 
             preparedStatement.close();
             connection.close();
@@ -595,13 +594,13 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
+            //System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
 
             preparedStatement = connection.prepareStatement(commonQueryString);
             preparedStatement.setString(1, searchKey);
             ResultSet rs = preparedStatement.executeQuery();
             retrievedItem = rs.getString(itemName);
-            System.out.println("Retrieved item name : " + retrievedItem);
+            //System.out.println("Retrieved item name : " + retrievedItem);
             rs.close();
             preparedStatement.close();
             connection.close();
@@ -609,7 +608,7 @@ public class SQLiteJDBC {
             System.err.println(" in retrieve item : " + e.getClass().getName() + ": " + e.getMessage());
             //System.exit(0);
         }
-        System.out.println("Operation done successfully");
+        //System.out.println("Operation done successfully");
 
         return retrievedItem;
     }
@@ -624,7 +623,7 @@ public class SQLiteJDBC {
             Class.forName(DB_CLASS_FOR_NAME);
             connection = DriverManager.getConnection(JOB_DB_URL);
             connection.setAutoCommit(false);
-            System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
+            //System.out.println("Operating on table " + tableName + "  jobID = " + searchKey + " searching for " + itemName);
 
             preparedStatement = connection.prepareStatement(commonQueryString);
             preparedStatement.setString(1, searchKey);
@@ -640,14 +639,14 @@ public class SQLiteJDBC {
 
             if (rs.next()) {
                 retrievedItem = rs.getBinaryStream(size);
-                System.out.println("Total retrieved item number : " + rs.getFetchSize());
+                //System.out.println("Total retrieved item number : " + rs.getFetchSize());
                 //rs.deleteRow();
             } else {
                 retrievedItem = null;
             }
 
             //retrievedItem = rs.getBinaryStream(itemName);
-            System.out.println("Retrieved item name : " + retrievedItem.toString());
+            //System.out.println("Retrieved item name : " + retrievedItem.toString());
             rs.close();
             preparedStatement.close();
             connection.close();
@@ -655,7 +654,7 @@ public class SQLiteJDBC {
             System.err.println(" in retrieve input stream item : " );
             e.printStackTrace();
         }
-        System.out.println("Operation done successfully");
+        //System.out.println("Operation done successfully");
 
         return retrievedItem;
     }
