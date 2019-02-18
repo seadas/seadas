@@ -224,7 +224,7 @@
             <tocitem text="Cookbook" target="ocsswCookbook"/>
 
             <tocitem text="install_ocssw.py" target="install_ocssw.py"/>
-            <tocitem text="Extractors" target="extractor"/>
+            <tocitem text="extractors" target="extractor"/>
             <tocitem text="modis_L1A.py" target="modis_L1A.py"/>
             <tocitem text="modis_L1B.py" target="modis_L1B.py"/>
             <tocitem text="modis_GEO.py" target="modis_GEO.py"/>
