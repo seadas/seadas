@@ -90,19 +90,26 @@ requested output format.</p>
     <td>string</td>
     <td> One of the following predefined (proj4) projections may be selected:
         <pre>
-     albersconic: "+proj=aea +lon_0={central_meridian}"
-     ease2: "+proj=cea +lat_ts=30.0 +lon_0={central_meridian}"
-     lambertconformal: "+proj=lcc +lon_0={central_meridian}"
-     mercator: "+proj=merc +lon_0={central_meridian}"
-     mollweide: "+proj=moll +lon_0={central_meridian}"
-     platecaree:"+proj=eqc +lon_0={central_meridian}"
-     raw: raw dump of the bin file
-     smi: "+proj=eqc +lon_0={central_meridian}"
-
-     Proj4 strings can also be directly entered.
-     (See below for a listing of common proj4 formatted strings.)
-
- </pre>
+        smi:       Standard Mapped image, cylindrical projection,
+                   uses central_meridian.  NSEW defaults to whole globe.
+                   projection="+proj=eqc +lon_0= "
+        platecarree: Plate Carree image, cylindrical projection,
+                   uses central_meridian.
+                   projection="+proj=eqc +lon_0= "
+        mollweide: Mollweide projection
+                   projection="+proj=moll +lon_0= "
+        lambert:   Lambert conformal conic projection
+                   projection="+proj=lcc +lon_0= "
+        albersconic: Albers Equal Area Conic projection
+                   projection="+proj=aea +lon_0= "
+        mercator:  Mercator cylindrical map projection
+                   projection="+proj=merc +lon_0= "
+        ease2:     EASE-Grid 2.0 projection
+                   projection="+proj=cea +lat_0=0 +lat_ts=30
+                          +ellps=WGS84 +datum=WGS84 +units=m
+                          +lon_0= "
+        raw:       Raw dump of bin file contents.     albersconic: "+proj=aea +lon_0={central_meridian}"
+         </pre>
     </td>
     <td>Optional</td>
     <td>platecarree</td>
@@ -137,12 +144,12 @@ requested output format.</p>
     <td>string</td>
     <td>interpolation method:
         <pre>
-     nearest: Nearest Neighbor
-     bin:     bin all of the pixels that intersect the
+        nearest: Nearest Neighbor
+        bin:     bin all of the pixels that intersect the
                 area of the output pixel
-     area:    bin weighted by area all of the pixels that
+        area:    bin weighted by area all of the pixels that
                 intersect the area of the output pixel
- </pre>
+        </pre>
     </td>
     <td>Optional</td>
     <td>nearest</td>
@@ -186,13 +193,13 @@ requested output format.</p>
     <td><b>oformat</b></td>
     <td>string</td>
     <td>format of the output file :
-            <pre>
-                 netCDF:  netCDF file, can contain more than one product
-                 hdf4:    HDF4 file (old SMI format)
-                 png:     PNG image file
-                 ppm:     PPM image file
-                 geoTIFF: TIFF file with georeference tags
-            </pre>
+        <pre>
+        netCDF:  netCDF file, can contain more than one product
+        hdf4:    HDF4 file (old SMI format)
+        png:     PNG image file
+        ppm:     PPM image file
+        geoTIFF: TIFF file with georeference tags
+        </pre>
     </td>
     <td>Optional</td>
     <td>netCDF4</td>
@@ -282,8 +289,8 @@ requested output format.</p>
     <td>boolean</td>
     <td>apply color palette:
         <pre>
-            yes: color image
-            no: grayscale image
+        yes: color image
+        no: grayscale image
         </pre>
     </td>
     <td>Optional</td>
@@ -324,7 +331,7 @@ requested output format.</p>
     <tr>
         <td><b>Browser Button</b></td>
         <td>Button</td>
-        <td>Selects infile/ofile
+        <td>Selects ifile/ofile
         </td>
     </tr>
     <tr>
