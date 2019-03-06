@@ -11,7 +11,7 @@
 
     <vendor>NASA Ocean Biology Processing Group</vendor>
     <contactAddress>NASA GSFC, Code 614.2</contactAddress>
-    <copyright>(C) 2012 United States Government as represented by the Administrator of the National Aeronautics and Space Administration.</copyright>
+    <copyright>(C) 2019 United States Government as represented by the Administrator of the National Aeronautics and Space Administration.</copyright>
     <url>https://oceancolor.gsfc.nasa.gov/seadas</url>
     <licenseUrl>http://www.gnu.org/licenses/gpl.html</licenseUrl>
     <changelog>
@@ -332,7 +332,7 @@
         <action>
             <parent>ocprocessing</parent>
             <id>multilevel_processor.py</id>
-            <!--<placeBefore>extractor</placeBefore>-->
+            <placeBefore>update_luts.py</placeBefore>
             <placeAfter>l3bindump</placeAfter>
             <class>gov.nasa.gsfc.seadas.processing.processor.MultilevelProcessorAction</class>
             <text>multilevel_processor...</text>
@@ -342,6 +342,20 @@
             <xmlFileName>multilevel_processor.xml</xmlFileName>
             <separatorBefore>true</separatorBefore>
         </action>
+        <action>
+            <parent>ocprocessing</parent>
+            <id>update_luts.py</id>
+            <!--<placeBefore>extractor</placeBefore>-->
+            <placeAfter>multilevel_processor.py</placeAfter>
+            <class>gov.nasa.gsfc.seadas.processing.common.CallCloProgramAction</class>
+            <text>update_luts...</text>
+            <shortDescr>Update LUTs for modis aqua, terra, seawifs, aquarius, viirsn, viirsj1 missions</shortDescr>
+            <programName>update_luts.py</programName>
+            <dialogTitle>update_luts.py</dialogTitle>
+            <xmlFileName>update_luts.xml</xmlFileName>
+            <separatorBefore>true</separatorBefore>
+        </action>
+
 
     </extension>
     <extension point="beam-ui:helpSets">
