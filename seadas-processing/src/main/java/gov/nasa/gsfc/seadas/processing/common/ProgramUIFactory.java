@@ -27,7 +27,7 @@ public class ProgramUIFactory extends JPanel implements CloProgramUI {
     ProcessorModel processorModel;
 
     private ParFileUI parFileUI;
-    private JPanel paramPanel;
+    JPanel paramPanel;
     OCSSW ocssw;
 
     public ProgramUIFactory(String programName, String xmlFileName, OCSSW ocssw) {

@@ -8,7 +8,10 @@ import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.ProcessorTypeInfo;
 import gov.nasa.gsfc.seadas.ocssw.OCSSW;
-import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.L2genData;
+import gov.nasa.gsfc.seadas.processing.core.ParamUtils;
+import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.framework.dataio.ProductIO;
 import org.esa.beam.framework.ui.AppContext;
 import org.esa.beam.framework.ui.ModalDialog;
@@ -30,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static gov.nasa.gsfc.seadas.ocssw.OCSSW.UPDATE_LUTS_PROGRAM_NAME;
 import static org.esa.beam.util.SystemUtils.getApplicationContextId;
 
 /**
@@ -86,6 +90,8 @@ public class CallCloProgramAction extends AbstractVisatAction {
             } else {
                 return new OCSSWInstallerFormRemote(appContext, programName, xmlFileName, ocssw);
             }
+        }else if (   programName.indexOf("update_luts.py") != -1   ) {
+            return new UpdateLutsUI(programName, xmlFileName, ocssw);
         }
         return new ProgramUIFactory(programName, xmlFileName, ocssw);//, multiIFile);
     }
@@ -203,7 +209,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected String doInBackground(ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);
-                final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
+                final Process process = programName.equals(UPDATE_LUTS_PROGRAM_NAME) ? ocssw.executeUpdateLuts(processorModel) : ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
@@ -248,6 +254,9 @@ public class CallCloProgramAction extends AbstractVisatAction {
                         if (!ocssw.isOCSSWExist()) {
                             enableProcessors();
                         }
+                    }
+                    if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+                        ocssw.updateOCSSWProgramXMLFiles();
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {

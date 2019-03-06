@@ -3,7 +3,10 @@ package gov.nasa.gsfc.seadas.ocssw;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
-import gov.nasa.gsfc.seadas.processing.common.*;
+import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
+import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.common.SeadasProcess;
 import gov.nasa.gsfc.seadas.processing.core.*;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.beam.visat.VisatApp;
@@ -604,6 +607,20 @@ public class OCSSWRemote extends OCSSW {
     }
 
     @Override
+    public void updateOCSSWProgramXMLFiles() {
+
+    }
+
+    @Override
+    public Process executeUpdateLuts(ProcessorModel processorModel) {
+        this.processorModel = processorModel;
+        Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
+        JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
+        Response response = target.path("ocssw").path("executeUpdateLutsProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        return seadasProcess;
+    }
+
+    @Override
     public void getOutputFiles(ProcessorModel processorModel) {
         if (processorModel.getProgramName() == MLP_PROGRAM_NAME) {
             downloadMLPOutputFiles(processorModel);
@@ -749,7 +766,7 @@ public class OCSSWRemote extends OCSSW {
         return seadasProcess;
     }
 
-    protected boolean isMLPOdirValid(String mlpOdir){
+    protected boolean isMLPOdirValid(String mlpOdir) {
         if (mlpOdir == null || mlpOdir.trim().isEmpty()) {
             return false;
         } else {
@@ -758,8 +775,8 @@ public class OCSSWRemote extends OCSSW {
     }
 
     protected void downloadMLPOutputFiles(ProcessorModel processorModel) {
-        String mlpOdir =  processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
-        final String ofileDir = isMLPOdirValid(mlpOdir) ?  mlpOdir : ifileDir;
+        String mlpOdir = processorModel.getParamValue(MLP_PAR_FILE_ODIR_KEY_NAME);
+        final String ofileDir = isMLPOdirValid(mlpOdir) ? mlpOdir : ifileDir;
 
 
         VisatApp visatApp = VisatApp.getApp();
@@ -799,7 +816,7 @@ public class OCSSWRemote extends OCSSW {
     @Override
     public Process execute(ParamList paramListl) {
         JsonObject commandArrayJsonObject = getJsonFromParamList(paramListl);
-        setCommandArray((String[])commandArrayJsonObject.asJsonArray().toArray());
+        setCommandArray((String[]) commandArrayJsonObject.asJsonArray().toArray());
         Response response = target.path("ocssw").path("executeOcsswProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             Response output = target.path("fileServices").path("downloadFile").path(jobId).request().get(Response.class);

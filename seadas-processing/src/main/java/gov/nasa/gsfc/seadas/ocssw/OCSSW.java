@@ -11,11 +11,11 @@ import org.esa.beam.visat.VisatApp;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.net.URL;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -27,6 +27,10 @@ public abstract class OCSSW {
     public static final String OCSSW_INSTALLER_URL = "https://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py";
     public static final String TMP_OCSSW_INSTALLER = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
+    public static String NEXT_LEVEL_NAME_FINDER_PROGRAM_NAME = "next_level_name.py";
+    public static String NEXT_LEVEL_FILE_NAME_TOKEN = "Output Name:";
+    public static final String GET_OBPG_FILE_TYPE_PROGRAM_NAME = "get_obpg_file_type.py";
+    public static final String UPDATE_LUTS_PROGRAM_NAME = "update_luts.py";
 
     final String L1AEXTRACT_MODIS = "l1aextract_modis",
             L1AEXTRACT_MODIS_XML_FILE = "l1aextract_modis.xml",
@@ -96,6 +100,7 @@ public abstract class OCSSW {
     public abstract ArrayList<String> readSensorFileIntoArrayList(File file);
 
     public abstract Process execute(ProcessorModel processorModel);
+    public abstract Process executeUpdateLuts(ProcessorModel processorModel);
     public abstract Process executeSimple(ProcessorModel processorModel);
     public abstract InputStream executeAndGetStdout(ProcessorModel processorModel);
 
@@ -292,4 +297,40 @@ public abstract class OCSSW {
     }
 
 
+    public void updateOCSSWProgramXMLFiles(){
+//        String executable = getGuiName();
+//        // String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+//        if (executable.equals("l3gen")) {
+//            executable = "l2gen";
+//        }
+//        ProcessorModel processorModel = new ProcessorModel(executable, ocssw);
+//
+//        processorModel.setAcceptsParFile(true);
+//        processorModel.addParamInfo("ifile", file.getAbsolutePath(), ParamInfo.Type.IFILE);
+//
+//        if (suite != null) {
+//            processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
+//        }
+//
+//        processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+//
+//        try {
+//            // Aquarius will use the static xml file instead of a generated one
+//            if (getMode() != L2genData.Mode.L2GEN_AQUARIUS) {
+//                Process p = ocssw.executeSimple(processorModel);
+//                ocssw.waitForProcess();
+//                if (ocssw.getProcessExitValue() != 0) {
+//                    throw new IOException("l2gen failed to run");
+//                }
+//
+//                ocssw.getIntermediateOutputFiles(processorModel);
+//            }
+//
+//            if (!xmlFile.exists()) {
+//                SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+//                VisatApp.getApp().showMessageDialog("", "SEVERE: paramInfo.xml not found!", ModalDialog.ID_OK, null);
+//                return null;
+//            }
+//        }
+    }
 }
