@@ -147,6 +147,7 @@ public class OCSSWServices {
         return ofileName;
     }
 
+
     @GET
     @Path("/getFileInfo/{jobId}/{ifileName}")
     @Consumes(MediaType.TEXT_XML)
@@ -187,31 +188,6 @@ public class OCSSWServices {
         return ofileName;
     }
 
-
-    //    @GET
-//    @Path("/getOfileName/{jobId}/{ifileName}/{programName}")
-//    @Consumes(MediaType.TEXT_XML)
-//    public JsonObject getOfileNameFromIfile(@PathParam("ifileName") String ifileName,
-//                                            @PathParam("jobId") String jobId) {
-//        String currentWorkingDir = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.WORKING_DIR_PATH.getMissionName());
-//        String ifileFullPathName = currentWorkingDir + File.separator + ifileName;
-//        OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
-//        String ofileName = ocsswRemote.getOfileName(ifileFullPathName, jobId);
-//        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.IFILE_NAME_FIELD_NAME, ifileFullPathName);
-//        SQLiteJDBC.updateInputFilesList(jobId, ifileFullPathName);
-//        SQLiteJDBC.updateItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.OFILE_NAME_FIELD_NAME, currentWorkingDir + File.separator + ofileName);
-//        String missionName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.MISSION_NAME.getMissionName());
-//        String fileType = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.I_FILE_TYPE.getMissionName());
-//        String programName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.PROGRAM_NAME.getMissionName());
-//        ofileName = SQLiteJDBC.retrieveItem(SQLiteJDBC.FILE_TABLE_NAME, jobId, SQLiteJDBC.FileTableFields.O_FILE_NAME.getMissionName());
-//        ofileName = ofileName.substring(ofileName.lastIndexOf(File.separator) + 1);
-//        JsonObject fileInfo = Json.createObjectBuilder().add("missionName", missionName)
-//                .add("fileType", fileType)
-//                .add("programName", programName)
-//                .add("ofileName", ofileName)
-//                .build();
-//        return fileInfo;
-//    }
     @PUT
     @Path("executeOcsswProgram/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -224,6 +200,21 @@ public class OCSSWServices {
 
             OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             ocsswRemote.executeProgram(jobId, jsonObject);
+        }
+        return Response.status(respStatus).build();
+    }
+
+    @PUT
+    @Path("executeUpdateLutsProgram/{jobId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeUpdateLutsProgram(@PathParam("jobId") String jobId, JsonObject jsonObject) {
+        Response.Status respStatus = Response.Status.OK;
+        if (jsonObject == null) {
+            respStatus = Response.Status.BAD_REQUEST;
+        } else {
+
+            OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
+            ocsswRemote.executeUpdateLutsProgram(jobId, jsonObject);
         }
         return Response.status(respStatus).build();
     }

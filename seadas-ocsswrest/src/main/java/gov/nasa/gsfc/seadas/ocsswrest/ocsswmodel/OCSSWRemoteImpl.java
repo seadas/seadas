@@ -3,7 +3,6 @@ package gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel;
 import gov.nasa.gsfc.seadas.ocsswrest.database.SQLiteJDBC;
 import gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfo;
-import gov.nasa.gsfc.seadas.ocsswrest.utilities.MissionInfoFinder;
 import gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities;
 
 import javax.json.Json;
@@ -11,7 +10,6 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.swing.*;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -111,6 +109,17 @@ public class OCSSWRemoteImpl {
         String[] commandArray = transformCommandArray(jobId, jsonObject, programName);
 
         executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), jobId);
+    }
+
+    public void executeUpdateLutsProgram(String jobId, JsonObject jsonObject) {
+        Set commandArrayKeys = jsonObject.keySet();
+        Object[] array = commandArrayKeys.toArray();
+        String commandArrayElement;
+        for (Object element : array) {
+            commandArrayElement = jsonObject.getString((String) element);
+            System.out.println("update_luts option: " + commandArrayElement);
+            executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), new String[]{commandArrayElement}, getCommandArraySuffix(programName)), jobId);
+        }
     }
 
     private String[] transformCommandArray(String jobId, JsonObject jsonObject, String programName) {
@@ -814,4 +823,5 @@ public class OCSSWRemoteImpl {
 
         return null;
     }
+
 }
