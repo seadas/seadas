@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<paramInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://seadas.gsfc.nasa.gov/software/schemas/ParamInfo-1.0.xsd">
+    <programMetaData>
+        <hasParFile>false</hasParFile>
+        <parFileOptionName>none</parFileOptionName>
+        <progressRegex>Installing .+(\d+) of (\d+)</progressRegex>
+    </programMetaData>
+    <options>
+        <option type="boolean">
+            <name>aquarius</name>
+            <value>true</value>
+            <default>true</default>
+            <usedAs>flag</usedAs>
+            <description>install Aquarius files</description>
+            <order>2</order>
+        </option>
+        <option type="boolean">
+            <name>aqua</name>
+            <value>true</value>
+            <default>true</default>
+            <usedAs>flag</usedAs>
+            <description>install MODIS Aqua files</description>
+            <order>8</order>
+        </option>
+        <option type="boolean">
+            <name>terra</name>
+            <value>true</value>
+            <default>true</default>
+            <usedAs>flag</usedAs>
+            <description>install MODIS Terra files</description>
+            <order>9</order>
+        </option>
+        <option type="boolean">
+            <name>seawifs</name>
+            <value>true</value>
+            <default>true</default>
+            <usedAs>flag</usedAs>
+            <description>install SeaWIFS files</description>
+            <order>18</order>
+        </option>
+        <option type="boolean">
+            <name>viirsn</name>
+            <value>true</value>
+            <default>true</default>
+            <usedAs>flag</usedAs>
+            <description>install VIIRS SNPP files</description>
+            <order>19</order>
+        </option>
+        <option type="boolean">
+            <name>viirsj1</name>
+            <value>true</value>
+            <default>true</default>
+            <usedAs>flag</usedAs>
+            <description>install VIIRS JPSS1 files</description>
+            <order>20</order>
+        </option>
+        <!--<option type="button">-->
+            <!--<name>update luts</name>-->
+            <!--<value></value>-->
+            <!--<default></default>-->
+            <!--<description>update luts for a given mission. MISSION is either seawifs, aqua, terra, or aquarius-->
+            <!--</description>-->
+            <!--<usedAs>button</usedAs>-->
+            <!--<order>15</order>-->
+        <!--</option>-->
+    </options>
+</paramInfo>
