@@ -374,7 +374,7 @@
             <dependency>
                 <groupId>gov.nasa.gsfc.seadas</groupId>
                 <artifactId>seadas-processing</artifactId>
-                <version>1.6</version>
+                <version>1.7</version>
             </dependency>
 
 
