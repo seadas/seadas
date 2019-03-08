@@ -115,10 +115,22 @@ public class OCSSWRemoteImpl {
         Set commandArrayKeys = jsonObject.keySet();
         Object[] array = commandArrayKeys.toArray();
         String commandArrayElement;
+        Process process = null;
         for (Object element : array) {
             commandArrayElement = jsonObject.getString((String) element);
             System.out.println("update_luts option: " + commandArrayElement);
             executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), new String[]{commandArrayElement}, getCommandArraySuffix(programName)), jobId);
+        }
+        if (process.isAlive()) {
+            debug("process is alive: ");
+            final ORSProcessObserver processObserver = new ORSProcessObserver(process, programName, jobId);
+            processObserver.startAndWait();
+        } else {
+            if (process.exitValue() == 0) {
+                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
+            } else {
+                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.FAILED.getValue());
+            }
         }
     }
 
