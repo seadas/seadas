@@ -617,6 +617,8 @@ public class OCSSWRemote extends OCSSW {
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
         Response response = target.path("ocssw").path("executeUpdateLutsProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
+        System.out.println(response.getStatus());
+        ((SeadasProcess) seadasProcess).setExitValue(0);
         return seadasProcess;
     }
 
