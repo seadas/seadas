@@ -18,6 +18,7 @@ import static gov.nasa.gsfc.seadas.ocsswrest.OCSSWRestServer.SERVER_WORKING_DIRE
 import static gov.nasa.gsfc.seadas.ocsswrest.ocsswmodel.OCSSWRemoteImpl.*;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_ERROR_STREAM_FILE_NAME;
 import static gov.nasa.gsfc.seadas.ocsswrest.process.ORSProcessObserver.PROCESS_INPUT_STREAM_FILE_NAME;
+import static gov.nasa.gsfc.seadas.ocsswrest.utilities.ServerSideFileUtilities.debug;
 
 
 /**
@@ -208,15 +209,19 @@ public class OCSSWServices {
     @Path("executeUpdateLutsProgram/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeUpdateLutsProgram(@PathParam("jobId") String jobId, JsonObject jsonObject) {
+        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
         Response.Status respStatus = Response.Status.OK;
         if (jsonObject == null) {
             respStatus = Response.Status.BAD_REQUEST;
+            debug("bad request");
         } else {
 
             OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
             ocsswRemote.executeUpdateLutsProgram(jobId, jsonObject);
         }
-        return Response.status(respStatus).build();
+        Response response = Response.status(respStatus).type("text/plain").entity(SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName())).build();
+        System.out.println("process status on server = " + SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName()));
+        return response;
     }
 
     @PUT
