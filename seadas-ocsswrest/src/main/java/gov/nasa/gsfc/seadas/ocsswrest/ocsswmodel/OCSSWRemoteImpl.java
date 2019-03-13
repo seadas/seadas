@@ -111,7 +111,8 @@ public class OCSSWRemoteImpl {
         executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), commandArray, getCommandArraySuffix(programName)), jobId);
     }
 
-    public void executeUpdateLutsProgram(String jobId, JsonObject jsonObject) {
+    public Process executeUpdateLutsProgram(String jobId, JsonObject jsonObject)  {
+        programName = "update_luts.py";
         Set commandArrayKeys = jsonObject.keySet();
         Object[] array = commandArrayKeys.toArray();
         String commandArrayElement;
@@ -119,13 +120,9 @@ public class OCSSWRemoteImpl {
         for (Object element : array) {
             commandArrayElement = jsonObject.getString((String) element);
             debug("update_luts option: " + commandArrayElement);
-            executeProcess(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), new String[]{commandArrayElement}, getCommandArraySuffix(programName)), jobId);
-            if (process.exitValue() == 0) {
-                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.COMPLETED.getValue());
-            } else {
-                SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.FAILED.getValue());
-            }
+            process = executeSimple(ServerSideFileUtilities.concatAll(getCommandArrayPrefix(programName), new String[]{programName, commandArrayElement}, getCommandArraySuffix(programName)));
         }
+        return process;
     }
 
     private String[] transformCommandArray(String jobId, JsonObject jsonObject, String programName) {
