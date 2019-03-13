@@ -100,7 +100,7 @@ public abstract class OCSSW {
     public abstract ArrayList<String> readSensorFileIntoArrayList(File file);
 
     public abstract Process execute(ProcessorModel processorModel);
-    public abstract Process executeUpdateLuts(ProcessorModel processorModel);
+    public abstract String executeUpdateLuts(ProcessorModel processorModel);
     public abstract Process executeSimple(ProcessorModel processorModel);
     public abstract InputStream executeAndGetStdout(ProcessorModel processorModel);
 
