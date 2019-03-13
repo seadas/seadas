@@ -209,19 +209,24 @@ public class OCSSWServices {
     @Path("executeUpdateLutsProgram/{jobId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeUpdateLutsProgram(@PathParam("jobId") String jobId, JsonObject jsonObject) {
-        SQLiteJDBC.updateItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName(), SQLiteJDBC.ProcessStatusFlag.NONEXIST.getValue());
-        Response.Status respStatus = Response.Status.OK;
-        if (jsonObject == null) {
-            respStatus = Response.Status.BAD_REQUEST;
-            debug("bad request");
-        } else {
-
+        Response.Status respStatus = Response.Status.BAD_REQUEST;
+        Process process = null;
+        if (jsonObject != null) {
             OCSSWRemoteImpl ocsswRemote = new OCSSWRemoteImpl();
-            ocsswRemote.executeUpdateLutsProgram(jobId, jsonObject);
+            process = ocsswRemote.executeUpdateLutsProgram(jobId, jsonObject);
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            debug("exit value = " + process.exitValue());
+            if (process.exitValue() == 0) {
+                respStatus = Response.Status.OK;
+            } else {
+                respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+            }
         }
-        Response response = Response.status(respStatus).type("text/plain").entity(SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName())).build();
-        System.out.println("process status on server = " + SQLiteJDBC.retrieveItem(SQLiteJDBC.PROCESS_TABLE_NAME, jobId, SQLiteJDBC.ProcessTableFields.STATUS.getFieldName()));
-        return response;
+        return Response.status(respStatus).build();
     }
 
     @PUT
