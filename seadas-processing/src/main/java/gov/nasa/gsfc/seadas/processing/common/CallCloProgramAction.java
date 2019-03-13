@@ -189,8 +189,13 @@ public class CallCloProgramAction extends AbstractVisatAction {
             displayMessage(programName, "ocssw installation script does not exist." + "\n" + "Please check network connection and rerun ''Install Processor''");
             return;
         }
+        if (programName.equals(UPDATE_LUTS_PROGRAM_NAME)) {
+            String message = ocssw.executeUpdateLuts(processorModel);
+            VisatApp.getApp().showInfoDialog(dialogTitle, message, null);
+        } else {
+            executeProgram(processorModel);
+        }
 
-        executeProgram(processorModel);
         SeadasLogger.deleteLoggerOnExit(true);
         cloProgramUI.getProcessorModel().fireEvent(L2genData.CANCEL);
 
@@ -209,7 +214,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
             protected String doInBackground(ProgressMonitor pm) throws Exception {
 
                 ocssw.setMonitorProgress(true);
-                final Process process = programName.equals(UPDATE_LUTS_PROGRAM_NAME) ? ocssw.executeUpdateLuts(processorModel) : ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
+                final Process process = ocssw.execute(processorModel);//ocssw.execute(processorModel.getParamList()); //OCSSWRunnerOld.execute(processorModel);
                 if (process == null) {
                     throw new IOException(programName + " failed to create process.");
                 }
