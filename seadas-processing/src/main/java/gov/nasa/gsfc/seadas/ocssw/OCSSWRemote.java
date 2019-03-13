@@ -612,14 +612,16 @@ public class OCSSWRemote extends OCSSW {
     }
 
     @Override
-    public Process executeUpdateLuts(ProcessorModel processorModel) {
+    public String executeUpdateLuts(ProcessorModel processorModel) {
         this.processorModel = processorModel;
         Process seadasProcess = new SeadasProcess(ocsswInfo, jobId);
         JsonObject commandArrayJsonObject = getJsonFromParamList(processorModel.getParamList());
         Response response = target.path("ocssw").path("executeUpdateLutsProgram").path(jobId).request().put(Entity.entity(commandArrayJsonObject, MediaType.APPLICATION_JSON_TYPE));
-        System.out.println(response.getStatus());
-        ((SeadasProcess) seadasProcess).setExitValue(0);
-        return seadasProcess;
+        if  (response.getStatus() == 200 ) {
+            return "Update Luts successful";
+        } else {
+            return "Update Luts failed on server";
+        }
     }
 
     @Override
