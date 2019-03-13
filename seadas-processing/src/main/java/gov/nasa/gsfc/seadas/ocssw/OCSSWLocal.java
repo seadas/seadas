@@ -202,7 +202,7 @@ public class OCSSWLocal extends OCSSW {
     }
 
     @Override
-    public Process executeUpdateLuts(ProcessorModel processorModel){
+    public String executeUpdateLuts(ProcessorModel processorModel){
         String[] programNameArray = {programName};
         String[] commandArrayParams =  getCommandArrayParam(processorModel.getParamList());
         Process process = null;
@@ -210,7 +210,12 @@ public class OCSSWLocal extends OCSSW {
             commandArray = SeadasArrayUtils.concatAll(commandArrayPrefix, programNameArray, new String[]{param}, commandArraySuffix);
             process = execute(commandArray);
         }
-        return process;
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return process.exitValue() == 0? "Update Luts successful." : "Update Luts failed.";
     }
 
     @Override
