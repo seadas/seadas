@@ -10,8 +10,9 @@ import org.esa.beam.visat.VisatApp;
 
 import javax.json.JsonObject;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -243,7 +244,7 @@ public class OCSSWVM extends OCSSWRemote {
                     if (!workingDir.equals(ofileDir)) {
                         String sourceFilePathName = workingDir + File.separator + ofileName;
                         String targetFilePathName = ofileDir + File.separator + ofileName;
-                        SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
+                        SeadasFileUtils.copyFileWithPath(sourceFilePathName, targetFilePathName);
                     }
                 }
             }
