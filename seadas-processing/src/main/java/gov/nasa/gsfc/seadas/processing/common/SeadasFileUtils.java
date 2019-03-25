@@ -2,7 +2,7 @@ package gov.nasa.gsfc.seadas.processing.common;
 
 
 import gov.nasa.gsfc.seadas.OsUtils;
-import gov.nasa.gsfc.seadas.processing.core.*;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.utilities.SeadasArrayUtils;
 import org.esa.beam.visat.VisatApp;
 
@@ -12,6 +12,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,6 +120,16 @@ public class SeadasFileUtils {
         }
     }
 
+    public static void copyFileWithPath(String sourceFilePathName, String targetFilePathName)  {
+
+        Path copied = Paths.get(targetFilePathName);
+        Path originalPath = Paths.get(sourceFilePathName);
+        try {
+            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      *
      * @param sourceFilePathName file to be copied
