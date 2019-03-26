@@ -4,9 +4,11 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
 import gov.nasa.gsfc.seadas.processing.core.ParamList;
 import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 
 import java.io.*;
@@ -16,6 +18,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static gov.nasa.gsfc.seadas.processing.core.L2genData.OPER_DIR;
+import static gov.nasa.gsfc.seadas.processing.core.L2genData.PRODUCT_INFO_XML;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -296,6 +301,76 @@ public abstract class OCSSW {
         }
     }
 
+    public void updateL2genProductInfoXMLFiles(){
+        String programName = "l2gen";
+        File dataDir = SystemUtils.getApplicationDataDir();
+        File l2genDir = new File(dataDir, OPER_DIR);
+        l2genDir.mkdirs();
+
+        File xmlFile = new File(l2genDir, PRODUCT_INFO_XML);
+        ProcessorModel processorModel = new ProcessorModel(programName, this);
+        processorModel.setAcceptsParFile(false);
+        processorModel.addParamInfo("prodxmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+        processorModel.getParamInfo("prodxmlfile").setUsedAs(ParamInfo.USED_IN_COMMAND_AS_OPTION);
+
+        try {
+            Process p = executeSimple(processorModel);
+            waitForProcess();
+
+            if (getProcessExitValue() != 0) {
+                throw new IOException(programName + " returned nonzero exitvalue");
+            }
+            boolean downloadSuccessful = getIntermediateOutputFiles(processorModel);
+
+        } catch (Exception e) {
+            System.out.println("Problem creating product XML file: " + e.getMessage());
+        }
+    }
+
+    //    public void updateL2genParamInfoXMLFiles(){
+//        File dataDir = SystemUtils.getApplicationDataDir();
+//       File l2genDir;
+//        l2genDir.mkdirs();
+//        File xmlFile;
+//
+//        xmlFile = new File(l2genDir, PARAM_INFO_XML);
+//
+//        String executable = programName;
+//        // String executable = SeadasProcessorInfo.getExecutable(iFileInfo, processorId);
+//        if (executable.equals("l3gen")) {
+//            executable = "l2gen";
+//        }
+//        ProcessorModel processorModel = new ProcessorModel(executable, this);
+//
+//        processorModel.setAcceptsParFile(true);
+//        processorModel.addParamInfo("ifile", ifileDir, ParamInfo.Type.IFILE);
+//
+//        if (suite != null) {
+//            processorModel.addParamInfo("suite", suite, ParamInfo.Type.STRING);
+//        }
+//
+//        processorModel.addParamInfo("-dump_options_xmlfile", xmlFile.getAbsolutePath(), ParamInfo.Type.OFILE);
+//
+//        try {
+//            // Aquarius will use the static xml file instead of a generated one
+//            if (!executable.equalsIgnoreCase(AQUARIUS_GUI_NAME)) {
+//                Process p = executeSimple(processorModel);
+//                waitForProcess();
+//                if (getProcessExitValue() != 0) {
+//                    throw new IOException("l2gen failed to run");
+//                }
+//
+//                getIntermediateOutputFiles(processorModel);
+//            }
+//
+//            if (!xmlFile.exists()) {
+//                SeadasLogger.getLogger().severe("l2gen can't find paramInfo.xml file!");
+//                VisatApp.getApp().showMessageDialog("", "SEVERE: paramInfo.xml not found!", ModalDialog.ID_OK, null);
+//            }
+//        } catch (IOException e) {
+//            System.out.println("problem creating Parameter XML file: " + e.getMessage());
+//        }
+//    }
 
     public void updateOCSSWProgramXMLFiles(){
 //        String executable = getGuiName();
