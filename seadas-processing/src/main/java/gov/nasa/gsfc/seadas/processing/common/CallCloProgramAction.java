@@ -262,6 +262,7 @@ public class CallCloProgramAction extends AbstractVisatAction {
                     }
                     if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
                         ocssw.updateOCSSWProgramXMLFiles();
+                        ocssw.updateL2genProductInfoXMLFiles();
                     }
                     ProcessorModel secondaryProcessor = processorModel.getSecondaryProcessor();
                     if (secondaryProcessor != null) {
