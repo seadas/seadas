@@ -245,6 +245,8 @@ public class OCSSWVM extends OCSSWRemote {
                         String sourceFilePathName = workingDir + File.separator + ofileName;
                         String targetFilePathName = ofileDir + File.separator + ofileName;
                         SeadasFileUtils.copyFileWithPath(sourceFilePathName, targetFilePathName);
+                        //Process process = SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
+
                     }
                 }
             }
