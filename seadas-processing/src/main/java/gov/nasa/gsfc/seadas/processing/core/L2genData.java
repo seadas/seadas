@@ -61,7 +61,7 @@ public class L2genData implements SeaDASProcessorModel {
     }
 
 
-    private static final String
+    public static final String
             GUI_NAME = "l2gen",
             PRODUCT_INFO_XML = "productInfo.xml",
             PARAM_INFO_XML = "paramInfo.xml",
@@ -71,7 +71,7 @@ public class L2genData implements SeaDASProcessorModel {
             GETANC = "getanc.py",
             DEFAULT_SUITE = "OC";
 
-    private static final String
+    public static final String
             AQUARIUS_GUI_NAME = "l2gen_aquarius",
             AQUARIUS_PRODUCT_INFO_XML = "aquariusProductInfo.xml",
             AQUARIUS_PARAM_INFO_XML = "aquariusParamInfo.xml",
@@ -176,7 +176,7 @@ public class L2genData implements SeaDASProcessorModel {
     private static L2genData L2genAquariusData = null;
     private static L2genData L3genData = null;
 
-
+    private boolean overwriteProductInfoXML = false;
 
     public static L2genData getNew(Mode mode, OCSSW ocssw) {
         switch (mode) {
@@ -199,6 +199,7 @@ public class L2genData implements SeaDASProcessorModel {
 
     private L2genData(Mode mode, OCSSW ocssw) {
         this.ocssw = ocssw;
+        overwriteProductInfoXML = false;
         setMode(mode);
     }
 
@@ -1209,7 +1210,6 @@ public class L2genData implements SeaDASProcessorModel {
         }
     }
 
-
     // runs this if IFILE changes
     // it will reset missionString
     // it will reset and make new wavelengthInfoArray
@@ -1615,7 +1615,7 @@ public class L2genData implements SeaDASProcessorModel {
                 getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-                getProductInfoInputStream(Source.L2GEN, true);
+                getProductInfoInputStream(Source.L2GEN, overwriteProductInfoXML);
 //                getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
@@ -1678,9 +1678,14 @@ public class L2genData implements SeaDASProcessorModel {
                 } catch (IOException e) {
                     throw new IOException("Problem creating product XML file: " + e.getMessage());
                 }
+            } else {
+                try {
+                    return new FileInputStream(xmlFile);
+                } catch (IOException e) {
+                    throw new IOException("problem creating product XML file: " + e.getMessage());
+                }
             }
         }
-
         return null;
     }
 
@@ -1859,7 +1864,7 @@ public class L2genData implements SeaDASProcessorModel {
                 productInfoStream = getProductInfoInputStream(Source.RESOURCES, false);
                 break;
             default:
-                productInfoStream = getProductInfoInputStream(Source.L2GEN, true);
+                productInfoStream = getProductInfoInputStream(Source.L2GEN, overwriteProductInfoXML);
 //              productInfoStream = getProductInfoInputStream(Source.RESOURCES, true);
                 break;
         }
