@@ -4,6 +4,7 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
 import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
 import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import gov.nasa.gsfc.seadas.processing.utilities.FileCompare;
 import org.esa.beam.visat.VisatApp;
@@ -17,6 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Level;
+
+import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
 
 /**
  * Created by aabduraz on 3/27/17.
@@ -245,14 +249,15 @@ public class OCSSWVM extends OCSSWRemote {
                         String sourceFilePathName = workingDir + File.separator + ofileName;
                         String targetFilePathName = ofileDir + File.separator + ofileName;
                         SeadasFileUtils.copyFileWithPath(sourceFilePathName, targetFilePathName);
+                        SeadasLogger.getLogger().log(Level.INFO, targetFilePathName + " has been copied: "  + new File(targetFilePathName).exists());
                         //Process process = SeadasFileUtils.cloFileCopy(sourceFilePathName, targetFilePathName);
-
                     }
                 }
             }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            SeadasLogger.getLogger().log(Level.SEVERE, "File copy/download failed!");
+            SeadasLogger.getLogger().log(Level.SEVERE, e.getMessage());
             return false;
         }
     }
