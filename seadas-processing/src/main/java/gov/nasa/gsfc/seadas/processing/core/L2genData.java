@@ -1668,7 +1668,7 @@ public class L2genData implements SeaDASProcessorModel {
                     }
                     boolean downloadSuccessful = ocssw.getIntermediateOutputFiles(processorModel);
 
-                    if (!xmlFile.exists()) {
+                    if (!xmlFile.exists() || !downloadSuccessful) {
                         SeadasLogger.getLogger().severe("l2gen can't find productInfo.xml file!");
                         VisatApp.getApp().showMessageDialog("", "SEVERE: productInfo.xml not found!", ModalDialog.ID_OK, null);
                         return null;
