@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,6 @@ import static java.lang.System.out;
 public class SeadasFileUtils {
 
     private static boolean debug = true;
-
     public static File createFile(String parent, String fileName) {
         File pFile;
         if (parent == null) {
@@ -120,15 +120,24 @@ public class SeadasFileUtils {
         }
     }
 
-    public static void copyFileWithPath(String sourceFilePathName, String targetFilePathName)  {
-
+    public static boolean copyFileWithPath(String sourceFilePathName, String targetFilePathName)  {
+        SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "copyFileWithPath");
         Path copied = Paths.get(targetFilePathName);
         Path originalPath = Paths.get(sourceFilePathName);
+        while(!new File(sourceFilePathName).exists()) {
+        }
         try {
             Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Files.move(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            SeadasLogger.getLogger().log(Level.SEVERE, "copy file failed reason: ");
+            SeadasLogger.getLogger().log(Level.SEVERE,  e.getMessage());
         }
+        while(!new File(targetFilePathName).exists()) {
+
+        }
+        SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "copyFileWithPath");
+        return new File(targetFilePathName).exists();
     }
     /**
      *
@@ -138,7 +147,7 @@ public class SeadasFileUtils {
      * @return
      */
     public static Process cloFileCopy(String sourceFilePathName, String targetFilePathName) {
-
+        SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "cloFileCopy");
         String[] commandArrayParams = new String[2];
         commandArrayParams[0] = sourceFilePathName;
         commandArrayParams[1] = targetFilePathName;
@@ -150,15 +159,17 @@ public class SeadasFileUtils {
             sb.append(item + " ");
         }
         SeadasLogger.getLogger().info("command array content: " + sb.toString());
-
         ProcessBuilder processBuilder = new ProcessBuilder(copyCommandArray);
         Process process = null;
         try {
             process = processBuilder.start();
             process.waitFor();
         } catch (Exception e) {
+            SeadasLogger.getLogger().log(Level.SEVERE, "copy file failed reason: ");
+            SeadasLogger.getLogger().log(Level.SEVERE,  e.getMessage());
             e.printStackTrace();
         }
+        SeadasLogger.getLogger().exiting(SeadasFileUtils.class.getName(), "cloFileCopy");
         return process;
     }
 
