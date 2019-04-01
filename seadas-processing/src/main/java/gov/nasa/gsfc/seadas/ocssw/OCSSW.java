@@ -2,12 +2,12 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
+import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
-import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
-import gov.nasa.gsfc.seadas.processing.core.ParamList;
-import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
-import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
+import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
+import gov.nasa.gsfc.seadas.processing.core.*;
+import org.esa.beam.util.ResourceInstaller;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 
@@ -18,6 +18,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.OPER_DIR;
 import static gov.nasa.gsfc.seadas.processing.core.L2genData.PRODUCT_INFO_XML;
@@ -323,10 +324,9 @@ public abstract class OCSSW {
             boolean downloadSuccessful = getIntermediateOutputFiles(processorModel);
 
         } catch (Exception e) {
-            System.out.println("Problem creating product XML file: " + e.getMessage());
+            SeadasLogger.getLogger().log(Level.SEVERE, "Problem creating product XML file: " + e.getMessage());
         }
     }
-
     //    public void updateL2genParamInfoXMLFiles(){
 //        File dataDir = SystemUtils.getApplicationDataDir();
 //       File l2genDir;
