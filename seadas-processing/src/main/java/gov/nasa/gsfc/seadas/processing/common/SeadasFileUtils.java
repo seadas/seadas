@@ -124,10 +124,13 @@ public class SeadasFileUtils {
         SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "copyFileWithPath");
         Path copied = Paths.get(targetFilePathName);
         Path originalPath = Paths.get(sourceFilePathName);
+        SeadasFileUtils.debug("source file path: " + originalPath);
+        SeadasFileUtils.debug("destination file path: " + copied);
         try {
             Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
             Files.move(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
+            SeadasFileUtils.debug("file copy failed:  " + e.getMessage());
             SeadasLogger.getLogger().log(Level.SEVERE, "copy file failed reason: ");
             SeadasLogger.getLogger().log(Level.SEVERE,  e.getMessage());
         }
