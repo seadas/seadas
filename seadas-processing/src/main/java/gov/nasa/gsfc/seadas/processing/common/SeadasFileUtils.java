@@ -146,6 +146,7 @@ public class SeadasFileUtils {
      */
     public static Process cloFileCopy(String sourceFilePathName, String targetFilePathName) {
         SeadasLogger.getLogger().entering(SeadasFileUtils.class.getName(), "cloFileCopy");
+        SeadasFileUtils.debug( "cloFileCopy");
         String[] commandArrayParams = new String[2];
         commandArrayParams[0] = sourceFilePathName;
         commandArrayParams[1] = targetFilePathName;
@@ -156,6 +157,7 @@ public class SeadasFileUtils {
         for (String item : copyCommandArray) {
             sb.append(item + " ");
         }
+        SeadasFileUtils.debug("command array content: " + sb.toString());
         SeadasLogger.getLogger().info("command array content: " + sb.toString());
         ProcessBuilder processBuilder = new ProcessBuilder(copyCommandArray);
         Process process = null;
@@ -163,6 +165,7 @@ public class SeadasFileUtils {
             process = processBuilder.start();
             process.waitFor();
         } catch (Exception e) {
+            SeadasFileUtils.debug( e.getMessage());
             SeadasLogger.getLogger().log(Level.SEVERE, "copy file failed reason: ");
             SeadasLogger.getLogger().log(Level.SEVERE,  e.getMessage());
             e.printStackTrace();
