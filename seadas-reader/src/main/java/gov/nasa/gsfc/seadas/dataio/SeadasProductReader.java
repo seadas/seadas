@@ -58,6 +58,7 @@ public class SeadasProductReader extends AbstractProductReader {
         Level1B_OCM2("OCM2_L1B"),
         Level1B_PaceOCI("PaceOCI_L1B"),
         Level2("Level 2"),
+        Level2_DscovrEpic("DscovrEpic Level 2"),
         Level3_Bin("Level 3 Binned"),
         MEaSUREs("MEaSUREs Mapped"),
         MEaSUREs_Bin("MEaSUREs Binned"),
@@ -115,6 +116,9 @@ public class SeadasProductReader extends AbstractProductReader {
                 case Level1A_CZCS:
                 case Level2_CZCS:
                     seadasFileReader = new L2FileReader(this);
+                    break;
+                case Level2_DscovrEpic:
+                    seadasFileReader = new L2DscovrEpicFileReader(this);
                     break;
                 case Level1A_OCTS:
                     seadasFileReader = new L1AOctsFileReader(this);
@@ -269,6 +273,14 @@ public class SeadasProductReader extends AbstractProductReader {
         return ProductType.UNKNOWN;
     }
 
+    private boolean checkDscoverEpicL2() {
+        Attribute scene_title = ncfile.findGlobalAttribute("HDFEOS_ADDITIONAL_FILE_ATTRIBUTES_LocalGranuleID");
+        if(scene_title != null && scene_title.toString().contains("EPIC-DSCOVR_L2")) {
+                return true;
+        }
+        return false;
+    }
+
     private boolean checkHicoL1B() {
         Attribute hicol1bName = ncfile.findGlobalAttribute("metadata_FGDC_Identification_Information_Platform_and_Instrument_Identification_Instrument_Short_Name");
         if(hicol1bName != null && hicol1bName.getStringValue(0).equals("hico")) {
@@ -344,7 +356,9 @@ public class SeadasProductReader extends AbstractProductReader {
             }
         } else if (checkModisL1B()) {
             return ProductType.Level1B_Modis;
-        } else if (checkHicoL1B()) {
+        } else if (checkDscoverEpicL2()) {
+            return ProductType.Level2_DscovrEpic;
+        }else if (checkHicoL1B()) {
             return ProductType.Level1B_HICO;
         } else if ((tmp = checkViirsXDR()) != ProductType.UNKNOWN) {
             return tmp;
