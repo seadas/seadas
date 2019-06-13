@@ -41,7 +41,7 @@ import static java.lang.System.arraycopy;
 /**
  * Created by IntelliJ IDEA.
  * User: seadas
- * Date: 6/111/19
+ * Date: 6/11/19
  * Time: 2:23 PM
   */
 public class L2DscovrEpicFileReader extends SeadasFileReader {
@@ -106,14 +106,20 @@ public class L2DscovrEpicFileReader extends SeadasFileReader {
         if (product.containsBand(latitude) && product.containsBand(longitude)) {
             latBand = product.getBand(latitude);
             lonBand = product.getBand(longitude);
-            latBand.setNoDataValue(-1.2676506E30);
-            lonBand.setNoDataValue(-1.2676506E30);
+            latBand.setNoDataValue(-1.2676506002282294E30);
+            lonBand.setNoDataValue(-1.2676506002282294E30);
             latBand.setNoDataValueUsed(true);
             lonBand.setNoDataValueUsed(true);
         }
 
+        String validPixelExpression = "Latitude <= 90.0 and Latitude >= -90.0 and !nan(Latitude)";
+
         if (latBand != null) {
-            product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, null, 5));
+            // Initializing all pixels to NAN
+            // Necessary to ensure the pixels outside the disk not get random default geocoding and a clean worldmap
+            product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, "1==2", 5));
+            // Applying geocoding to valid pixels
+            product.setGeoCoding(GeoCodingFactory.createPixelGeoCoding(latBand, lonBand, validPixelExpression, 5));
         }
     }
 
