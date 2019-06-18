@@ -2,12 +2,13 @@ package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.core.runtime.RuntimeContext;
-import com.bc.ceres.swing.progress.ProgressMonitorSwingWorker;
 import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.SeadasLogger;
-import gov.nasa.gsfc.seadas.processing.core.*;
-import org.esa.beam.util.ResourceInstaller;
+import gov.nasa.gsfc.seadas.processing.core.ParamInfo;
+import gov.nasa.gsfc.seadas.processing.core.ParamList;
+import gov.nasa.gsfc.seadas.processing.core.ProcessObserver;
+import gov.nasa.gsfc.seadas.processing.core.ProcessorModel;
 import org.esa.beam.util.SystemUtils;
 import org.esa.beam.visat.VisatApp;
 
@@ -77,11 +78,22 @@ public abstract class OCSSW {
     private boolean ocsswInstalScriptDownloadSuccessful = false;
 
     public static OCSSW getOCSSWInstance() {
-        if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
+        OCSSWInfo ocsswInfo = OCSSWInfo.getInstance();
+        if (ocsswInfo == null) {
+            return null;
+        }
+
+        String ocsswLocation = ocsswInfo.getOcsswLocation();
+
+        if ( ocsswLocation == null) {
+            return null;
+        }
+
+        if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_LOCAL)) {
             return new OCSSWLocal();
-        } else if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
+        } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_VIRTUAL_MACHINE)) {
             return new OCSSWVM();
-        } else if (OCSSWInfo.getInstance().getOcsswLocation().equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
+        } else if (ocsswLocation.equals(OCSSWInfo.OCSSW_LOCATION_REMOTE_SERVER)) {
             return new OCSSWRemote();
         }
         return new OCSSWLocal();
