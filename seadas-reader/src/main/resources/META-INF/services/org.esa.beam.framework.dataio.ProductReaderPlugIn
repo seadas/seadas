@@ -5,6 +5,7 @@ gov.nasa.gsfc.seadas.dataio.L1BHicoProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L1BGociProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L1BOcm2ProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L2ProductReaderPlugIn
+gov.nasa.gsfc.seadas.dataio.L2DscovrEpicProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.AquariusProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.ViirsProductReaderPlugIn
 gov.nasa.gsfc.seadas.dataio.L3ProductReaderPlugIn
