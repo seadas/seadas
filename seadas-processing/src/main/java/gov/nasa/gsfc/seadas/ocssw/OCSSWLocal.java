@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.seadas.ocssw;
 
 import com.bc.ceres.core.ProgressMonitor;
+import gov.nasa.gsfc.seadas.OCSSWInfo;
 import gov.nasa.gsfc.seadas.processing.common.FileInfoFinder;
 import gov.nasa.gsfc.seadas.processing.common.MissionInfo;
 import gov.nasa.gsfc.seadas.processing.common.ParFileManager;
@@ -26,9 +27,6 @@ import static gov.nasa.gsfc.seadas.processing.common.SeadasFileUtils.debug;
  * Created by aabduraz on 3/27/17.
  */
 public class OCSSWLocal extends OCSSW {
-
-
-
 
     public static String TMP_OCSSW_INSTALLER_PROGRAM_PATH = (new File(System.getProperty("java.io.tmpdir"), "install_ocssw.py")).getPath();
 
@@ -245,8 +243,8 @@ public class OCSSWLocal extends OCSSW {
                 if(line.startsWith(f.getName())) {
                 String splitLine[] = line.split(":");
                 if (splitLine.length == 3) {
-                    String missionName = splitLine[1].toString().trim();
-                    String fileType = splitLine[2].toString().trim();
+                    String missionName = splitLine[1].trim();
+                    String fileType = splitLine[2].trim();
 
                     if (fileType.length() > 0) {
                         fileInfoFinder.setFileType(fileType);
@@ -440,7 +438,7 @@ public class OCSSWLocal extends OCSSW {
 
     public void setCommandArrayPrefix() {
 
-        if (programName.equals(ocsswInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
+        if (programName.equals(OCSSWInfo.OCSSW_INSTALLER_PROGRAM_NAME)) {
             commandArrayPrefix = new String[1];
             commandArrayPrefix[0] = programName;
             if (!isOCSSWExist()) {
@@ -533,7 +531,6 @@ public class OCSSWLocal extends OCSSW {
                 fileContents.add(lineData);
             }
         } catch (IOException e) {
-            ;
         } finally {
             try {
                 moFile.close();
