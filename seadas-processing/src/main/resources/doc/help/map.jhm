@@ -8,6 +8,9 @@
     <mapID target="processOverview" url="seadas-processing/ProcessOverview.html"/>
     <mapID target="install_ocssw.py" url="seadas-processing/InstallOCSSW.html"/>
     <mapID target="extractor" url="seadas-processing/ProcessExtractors.html"/>
+    <mapID target="l1aextract_modis" url="seadas-processing/ProcessExtractors.html"/>
+    <mapID target="l1aextract_seawifs" url="seadas-processing/ProcessExtractors.html"/>
+    <mapID target="l1aextract_viirs" url="seadas-processing/ProcessExtractors.html"/>
     <mapID target="modis_GEO.py" url="seadas-processing/ProcessModis_GEO.py.html"/>
     <mapID target="l1bgen" url="seadas-processing/ProcessL1bgen.html"/>
     <mapID target="modis_L1B.py" url="seadas-processing/ProcessModis_L1B.py.html"/>
@@ -16,6 +19,7 @@
     <mapID target="calibrate_viirs" url="seadas-processing/CalibrateViirs.html"/>
     <mapID target="l1mapgen" url="seadas-processing/ProcessL1mapgen.html"/>
     <mapID target="l1brsgen" url="seadas-processing/ProcessL1brsgen.html"/>
+    <mapID target="l2extract" url="seadas-processing/ProcessExtractors.html"/>
     <mapID target="l2gen" url="seadas-processing/ProcessL2gen.html"/>
     <mapID target="l2gen_aquarius" url="seadas-processing/ProcessL2genAquarius.html"/>
     <mapID target="l2mapgen" url="seadas-processing/ProcessL2mapgen.html"/>
